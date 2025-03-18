@@ -17,7 +17,7 @@ export const getAllUser = () => {
 };
 
 export const createUser = catchAsync(async (req, res, next) => {
-  if (!req.body.agreement) return;
+  //   if (!req.body.agreement) return;
 
   const dataFilter = {
     name: req.body.name,

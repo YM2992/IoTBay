@@ -1,8 +1,7 @@
 import express from "express";
+import dotenv from "dotenv";
 // const rateLimit = require("express-rate-limit");
 // const globalErrHandler = require("./Controller/errorController");
-
-import dotenv from "dotenv";
 
 const app = express();
 
@@ -14,6 +13,8 @@ import userRoute from "./Route/userRoute.js";
 //   message: "Too many requests from this IP, please try again in an hour!",
 // });
 // app.use("/api", limiter);
+
+dotenv.config({ path: "./Server/config.env" });
 
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));

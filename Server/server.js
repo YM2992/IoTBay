@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 // const rateLimit = require("express-rate-limit");
 // const globalErrHandler = require("./Controller/errorController");
+import errorController from "./Controller/errorController.js";
 
 const app = express();
 
@@ -32,7 +33,7 @@ dotenv.config({ path: "./Server/config.env" });
 // app.use("/api/order", orderRoute);
 app.use("/api/user", userRoute);
 
-// app.use(globalErrHandler);
+app.use(errorController);
 
 // Server
 const port = 8000 || process.env.PORT;

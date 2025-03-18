@@ -1,5 +1,5 @@
 class cusError extends Error {
-  constructor(message, statusCode) {
+  constructor(message, statusCode, ...args) {
     super(message);
 
     this.statusCode = statusCode;

@@ -12,6 +12,17 @@ export const findUserById = (id) => {
   return getOne("user", "userid", id);
 };
 
+export const getMe = catchAsync(async (req, res, next) => {
+  const currentUser = req.user;
+  delete currentUser.password;
+  delete currentUser.userid;
+
+  res.status(200).json({
+    status: "success",
+    data: currentUser,
+  });
+});
+
 export const getAllUser = () => {
   return getAll("user");
 };
@@ -36,7 +47,9 @@ export const createUser = catchAsync(async (req, res, next) => {
       data: dataFilter,
     });
   } catch (error) {
-    const message = `${error.code} ${error.message}`;
+    let message = `${error.code} ${error.message}`;
+    if (error.code === "SQLITE_CONSTRAINT_UNIQUE") message = `Duplicate Field: ${error.message}`;
+
     return next(new cusError(message, 400));
   }
 });

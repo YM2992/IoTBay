@@ -2,15 +2,15 @@ import React from "react";
 
 function Login() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-200 to-blue-400">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-96">
+<div className="flex items-center justify-center h-screen w-full bg-gradient-to-b from-blue-200 to-blue-400">
+<div className="bg-white p-8 rounded-2xl shadow-lg w-96">
         <div className="flex">
           <div className="flex flex-col items-center">
             <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-              <span className="text-xl font-bold">IotBay</span>
+              <span className="text-xl font-bold justify-center">IotBay</span>
             </div>
             <h2 className="text-2xl font-semibold">Welcome!</h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-gray-600 mb-4 items-center">
               Please sign-in to your account below
             </p>
           </div>

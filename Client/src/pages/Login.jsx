@@ -6,7 +6,7 @@ function Login() {
 <div className="bg-white p-8 rounded-2xl shadow-lg w-96">
         <div className="flex">
           <div className="flex flex-col items-center">
-            <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+            <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
               <span className="text-xl font-bold justify-center">IotBay</span>
             </div>
             <h2 className="text-2xl font-semibold">Welcome!</h2>

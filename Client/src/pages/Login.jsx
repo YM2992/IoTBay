@@ -10,7 +10,7 @@ function Login() {
               <span className="text-xl font-bold justify-center">IotBay</span>
             </div>
             <h2 className="text-2xl font-semibold">Welcome!</h2>
-            <p className="text-gray-600 mb-4 items-center">
+            <p className="text-gray-600 ">
               Please sign-in to your account below
             </p>
           </div>
@@ -18,19 +18,19 @@ function Login() {
         <input
           type="text"
           placeholder="Email"
-          className="w-full p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full text-black p-3 border rounded-lg  focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <input
           type="password"
           placeholder="Password"
-          className="w-full p-3 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 border text-black rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <div className="text-right mb-4">
-          <a href="#" className="text-blue-500 text-sm">
+          <a href="#" className="text-blue-500 text-sm ">
             Forgot Password?
           </a>
         </div>
-        <button className="w-full bg-blue-300 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+        <button className="w-full bg-blue-300 text-white rounded-lg hover:bg-blue-700 transition">
           Sign in
         </button>
         <p className="text-center text-gray-600 mt-4">

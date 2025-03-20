@@ -1,0 +1,55 @@
+/* welcome.css */
+
+/* Centers content in the middle of the screen */
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers vertically */
+    align-items: center; /* Centers horizontally */
+    height: 100vh; /* Takes full screen height */
+    width: 100vw; /* Takes full screen width */
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: #ffffff; /* Light background */
+}
+
+/* Ensures it doesn't inherit unwanted width */
+.welcome-container > * {
+    max-width: 600px; /* Keeps text width limited */
+    width: 100%;
+}
+
+/* Styling for the welcome title */
+.welsome-h1 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #2c3e50; /* Dark blue */
+    margin-bottom: 10px;
+}
+
+/* Styling for user details */
+.welcome-p {
+    font-size: 18px;
+    color: #555;
+    margin: 5px 0;
+}
+
+/* Loading text style */
+.loading {
+    font-size: 20px;
+    color: #000000; /* Blue color */
+    font-weight: bold;
+}
+
+/* Error message styling */
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+/* Redirect message styling */
+.redirect-message {
+    font-style: italic;
+    color: #888;
+    margin-top: 10px;
+}

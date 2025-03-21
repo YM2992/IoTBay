@@ -10,16 +10,69 @@
 }
 
 /* HEADER AREA */
-.header {
+header {
   display: flex;
-  width: 100%;
+  width: 100vw;
   height: 3rem;
   margin: 0 auto;
   line-height: 3rem;
-  background-color: aqua;
+  /* background-color: aqua; */
+  background: linear-gradient(to bottom, rgba(0, 3, 32, 0.82), rgba(0, 3, 32, 0.619), rgba(0, 0, 0, 0.116));
   text-align: center;
   align-items: center;
   top: 0;
+}
+
+header {
+  color: rgb(228, 235, 255);
+}
+
+header h1 a {
+  color: rgb(228, 235, 255);
+  text-decoration: none;
+}
+
+header img {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 1rem;
+}
+
+header nav {
+  display: flex;
+  justify-content: right;
+  align-items: right;
+  width: 100%;
+}
+
+header nav a {
+  color: rgb(228, 235, 255);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  margin: 0 0.5rem;
+  border-radius: 5px;
+  position: relative; /* Add this */
+  transition: background-color 0.3s;
+}
+
+header nav a::after {
+  content: ''; /* Add this */
+  position: absolute; /* Add this */
+  bottom: 15px; /* Add this */
+  left: 0; /* Add this */
+  width: 100%; /* Add this */
+  height: 2px; /* Add this */
+  background-color: #fff; /* Add this */
+  transform: scaleX(0); /* Add this */
+  transform-origin: center; /* Add this */
+  transition: transform 0.3s ease-in-out; /* Add this */
+}
+
+header nav a:hover {
+  background-color: rgba(0, 0, 0, 0);
+}
+header nav a:hover::after {
+  transform: scaleX(1); /* Add this */
 }
 
 /* MAIN AREA */
@@ -31,14 +84,15 @@
 /* FOOTER AREA */
 
 .footer {
-  display: flex;
   width: 100%;
   height: 3rem;
   margin: 0 auto;
   line-height: 3rem;
-  background-color: aqua;
+  background-color: rgb(50, 50, 50);
+  color: white;
   text-align: center;
   align-items: center;
-  position: fixed;
+  /* position: fixed; */
+  position: absolute;
   bottom: 0;
 }

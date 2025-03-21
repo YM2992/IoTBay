@@ -19,19 +19,34 @@
     width: 100%;
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
 /* Styling for the welcome title */
-.welsome-h1 {
-    font-size: 32px;
+.welcome-h1 {
+    font-size: 60px;
     font-weight: bold;
-    color: #2c3e50; /* Dark blue */
-    margin-bottom: 10px;
+    background: linear-gradient(to right, #7b61ff, #122833);
+    -webkit-background-clip: text; /* Makes gradient apply to text */
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 5px;
+    animation: fadeIn 1s ease-out forwards;
+
 }
 
 /* Styling for user details */
 .welcome-p {
     font-size: 18px;
     color: #555;
-    margin: 5px 0;
+    margin: 7px 0;
+    animation: fadeIn 2s ease-out forwards;
+
 }
 
 /* Loading text style */
@@ -52,4 +67,46 @@
     font-style: italic;
     color: #888;
     margin-top: 10px;
+    animation: fadeIn 2s ease-out forwards;
 }
+
+.welcome-button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 2px solid #7b61ff;
+    background: transparent;
+    color: #7b61ff;
+    cursor: pointer;
+    border-radius: 25px;
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 2s ease-out forwards;
+
+}
+
+.welcome-button:hover {
+    background: #7b61ff;
+    color: white;
+
+}
+
+/* Dots animation */
+.dots {
+    display: inline-block;
+    width: 1.2em;
+    text-align: left;
+}
+
+.dots::after {
+    content: "...";
+    animation: dots 1.5s steps(3, end) infinite;
+  }
+  
+  @keyframes dots {
+    0% { content: ""; }
+    33% { content: "."; }
+    66% { content: ".."; }
+    100% { content: "..."; }
+  }
+  

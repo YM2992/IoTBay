@@ -1,8 +1,133 @@
-.div {
-    background-color: black;
-}
+/* Container for the login screen */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(to bottom, #e1edf8, #85d2f8);
+  }
+  
+  /* Card for login form */
+  .login-card {
+    background-color: white;
+    padding: 2rem;
+    align-items: center;
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 24rem;
+  }
+  
+  /* Flex container for centering content */
+  .center-content {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Profile icon container */
+  .profile-icon {
+    position: absolute;
+    transform: translateY(-8.5rem);
+    width: 8rem;
+    height: 8rem;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+  }
+  
+  /* Welcome text */
+  .welcome-text {
+    font-size: 1.5rem;
+    color: black;
+    font-weight: 600;
+    margin-top: 4.75rem;
+  }
+  
+  /* Info text */
+  .info-text {
+    color: #4b4b4b;
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
+    padding-top: 2rem;
+  }
+  
+  /* Input container */
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    width: 17rem;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  
+  /* Input styles */
+  .input-field {
+    padding-left: 0.5rem;
+    height: 2rem;
+    border: 1px solid #d3d3d3;
+    border-radius: 0.375rem;
+    width: 100%;
+    font-size: 0.875rem;
+    color: black;
+    background-color: white;
 
-.input {
+  }
+  
+  /* Forgot password link */
+  .forgot-password {
+    text-align: right;
+    font-size: 0.875rem;
+    color: #1e3a8a;
+    display: flex;
+    flex-direction: column;
+    width: 8rem;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+  }
+  
+  /* Sign in button */
+  .sign-in-btn {
+    width: 10rem;
+    height: 2.5rem;
+    background-color: #7bc3ff;
+    color: white;
+    border-radius: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease;
+    border: none;
+  }
+  
+  .sign-in-btn:hover {
+    background-color: #2563eb;
+  }
+  
+  /* Contact us link */
+  .contact-us {
     text-align: center;
-    width: 5;
-}
+    color: #4b4b4b;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+
+  }
+  
+  .contact-us a {
+    color: #1e3a8a;
+    font-size: 0.875rem;
+
+  }
+  

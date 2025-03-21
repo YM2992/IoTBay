@@ -2,6 +2,7 @@ import { Route, Routes, BrowserRouter } from "react-router-dom";
 
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
+import MainMenu from "./pages/MainMenu";
 import "./App.css";
 
 function App() {
@@ -9,7 +10,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
+        <Route path="/" element={<MainMenu />} />
+          <Route path="/main" element={<MainMenu />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,0 +1,78 @@
+
+
+.logout-button {
+  margin-left: auto; 
+  background-color: #ff4d4d; 
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  transform: translateX(20%);
+}
+body {
+    
+    background-size: cover;
+    background-position: center; 
+    background-repeat: no-repeat; 
+    margin: 0; 
+    height: 100vh; 
+    font-family: Arial, sans-serif;
+}
+
+
+.main-container {
+  
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;
+  align-items: center;
+  transform: translateX(25%); 
+}
+
+
+button {
+  margin: 25px; 
+  padding: 30px 50px; 
+  font-size: 18px; 
+  cursor: pointer;
+  display: inline-block; 
+}
+
+.welcome-message {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px; 
+  text-align: center; 
+  color: aqua;
+  transform: translateX(20%);
+}
+
+.item-image {
+  width: 200px; 
+  height: auto; 
+  border-radius: 4px; 
+  margin-bottom: 10px; 
+}
+
+.button-container {
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  transform: translateX(20%);
+}
+
+.button-container.item-image {
+  width: 40px; 
+  height: auto; 
+  border-radius: 4px;
+}
+
+.button-container > div {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  margin: 20px; 
+}

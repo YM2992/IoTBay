@@ -72,6 +72,7 @@ INSERT INTO order_product (orderid, productid, quantity) VALUES
  (SELECT productid FROM product WHERE name = 'Mechanical Keyboard'), 1);
 
 
+-- UPDATE user SET role = "manager" WHERE email = "jefftest222@gmail.com";
 
 SELECT * FROM user;
 SELECT * FROM product;

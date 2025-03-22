@@ -1,12 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
 // const rateLimit = require("express-rate-limit");
-// const globalErrHandler = require("./Controller/errorController");
 import errorController from "./Controller/errorController.js";
 
 const app = express();
 
 import userRoute from "./Route/userRoute.js";
+import productRoute from "./Route/productRoute.js";
 
 // const limiter = rateLimit({
 //   max: 100,
@@ -29,9 +29,9 @@ app.use(function (req, res, next) {
 
 dotenv.config({ path: "./Server/config.env" });
 
-// app.use("/api/products", productRoute);
 // app.use("/api/order", orderRoute);
 app.use("/api/user", userRoute);
+app.use("/api/product", productRoute);
 
 app.use(errorController);
 

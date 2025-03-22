@@ -2,7 +2,7 @@
 import db from "./dbController.js";
 
 export const getAll = (dbname) => {
-  const sql = `SELECT * FROM ${dbname}`;
+  const sql = `SELECT * FROM ${dbname} WHERE 1=1`;
   return db.prepare(sql).all();
 };
 
@@ -25,6 +25,6 @@ export const createOne = (dbname, data) => {
     .join(",");
 
   const sql = `INSERT INTO ${dbname} (${keys}) VALUES (${vals})`;
-  //   console.log(sql);
+  //   console.log("SQL Query :", sql);
   return db.prepare(sql).run();
 };

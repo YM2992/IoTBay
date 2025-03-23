@@ -9,6 +9,8 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // write me some code in NodeJS that makes a POST request to '[API PATH]'
+
     //hard coded for now, but need to replace with api logic
     if (email === "admin@example.com" && password === "password123") {
       alert("Login successful!");

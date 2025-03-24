@@ -5,11 +5,25 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const emailInput = document.getElementById("email").value;
+  const passwordInput = document.getElementsByTagName("password").value;
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // write me some code in NodeJS that makes a POST request to '[API PATH]'
+    // POST request for user validation
+    axios
+      .post("example url/data", {
+        email: email,
+        password: password,
+      })
+      .then((response) => {
+        console.log("Data posted successfully: ", response.data);
+      })
+      .catch((error) => {
+        console.log("Error posting data: ", error);
+      });
 
     //hard coded for now, but need to replace with api logic
     if (email === "admin@example.com" && password === "password123") {

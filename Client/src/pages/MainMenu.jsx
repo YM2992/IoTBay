@@ -1,6 +1,9 @@
 import React from "react";
 import './main.css';
 import Rash from './rashberry pi.jpg';
+import Wifi from './wifi.jpg';
+import Aduino from './aduino switch.jpg';
+import Network from './download.jpg';
 
 function MainMenu() {
     return (
@@ -11,16 +14,30 @@ function MainMenu() {
              </button>
 
             </header>
+
+            <main className="main-container">
             <h1 className="welcome-message">Welcome Back to IOT Bay</h1>
-            <main className="button-container">
+            <div className="button-container">
                 <div>
                 <img src={Rash} className="item-image"/>
                 <button>Rashberry Pi</button>
                 </div>
+                <div>
+                <img src={Wifi} className="item-image"/>
+                <button>Wifi Extender</button>
+                </div>
+                <div>
+                <img src={Aduino} className="item-image"/>
+                <button>Aduino Board</button>
+                </div>
+                <div>
+                <img src={Network} className="item-image"/>
+                <button>Network Switch</button>
+                </div>
             
-            <button>Item 2</button>
-            <button>Item 3</button>
-            <button>Item 4</button>
+            
+            
+            </div>
             </main>
         </div>
     );

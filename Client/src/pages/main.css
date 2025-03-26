@@ -9,17 +9,7 @@ nav {
   padding: 0;
 }
 
-body {
-  font-family: sans-serif;
-  line-height: 1.6;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  background-color: #b0cee3; 
-}
+
 .logout-button {
   margin-left: auto; 
   background-color: #ff4d4d; 
@@ -75,13 +65,12 @@ button {
   margin-bottom: 10px; 
 }
 
-
-
 .button-container {
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  transform: translateX(20%);
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: space-around; 
+  align-items: flex-start; 
+  gap: 20px; 
 }
 
 .button-container.item-image {

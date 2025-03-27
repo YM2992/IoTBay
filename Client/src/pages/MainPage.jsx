@@ -1,5 +1,5 @@
 import React from "react";
-import './main.css';
+import './MainPage.css';
 import Rash from '../assets/rashberry pi.jpg';
 import Wifi from '../assets/wifi.jpg';
 import Aduino from '../assets/aduino switch.jpg';

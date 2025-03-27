@@ -1,0 +1,16 @@
+label{
+   display: block;
+   color: whitesmoke; 
+}
+
+h1{
+    color: white;
+}
+
+h2{
+    color: lightblue;
+}
+
+.FieldMargin{
+    margin-top: 2px;
+}

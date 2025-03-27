@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 // const rateLimit = require("express-rate-limit");
 import errorController from "./Controller/errorController.js";
 
@@ -14,6 +15,12 @@ import productRoute from "./Route/productRoute.js";
 //   message: "Too many requests from this IP, please try again in an hour!",
 // });
 // app.use("/api", limiter);
+
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 dotenv.config({ path: "./Server/config.env" });
 

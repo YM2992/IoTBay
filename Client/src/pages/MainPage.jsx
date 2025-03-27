@@ -7,7 +7,7 @@ import Network from '../assets/download.jpg';
 import ProductListing from "../components/ProductListing";
 import { useEffect, useState } from "react";
 
-function MainMenu() {
+function MainPage() {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
@@ -117,4 +117,4 @@ function MainMenu() {
     );
 }
 
-export default MainMenu;
+export default MainPage;

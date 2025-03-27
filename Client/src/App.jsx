@@ -7,14 +7,13 @@ import Landing from "./pages/Landing";
 import "./App.css";
 import "./index.css";
 
-
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/login" element={<Login />} />
           <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/landing" element={<Landing />} />
         </Route>
       </Routes>

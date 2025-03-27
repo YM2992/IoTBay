@@ -1,39 +1,31 @@
 import React, { useState } from "react";
 import "./Login.css";
+import Input from "../components/Input";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const emailInput = document.getElementById("email").value;
-  const passwordInput = document.getElementsByTagName("password").value;
+  // const emailInput = document.getElementById("email").value;
+  // const passwordInput = document.getElementsByTagName("password").value;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async () =>{
+  if(email.trim === "" || password.trim === "") return "";
+  const data = {
+    email,password
+  }
 
-    // write me some code in NodeJS that makes a POST request to '[API PATH]'
-    // POST request for user validation
-    axios
-      .post("example url/data", {
-        email: email,
-        password: password,
-      })
-      .then((response) => {
-        console.log("Data posted successfully: ", response.data);
-      })
-      .catch((error) => {
-        console.log("Error posting data: ", error);
-      });
+  const res = await fetch("http://localhost:8000/api/user",{
 
-    //hard coded for now, but need to replace with api logic
-    if (email === "admin@example.com" && password === "password123") {
-      alert("Login successful!");
-      setError("");
-      navigate("/main");
-    } else {
-      setError("Invalid email or password");
+    method:"POST",
+    body:JSON.stringify(data),
+    headers:{
+      "Content-Type" :"application/json",
     }
-  };
+  })
+
+  console.log(res);
+}
 
   return (
     <div className="login-container">
@@ -45,33 +37,19 @@ function Login() {
           <h2 className="welcome-text">Welcome!</h2>
           <p className="info-text">Please sign in to your account below</p>
         </div>
+        
 
-        {error && <p className="error-text">{error}</p>}
-
-        <form onSubmit={handleSubmit} className="input-container">
-          <input
-            type="email"
-            placeholder="Email"
-            className="input-field"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="input-field"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        <Input field="email" func={setEmail} />
+        <Input field="password" func={setPassword} />
+        
           <div className="forgot-password">
             <a href="#">Forgot Password?</a>
           </div>
-          <button type="submit" className="sign-in-btn">
+
+          <button onClick={handleSubmit} type="submit" className="sign-in-btn">
             Sign in
           </button>
-        </form>
+
 
         <p className="contact-us">
           Having problems? <a href="#">Contact us</a>

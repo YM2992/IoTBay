@@ -1,7 +1,13 @@
+import  '../pages/main.css';
 function Header() {
   return (
     <>
-      <div className="header">This is Header</div>
+      <div className="header">
+        <nav>
+          <button className="logout-button">Log Out</button>
+          
+        </nav>
+      </div>
     </>
   );
 }

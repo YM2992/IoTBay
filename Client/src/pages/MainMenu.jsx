@@ -7,17 +7,14 @@ import Network from './download.jpg';
 
 function MainMenu() {
     return (
-        <div className="main-container">
-            <header>
-            <button className="logout-button">
-                    Logout
-             </button>
-
-            </header>
-
+        <div className="mainContainer">
+            
+            
             <main className="main-container">
-            <h1 className="welcome-message">Welcome Back to IOT Bay</h1>
+              
+            
             <div className="button-container">
+            <header><h1 className="welcome-message">Welcome Back to IOT Bay</h1></header>  
                 <div>
                 <img src={Rash} className="item-image"/>
                 <button>Rashberry Pi</button>

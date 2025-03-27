@@ -10,16 +10,14 @@ nav {
 }
 
 body {
-  font-family: sans-serif;
-  line-height: 1.6;
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  background-color: #b0cee3; 
+  background-color:azure;
 }
+
+.footer {
+  display: none !important;
+}
+
+
 .logout-button {
   margin-left: auto; 
   background-color: #3bb8ab; 
@@ -35,7 +33,7 @@ body {
 
 
 
-.mainContainer {
+.main-container {
   
   display: flex;
   flex-direction: column; 
@@ -78,14 +76,12 @@ button {
   margin-bottom: 10px; 
 }
 
-
-
 .button-container {
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  transform: translateX(0%);
-  transform: translateY(20%);
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: space-around; 
+  align-items: flex-start; 
+  gap: 20px; 
 }
 
 .button-container.item-image {
@@ -98,7 +94,7 @@ button {
   display: flex;
   flex-direction: column; 
   align-items: center; 
-  margin: 20px; 
+  margin: 20px;
 }
 button:hover {
   background-color: #cba6cb; 

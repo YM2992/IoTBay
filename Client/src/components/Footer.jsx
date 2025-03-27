@@ -1,7 +1,7 @@
 import React from "react";
 
 function Footer() {
-  return <div className="footer">&copy; 2025 IOT Bay.</div>;
+  return <div className="footer">This is Footer</div>;
 }
 
 export default Footer;

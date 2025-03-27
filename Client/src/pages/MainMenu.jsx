@@ -11,7 +11,7 @@ function MainMenu() {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        fetch('/api/product')
+        fetch('http://localhost:8000/api/product')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch products');
@@ -25,6 +25,8 @@ function MainMenu() {
                 setProducts(data);
             })
             .catch(error => console.error('Error fetching products:', error));
+
+            console.log(products);
     }, []);
 
     return (

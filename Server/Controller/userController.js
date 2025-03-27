@@ -1,7 +1,7 @@
 import { createOne } from "./centralController.js";
 import { hashPassword } from "./authController.js";
 import catchAsync from "../Utils/catchAsync.js";
-import { getOne } from "./centralController.js";
+import { getOne, getAll } from "./centralController.js";
 import cusError from "../Utils/cusError.js";
 
 export const findUserByEmail = (email) => {
@@ -23,19 +23,27 @@ export const getMe = catchAsync(async (req, res, next) => {
   });
 });
 
-export const getAllUser = () => {
-  return getAll("user");
-};
+export const getAllUser = catchAsync(async (req, res, next) => {
+  const users = getAll("user");
+
+  res.status(200).json({
+    status: "success",
+    data: users,
+  });
+});
 
 export const createUser = catchAsync(async (req, res, next) => {
-  //   if (!req.body.agreement) return;
+  const { name, email, password, phone } = req.body;
+
+  if (!name || !email || !password || !phone)
+    return next(new cusError("Please provide all needed information", 400));
 
   const dataFilter = {
-    name: req.body.name,
-    email: req.body.email,
-    password: await hashPassword(req.body.password),
+    name,
+    email,
+    password: await hashPassword(password),
     role: "customer",
-    phone: req.body.phone,
+    phone: phone,
   };
 
   try {

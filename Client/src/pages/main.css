@@ -10,14 +10,16 @@ nav {
 }
 
 body {
-  background-color:azure;
+  font-family: sans-serif;
+  line-height: 1.6;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: #b0cee3; 
 }
-
-.footer {
-  display: none !important;
-}
-
-
 .logout-button {
   margin-left: auto; 
   background-color: #3bb8ab; 
@@ -33,7 +35,7 @@ body {
 
 
 
-.main-container {
+.mainContainer {
   
   display: flex;
   flex-direction: column; 
@@ -59,11 +61,11 @@ button {
 }
 
 .welcome-message {
-  font-size: 34px;
+  font-size: 60px;
   font-weight: bold;
   margin-bottom: 20px; 
   text-align: center; 
-  color: rgb(29, 162, 149);
+  color: rgb(5, 71, 71);
   transform: translateX(20%);
   transform: translateY(0%);
   animation: popEffect 0.8s ease infinite;
@@ -76,18 +78,18 @@ button {
   margin-bottom: 10px; 
 }
 
-.button-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
 
-  flex-wrap: wrap; 
-  justify-content: space-around; 
-  align-items: flex-start; 
-  gap: 20px; 
+
+.button-container {
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  transform: translateX(0%);
+  transform: translateY(20%);
 }
 
 .button-container.item-image {
-  width: 20px; 
+  width: 40px; 
   height: auto; 
   border-radius: 4px;
 }
@@ -96,19 +98,13 @@ button {
   display: flex;
   flex-direction: column; 
   align-items: center; 
-  margin: 20px;
+  margin: 20px; 
 }
 button:hover {
   background-color: #cba6cb; 
   transform: scale(1.3);
   border-color: #4B0082;
 }
-.message{
-  color: #180f18;
-}
-
-
-
 
 @keyframes popEffect {
   0% {

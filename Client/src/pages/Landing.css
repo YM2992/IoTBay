@@ -8,18 +8,6 @@ nav {
   padding: 0;
 }
 
-body {
-  font-family: sans-serif;
-  line-height: 1.6;
-  background-color: #f4f4f4;
-  color: #333;
-  background-image: url('../assets/landingBackground.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  height: 100vh;
-}
-
 .landing-page {
   max-width: 1920px;
   margin: 0 auto;

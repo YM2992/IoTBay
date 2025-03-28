@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Login.css";
 import Input from "../components/Input";
+import { json } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const handleSubmit = async () =>{
     email,password
   }
 
-  const res = await fetch("http://localhost:8000/api/user",{
+  const res = await fetch("http://localhost:8000/api/user/login/",{
 
     method:"POST",
     body:JSON.stringify(data),
@@ -23,8 +24,13 @@ const handleSubmit = async () =>{
       "Content-Type" :"application/json",
     }
   })
+  // if res.status. == fail code != 200
 
-  console.log(res);
+  // got the 
+  const resData = await res.json();
+  console.log(resData.token);
+  localStorage.setItem("jwt", resData.token);
+
 }
 
   return (

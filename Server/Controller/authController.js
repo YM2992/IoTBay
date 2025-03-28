@@ -43,6 +43,7 @@ const createSendToken = (user, statusCode, res) => {
 
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
+  console.log(email);
 
   if (!email || !password) {
     return next(new cusError("please provide email and password", 400));
@@ -50,6 +51,7 @@ export const login = catchAsync(async (req, res, next) => {
 
   // check if user exists && password is correct
   const user = findUserByEmail(email);
+  console.log(user);
   const correct = await correctPassword(password, user.password);
 
   if (!user || !correct) {

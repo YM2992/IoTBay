@@ -32,7 +32,7 @@ function Logout() {
                 You've successfully signed out on this device. Sign back in to access your account.
             </p>
             
-            <button className="logout-button" onClick={() => navigate("/login")}>
+            <button className="logout-button" onClick={() => window.location.href="/login"}>
                 Sign back in
             </button>
         </div>

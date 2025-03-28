@@ -35,9 +35,10 @@ function MainPage() {
                 <h1 className="welcome-message">Welcome Back to IOT Bay</h1>
                 <div className="button-container">
                     {products.map(product => (
-                        <ProductListing data={product} />
+                        <ProductListing data={product}  />
                     ))}
-
+                    <div>
+                        
                     <ProductListing data={{
                         name: "Raspberry Pi 4 Model B",
                         price: 85,
@@ -45,7 +46,8 @@ function MainPage() {
                         description: "A small computer that can be used for a variety of projects",
                         image: Rash
                     }} />
-
+                    </div>
+                    <div>
                     <ProductListing data={{
                         name: "Raspberry Pi 3",
                         price: 65,
@@ -53,6 +55,8 @@ function MainPage() {
                         description: "A small computer that can be used for a variety of projects",
                         image: Rash
                     }} />
+                    </div>
+                    <div>
 
                     <ProductListing data={{
                         name: "Arduino Uno",
@@ -61,6 +65,8 @@ function MainPage() {
                         description: "A microcontroller that can be used for a variety of projects",
                         image: Aduino
                     }} />
+                    </div>
+                    <div>
 
                     <ProductListing data={{
                         name: "ESP32",
@@ -69,6 +75,8 @@ function MainPage() {
                         description: "A microcontroller that can be used for a variety of projects",
                         image: Wifi
                     }} />
+                    </div>
+                    <div>
 
                     <ProductListing data={{
                         name: "LoRaWAN Gateway",
@@ -77,6 +85,8 @@ function MainPage() {
                         description: "A long range wireless communication gateway",
                         image: Wifi
                     }} />
+                    </div>
+                    <div>
 
                     <ProductListing data={{
                         name: "Switch",
@@ -85,6 +95,8 @@ function MainPage() {
                         description: "A network switch",
                         image: Network
                     }} />
+                    </div>
+                    <div>
 
                     <ProductListing data={{
                         name: "WROOM-32",
@@ -93,6 +105,7 @@ function MainPage() {
                         description: "A microcontroller that can be used for a variety of projects",
                         image: Wifi
                     }} />
+                    </div>
 
                     {/* <div>
                     <img src={Rash} className="item-image"/>

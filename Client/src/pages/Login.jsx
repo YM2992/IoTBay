@@ -31,6 +31,11 @@ const handleSubmit = async () =>{
   console.log(resData.token);
   localStorage.setItem("jwt", resData.token);
 
+  if (res.status === 200) {
+    window.location.href = "/welcome";
+  } else {
+    setError("Invalid email or password. Please try again.");
+  }
 }
 
   return (

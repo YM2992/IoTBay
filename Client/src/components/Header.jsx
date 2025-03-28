@@ -16,7 +16,26 @@ function Header() {
             const location = useLocation();
             const currentPath = location.pathname;
 
-            if (currentPath === '/') {
+            // handle header if user is logged in
+            if (localStorage.getItem('jwt')) {
+              if (currentPath === '/') {
+                return (
+                  <>
+                    <Link to="/main">Main</Link>
+                    <Link to="/logout">Logout</Link>
+                  </>
+                );
+              } else if (currentPath === '/main') {
+                return (
+                  <>
+                    <Link to="/logout">Logout</Link>
+                  </>
+                );
+              }
+              return null;
+            }
+
+            if (currentPath === '/' || currentPath === '/landing') {
               return (
                 <>
                   <Link to="/login">Login</Link>
@@ -27,12 +46,6 @@ function Header() {
               return (
                 <>
                   <Link to="/">Home</Link>
-                </>
-              );
-            } else if (currentPath === '/main') {
-              return (
-                <>
-                  <Link to="/logout">Logout</Link>
                 </>
               );
             }

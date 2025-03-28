@@ -7,12 +7,12 @@ function Logout() {
   const navigate = useNavigate();
 
   // redirect to landing page after 3 seconds
-  // useEffect(() => {
-  //     const timer = setTimeout(() => {
-  //         navigate("/landing");
-  //     }, 3000);
-  //     return () => clearTimeout(timer);
-  // }, [navigate]);
+  useEffect(() => {
+      const timer = setTimeout(() => {
+          navigate("/landing");
+      }, 3000);
+      return () => clearTimeout(timer);
+  }, [navigate]);
 
   useEffect(() => {
     // Simulate logout, will change to actual API call

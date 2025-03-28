@@ -50,16 +50,16 @@ function Welcome() {
     }, 1000);
   }, []);
 
-  // useEffect(() => {
-  //   // Redirect after 3 seconds
-  //   if (userData) {
-  //     console.log("redirecting to main page after 3 seconds ...");
-  //     const timer = setTimeout(() => {
-  //       navigate("/main", { state: userData });
-  //     }, 3000);
-  //     return () => clearTimeout(timer);
-  //   }
-  // }, [userData, navigate]);
+  useEffect(() => {
+    // Redirect after 3 seconds
+    if (userData) {
+      console.log("redirecting to main page after 3 seconds ...");
+      const timer = setTimeout(() => {
+        navigate("/main", { state: userData });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [userData, navigate]);
 
   return (
     // display user data if available, else display loading or error message

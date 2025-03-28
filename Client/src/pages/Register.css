@@ -14,3 +14,10 @@ h2{
 .FieldMargin{
     margin-top: 2px;
 }
+
+.centered{    
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}

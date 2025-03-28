@@ -8,7 +8,6 @@ import Landing from "./pages/Landing";
 import "./App.css";
 import "./index.css";
 
-
 function App() {
   return (
     <BrowserRouter>

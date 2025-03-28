@@ -3,11 +3,17 @@ import dotenv from "dotenv";
 import cors from "cors";
 // const rateLimit = require("express-rate-limit");
 import errorController from "./Controller/errorController.js";
+import cors from "cors";
 
 const app = express();
 
 import userRoute from "./Route/userRoute.js";
 import productRoute from "./Route/productRoute.js";
+dotenv.config({ path: "./Server/config.env" });
+
+app.use(cors({
+  origin:"*"
+}))
 
 // const limiter = rateLimit({
 //   max: 100,
@@ -16,13 +22,7 @@ import productRoute from "./Route/productRoute.js";
 // });
 // app.use("/api", limiter);
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
 
-dotenv.config({ path: "./Server/config.env" });
 
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));

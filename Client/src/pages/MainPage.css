@@ -63,7 +63,7 @@ button {
   font-weight: bold;
   margin-bottom: 20px; 
   text-align: center; 
-  color: rgb(5, 71, 71);
+  color: rgb(17, 128, 128);
   transform: translateX(20%);
   transform: translateY(0%);
   animation: popEffect 0.8s ease infinite;

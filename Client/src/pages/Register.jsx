@@ -9,7 +9,7 @@ function Register(){
             <h1>Registration</h1>
             <h2>Join us for an easier shopping experience</h2>
 
-            <div class="centered">
+            <div class="BackDrop">
                            
                 {/*Does this save?*/}
                 <div class="FieldMargin">

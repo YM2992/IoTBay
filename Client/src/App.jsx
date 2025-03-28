@@ -42,20 +42,7 @@ function App() {
               localStorage.getItem("jwt") ? <MainPage /> : <Navigate to="/login" replace />
             }
           />
-          <Route path="/logout"
-            element={
-              localStorage.getItem("jwt") ? (
-                // logged in, clear user session and redirect to landing
-                (() => {
-                  localStorage.clear();
-                  return <Logout />;
-                })()
-              ) : (
-                // not logged in, redirect to landing
-                <Navigate to="/" replace />
-              )
-            }
-          />
+          <Route path="/logout" element={<Logout />} />
         </Route>
       </Routes>
     </BrowserRouter>

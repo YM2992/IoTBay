@@ -6,6 +6,9 @@ import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import "./App.css";
 import "./index.css";
+import Logout from "./pages/Logout";
+import Welcome from "./pages/Welcome";
+
 
 
 function App() {
@@ -30,6 +33,11 @@ function App() {
               )
             }
           />
+          <Route path="/welcome"
+            element={
+              localStorage.getItem("token") ? <Welcome /> : <Navigate to="/login" replace />
+            }
+          />
           <Route path="/main"
             element={
               localStorage.getItem("token") ? <MainPage /> : <Navigate to="/login" replace />
@@ -41,8 +49,7 @@ function App() {
                 // logged in, clear user session and redirect to landing
                 (() => {
                   localStorage.clear();
-                  return <Navigate to="/landing" replace />;
-                  // return <Logout />;
+                  return <Logout />;
                 })()
               ) : (
                 // not logged in, redirect to landing

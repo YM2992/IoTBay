@@ -17,8 +17,8 @@ function Logout() {
   useEffect(() => {
     // Simulate logout, will change to actual API call
     console.log("Logging out...");
-    // Clear user data from session storage
-    sessionStorage.removeItem("userData");
+    // Clear user data from local storage
+    localStorage.clear();
   }, []);
 
   return (

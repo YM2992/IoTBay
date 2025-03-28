@@ -15,7 +15,22 @@ h2{
     margin-top: 2px;
 }
 
+.SubBtn{
+    margin-top: 10px; 
+    border-radius: 10px;
+    padding: 6px 12px;  
+    cursor: pointer; /* When cusor state = hover --> .SubBUt:hover */
+    transition: background-color 0.75s ease;
+}
+
+.SubBtn:hover{
+    background-color: blue;
+    color: white;
+    cursor: pointer;
+}
+
 .centered{    
+    padding: 60px 42px 20px;
     display: flex;
     justify-content: center;
     flex-direction: column;

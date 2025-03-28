@@ -28,12 +28,16 @@ function Register(){
                 </div>
 
                 <div class="FieldMargin">    
-                    <label for="getPass">Confirm Password</label>
+                    <label for="confirmPas">Confirm Password</label>
                     <input type="password" id="confirmPas" name="confirm_password" autoComplete="off" />
                 </div>
-
-                {/* This needs to returned red text error if any validations fails*/}                            
-                <button type="submit" class="btn"> Submit </button>              
+                
+                {/* This needs to returned red text error if any validations fails
+                        - Failed Data validation format
+                        - getPas != confirmPas
+                        - Email already exists in data base
+                */}                            
+                <button type="submit" class="SubBtn"> Submit </button>              
 
             </div>
         </main>        

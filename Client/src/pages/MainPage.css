@@ -13,11 +13,6 @@ body {
   background-color:azure;
 }
 
-.footer {
-  display: none !important;
-}
-
-
 .logout-button {
   margin-left: auto; 
   background-color: #3bb8ab; 

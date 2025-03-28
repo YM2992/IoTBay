@@ -1,24 +1,13 @@
 
-label{
-    display: block;
-}
-
-h1{
-    color: white;
-}
-
-h2{
-    color: lightblue;
-}
-
 html, body{
-    height:100% 
+    height:100%;
+    margin:0;
 }
 
 body{
     display:flex;
-    margin:0;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .BackDrop{
@@ -49,6 +38,18 @@ body{
     background-color: blue;
     color: white;
     cursor: pointer;
+}
+
+label{
+    display: block;
+}
+
+h1{
+    color: white;
+}
+
+h3{
+    color: lightblue;
 }
 
 /* OG BackDrop */

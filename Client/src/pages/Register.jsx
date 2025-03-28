@@ -7,8 +7,8 @@ function Register(){
     <div className="register-page">
         <main>
             <h1>Registration</h1>
-            <h2>Join us for an easier shopping experience</h2>
-
+            <h3>Join us for an easier shopping experience</h3>
+            
             <div class="BackDrop">
                            
                 {/*Does this save?*/}

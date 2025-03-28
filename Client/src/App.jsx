@@ -21,7 +21,7 @@ function App() {
           {/* Conditional rendering if user is authenticated */}
           <Route path="/login"
             element={
-              localStorage.getItem("token") ? (
+              localStorage.getItem("jwt") ? (
                 // logged in, show welcome page
                 (() => {
                   return <Navigate to="/welcome" replace />
@@ -34,17 +34,17 @@ function App() {
           />
           <Route path="/welcome"
             element={
-              localStorage.getItem("token") ? <Welcome /> : <Navigate to="/login" replace />
+              localStorage.getItem("jwt") ? <Welcome /> : <Navigate to="/login" replace />
             }
           />
           <Route path="/main"
             element={
-              localStorage.getItem("token") ? <MainPage /> : <Navigate to="/login" replace />
+              localStorage.getItem("jwt") ? <MainPage /> : <Navigate to="/login" replace />
             }
           />
           <Route path="/logout"
             element={
-              localStorage.getItem("token") ? (
+              localStorage.getItem("jwt") ? (
                 // logged in, clear user session and redirect to landing
                 (() => {
                   localStorage.clear();

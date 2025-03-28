@@ -21,8 +21,8 @@ function MainPage() {
                 return response.json();
             })
             .then(data => {
-                console.log('Fetched products:', data);
-                setProducts(data);
+                console.log('Fetched products:', data.data);
+                setProducts(data.data);
             })
             .catch(error => console.error('Error fetching products:', error));
 
@@ -34,11 +34,11 @@ function MainPage() {
             <main className="main-container">
                 <h1 className="welcome-message">Welcome Back to IOT Bay</h1>
                 <div className="button-container">
-                    {products.map(product => (
-                        <ProductListing data={product} />
+                    {products.map((product, index) => (
+                        <ProductListing key={product.productid || index} data={product} />
                     ))}
 
-                    <ProductListing data={{
+                    {/* <ProductListing data={{
                         name: "Raspberry Pi 4 Model B",
                         price: 85,
                         quantity: 10,
@@ -92,25 +92,7 @@ function MainPage() {
                         quantity: 87,
                         description: "A microcontroller that can be used for a variety of projects",
                         image: Wifi
-                    }} />
-
-                    {/* <div>
-                    <img src={Rash} className="item-image"/>
-                    <button>Rashberry Pi</button>
-                    </div>
-                    <div>
-                    <img src={Wifi} className="item-image"/>
-                    <button>Wifi Extender</button>
-                    </div>
-                    <div>
-                    <img src={Aduino} className="item-image"/>
-                    <button>Aduino Board</button>
-                    </div>
-                    <div>
-                    <img src={Network} className="item-image"/>
-                    <button>Network Switch</button>
-                    </div> */}
-
+                    }} /> */}
                 </div>
             </main>
         </div>

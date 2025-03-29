@@ -47,7 +47,7 @@ const handleSubmit = async () =>{
         
 
         <Input field="email" func={setEmail} />
-        <Input field="password" func={setPassword} />
+        <Input field="password" func={setPassword} type="password" />
         
           <div className="forgot-password">
             <a href="#">Forgot Password?</a>

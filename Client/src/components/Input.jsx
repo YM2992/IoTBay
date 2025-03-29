@@ -1,9 +1,9 @@
 import React from 'react'
 
-function Input({field,func} ) {
+function Input({field,func, type="text"} ) {
   return (
     <input
-    type={field}
+    type={type}
     placeholder={field}
     className="input-field"
     // value={email}

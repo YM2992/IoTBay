@@ -9,8 +9,11 @@ import { useEffect, useState } from "react";
 
 function MainPage() {
     const [products, setProducts] = useState([]);
+    const [userName, setUserName] = useState('');
 
     useEffect(() => {
+        const storedUserName = localStorage.getItem('userName');
+        setUserName(storedUserName || 'Guest');
         fetch('http://localhost:8000/api/product')
             .then(response => {
                 if (!response.ok) {
@@ -32,7 +35,7 @@ function MainPage() {
     return (
         <div className="main-container">
             <main className="main-container">
-                <h1 className="welcome-message">Welcome Back to IOT Bay</h1>
+                <h1 className="welcome-message">Welcome Back to IOT Bay , {userName}</h1>
                 <div className="button-container">
                     {products.map(product => (
                         <ProductListing data={product}  />

@@ -38,7 +38,13 @@ const createSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: "success",
     token,
+    user: {
+      name: user.name,
+      email: user.email,
+    },
+
   });
+  localStorage.setItem("userName", user.name);
 };
 
 export const login = catchAsync(async (req, res, next) => {

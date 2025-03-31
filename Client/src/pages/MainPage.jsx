@@ -33,7 +33,7 @@ function MainPage() {
     }, []);
 
     return (
-        <div className="main-container">
+        
             <main className="main-container">
                 <h1 className="welcome-message">Welcome Back to IOT Bay , <span className="username">{userName}</span>!</h1>
                 <div className="button-container">
@@ -129,7 +129,7 @@ function MainPage() {
 
                 </div>
             </main>
-        </div>
+        
     );
 }
 

@@ -40,9 +40,10 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 1200px;
+  
   margin: 0 auto;
   padding: 20px;
+  background: linear-gradient(to bottom, #e1edf8, #85d2f8);
   
   
 }

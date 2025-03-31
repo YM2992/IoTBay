@@ -35,7 +35,7 @@ function MainPage() {
     return (
         <div className="main-container">
             <main className="main-container">
-                <h1 className="welcome-message">Welcome Back to IOT Bay , {userName}</h1>
+                <h1 className="welcome-message">Welcome Back to IOT Bay , <span className="username">{userName}</span>!</h1>
                 <div className="button-container">
                     {products.map(product => (
                         <ProductListing data={product}  />

@@ -121,4 +121,18 @@ button:hover {
     transform: scale(1); 
   }
 }
+.username {
+  background:linear-gradient(red,orange,yellow,green,rgb(10, 113, 141),indigo,violet);
+  background-size: 300%;
+  font-weight: bold; 
+  -webkit-background-clip: text; 
+  -webkit-text-fill-color: transparent;
+  animation: rainbow 3s linear infinite;
+}
+
+@keyframes rainbow{
+  0% {background-position: 0%;}
+  100% {background-position: 100%;}
+}
+
 

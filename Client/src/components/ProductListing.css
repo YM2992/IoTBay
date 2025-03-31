@@ -12,9 +12,10 @@
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-15px);
+    transform: scale(1.25);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    background-color: #cceedf; 
+    background-color: #b1f1d6; 
     border-color: #000000;
 }
 

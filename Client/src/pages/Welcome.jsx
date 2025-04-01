@@ -7,11 +7,11 @@ function Welcome() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    setTimeout(() => {
-      navigate("/main");
-    }, 3000);
-  }, [navigate]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     navigate("/main");
+  //   }, 3000);
+  // }, [navigate]);
 
   return (
     <div className="welcome-container">

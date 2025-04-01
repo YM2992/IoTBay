@@ -14,8 +14,7 @@ function Login() {
 
   const handleSubmit = async () => {
     if (email.trim() === "" || password.trim() === "") {
-      toast.error("Email or Password could not be empty");
-      return;
+      return toast.error("Email or Password could not be empty");
     }
 
     const data = {
@@ -31,7 +30,7 @@ function Login() {
     });
 
     if (res.status != 200) {
-      toast.error("Failed to get data");
+      toast.error("Wrong email or password");
       return;
     }
 

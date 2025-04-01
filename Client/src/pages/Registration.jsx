@@ -45,23 +45,22 @@ function Registration() {
           <div className="profile-icon">
             <span className="text-xl font-bold text-black">IotBay</span>
           </div>
-          <h2 className="welcome-text">Welcome!</h2>
-          <p className="info-text">Please sign in to your account below</p>
+          <h2 className="welcome-text">Join Now!</h2>
+          <p className="info-text">Become a member with us today.</p>
         </div>
 
-        <Input field="email" func={setEmail} />
-        <Input field="password" func={setPassword} />
-
-        <div className="forgot-password">
-          <a href="#">Forgot Password?</a>
-        </div>
+        <Input field="First Name" />
+        <Input field="Username" />
+        <Input field="Email" func={setEmail} />
+        <Input field="Password" func={setPassword} />
+        <Input field="Confirm Password" />
 
         <button onClick={handleSubmit} type="submit" className="sign-in-btn">
-          Sign in
+          Create Account
         </button>
 
         <p className="contact-us">
-          Having problems? <a href="#">Contact us</a>
+          Already a Member? <a href="/login">login here</a>
         </p>
       </div>
     </div>

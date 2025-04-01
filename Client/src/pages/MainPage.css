@@ -26,8 +26,6 @@ body {
   transform: translateX(20%);
 }
 
-
-
 .main-container {
   
   display: flex;
@@ -41,8 +39,6 @@ body {
   
   
 }
-
-
 
 .product-button {
   margin: 25px; 
@@ -108,4 +104,3 @@ body {
     transform: scale(1); 
   }
 }
-

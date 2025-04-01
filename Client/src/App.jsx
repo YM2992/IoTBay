@@ -8,7 +8,7 @@ import "./App.css";
 import "./index.css";
 import Logout from "./pages/Logout";
 import Welcome from "./pages/Welcome";
-
+import Registration from "./pages/Registration";
 
 function App() {
   return (
@@ -19,12 +19,13 @@ function App() {
           <Route path="/landing" element={<Landing />} />
 
           {/* Conditional rendering if user is authenticated */}
-          <Route path="/login"
+          <Route
+            path="/login"
             element={
               localStorage.getItem("jwt") ? (
                 // logged in, show welcome page
                 (() => {
-                  return <Navigate to="/welcome" replace />
+                  return <Navigate to="/welcome" replace />;
                 })()
               ) : (
                 // not logged in, allow login
@@ -32,14 +33,25 @@ function App() {
               )
             }
           />
-          <Route path="/welcome"
+          <Route path="/register" element={<Registration />} />
+          <Route
+            path="/welcome"
             element={
-              localStorage.getItem("jwt") ? <Welcome /> : <Navigate to="/login" replace />
+              localStorage.getItem("jwt") ? (
+                <Welcome />
+              ) : (
+                <Navigate to="/login" replace />
+              )
             }
           />
-          <Route path="/main"
+          <Route
+            path="/main"
             element={
-              localStorage.getItem("jwt") ? <MainPage /> : <Navigate to="/login" replace />
+              localStorage.getItem("jwt") ? (
+                <MainPage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
             }
           />
           <Route path="/logout" element={<Logout />} />

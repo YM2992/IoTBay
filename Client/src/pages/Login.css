@@ -44,7 +44,7 @@
   
   /* Welcome text */
   .welcome-text {
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: black;
     font-weight: 600;
     margin-top: 4.75rem;
@@ -67,7 +67,7 @@
     margin-left: auto;
     margin-right: auto;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 0.5rem;
   }
   
   /* Input styles */
@@ -100,7 +100,7 @@
   /* Sign in button */
   .sign-in-btn {
     width: 10rem;
-    height: 0.1px;
+    height: 2.5rem;
     background-color: #7bc3ff;
     color: white;
     border-radius: 1.5rem;
@@ -109,6 +109,8 @@
     align-items: center;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     transition: background-color 0.3s ease;
     border: none;
   }

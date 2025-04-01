@@ -47,7 +47,7 @@ function Login() {
         </div>
 
         <Input field="email" func={setEmail} value={email} />
-        <Input field="password" func={setPassword} value={password} />
+        <Input field="password" func={setPassword} value={password} type="password" />
 
         <div className="forgot-password">
           <a href="#">Forgot Password?</a>

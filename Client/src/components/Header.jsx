@@ -1,4 +1,4 @@
-import IoTBayLogo from "../assets/IoTBay_Logo.png";
+import IoTBayLogo from "/assets/IoTBay_Logo.png";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../main";
 import { useContext } from "react";

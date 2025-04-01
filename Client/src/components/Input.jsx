@@ -1,8 +1,8 @@
-function Input({ field, func, value }) {
+function Input({ field, func, value, type = "text" }) {
   return (
     <input
       style={{ marginBottom: "1rem" }}
-      type={field}
+      type={type}
       placeholder={field}
       value={value}
       className="input-field"

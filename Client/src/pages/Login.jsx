@@ -6,7 +6,7 @@ import "./Login.css";
 import Input from "../components/Input";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("jeff@test.com");
   const [password, setPassword] = useState("");
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ function Login() {
 
     const resData = await res.json();
     login(resData.token, resData.user);
-    navigate("/main");
+    navigate("/welcome");
   };
 
   return (
@@ -46,8 +46,8 @@ function Login() {
           <p className="info-text">Please sign in to your account below</p>
         </div>
 
-        <Input field="email" func={setEmail} />
-        <Input field="password" func={setPassword} />
+        <Input field="email" func={setEmail} value={email} />
+        <Input field="password" func={setPassword} value={password} />
 
         <div className="forgot-password">
           <a href="#">Forgot Password?</a>

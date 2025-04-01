@@ -1,5 +1,4 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import "./Logout.css";
 import { useContext } from "react";
@@ -14,7 +13,7 @@ function Logout() {
     const timer = setTimeout(() => {
       navigate("/landing");
       logout();
-    }, 3000);
+    }, 1500);
     return () => clearTimeout(timer);
   }, [navigate]);
 

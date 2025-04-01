@@ -13,7 +13,7 @@ function Logout() {
     const timer = setTimeout(() => {
       navigate("/landing");
       logout();
-    }, 1500);
+    }, 3000);
     return () => clearTimeout(timer);
   }, [navigate]);
 

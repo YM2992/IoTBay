@@ -1,13 +1,3 @@
-body,
-h1,
-h2,
-h3,
-p,
-nav {
-  margin: 0;
-  padding: 0;
-}
-
 .landing-page {
   max-width: 1920px;
   margin: 0 auto;

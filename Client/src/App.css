@@ -80,20 +80,6 @@ header nav a:hover::after {
   min-height: 90vh;
 }
 
-body {
-  font-family: sans-serif;
-  line-height: 1.6;
-  background-color: #f4f4f4;
-  color: #333;
-  background-image: url("/assets/landingBackground.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
 /* FOOTER AREA */
 
 .footer {

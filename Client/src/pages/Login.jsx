@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../main";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 import "./Login.css";
 import Input from "../components/Input";
@@ -12,7 +13,11 @@ function Login() {
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    if (email.trim === "" || password.trim === "") return;
+    if (email.trim() === "" || password.trim() === "") {
+      toast.error("Email or Password could not be empty");
+      return;
+    }
+
     const data = {
       email,
       password,
@@ -26,7 +31,7 @@ function Login() {
     });
 
     if (res.status != 200) {
-      console.log(res);
+      toast.error("Failed to get data");
       return;
     }
 

@@ -24,7 +24,7 @@ function Header() {
       <header className="header">
         <img src={IoTBayLogo} alt="IoTBay Logo" />
         <h1>
-          <a href="/">IoTBay</a>
+          <Link to="/">IoTBay</Link>
         </h1>
         <nav>
           {loggedIn && <Link to="/main">Main</Link>}

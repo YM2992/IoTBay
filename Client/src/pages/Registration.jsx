@@ -25,7 +25,7 @@ function Registration() {
       },
     });
     // if res.status. == fail code != 200
-    //test
+    //testtest
 
     // got the
     const resData = await res.json();

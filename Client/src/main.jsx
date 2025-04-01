@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { createContext, useState, StrictMode } from "react";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import App from "./App.jsx";
 

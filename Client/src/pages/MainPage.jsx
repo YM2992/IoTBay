@@ -1,8 +1,4 @@
 import "./MainPage.css";
-// import Rash from "../assets/rashberry pi.jpg";
-// import Wifi from "../assets/wifi.jpg";
-// import Aduino from "../assets/aduino switch.jpg";
-// import Network from "../assets/download.jpg";
 import ProductListing from "../components/ProductListing";
 import { useContext } from "react";
 import { AuthContext } from "../main";

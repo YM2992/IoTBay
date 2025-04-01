@@ -50,8 +50,14 @@ function Login() {
         </div>
 
         <div className="input-container ">
-          <Input field="email" func={setEmail} />
-          <Input field="password" func={setPassword} />
+          <Input
+            type="email"
+            field="email"
+            func={setEmail}
+            required
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+          />
+          <Input type="password" field="password" func={setPassword} required />
         </div>
 
         <div className="forgot-password">

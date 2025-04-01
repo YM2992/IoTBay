@@ -1,16 +1,20 @@
-import React from 'react'
+import PropTypes from "prop-types"; // Import PropTypes
 
-function Input({field,func} ) {
+function Input({ type, field, func }) {
   return (
     <input
-    type={field}
-    placeholder={field}
-    className="input-field"
-    // value={email}
-    onChange={(e) => func(e.target.value)}
-    required
-  />
-  )
+      type={type}
+      placeholder={field}
+      className="input-field"
+      onChange={(e) => func(e.target.value)}
+      required
+    />
+  );
 }
+Input.propTypes = {
+  type: PropTypes.string.isRequired,
+  field: PropTypes.string.isRequired,
+  func: PropTypes.func.isRequired,
+};
 
-export default Input
+export default Input;

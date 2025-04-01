@@ -52,9 +52,9 @@ function Registration() {
         <div className="input-container">
           <Input field="First Name" />
           <Input field="Username" />
-          <Input field="Email" func={setEmail} />
+          <Input field="Email" func={setEmail} required />
           <Input field="Password" func={setPassword} />
-          <Input field="Confirm Password" />
+          <Input field="Confirm Password" required />
         </div>
 
         <button onClick={handleSubmit} type="submit" className="sign-in-btn">

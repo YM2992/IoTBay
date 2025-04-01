@@ -53,7 +53,7 @@ function Login() {
         </form>
 
         <p className="contact-us">
-          Having problems? <a href="#">Contact us</a>
+          Having problems? <a href="contact-us">Contact us</a>
         </p>
       </div>
     </div>

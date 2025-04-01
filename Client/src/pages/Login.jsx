@@ -1,14 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./Login.css";
 import Input from "../components/Input";
-import { json } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  // const emailInput = document.getElementById("email").value;
-  // const passwordInput = document.getElementsByTagName("password").value;
 
 const handleSubmit = async () =>{
   if(email.trim === "" || password.trim === "") return "";
@@ -22,7 +18,7 @@ const handleSubmit = async () =>{
     body:JSON.stringify(data),
     headers:{
       "Content-Type" :"application/json",
-    }
+    } 
   })
   // if res.status. == fail code != 200
 
@@ -45,10 +41,10 @@ const handleSubmit = async () =>{
           <p className="info-text">Please sign in to your account below</p>
         </div>
         
-
-        <Input field="email" func={setEmail} />
+    
+        <Input field="email" func={setEmail} className="input-field"/>
         <Input field="password" func={setPassword} type="password" />
-        
+    
           <div className="forgot-password">
             <a href="#">Forgot Password?</a>
           </div>

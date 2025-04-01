@@ -12,7 +12,7 @@ function Landing() {
     : "Log in to Explore our range of devices";
 
   return (
-    <div className="landing-page">
+    <div className="landing-page" style={{ padding: "2rem 1rem" }}>
       <main>
         <Banner />
         <section className="hero">

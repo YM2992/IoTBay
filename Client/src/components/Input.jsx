@@ -1,16 +1,15 @@
-import React from 'react'
-
-function Input({field,func} ) {
+function Input({ field, func, value }) {
   return (
     <input
-    type={field}
-    placeholder={field}
-    className="input-field"
-    // value={email}
-    onChange={(e) => func(e.target.value)}
-    required
-  />
-  )
+      style={{ marginBottom: "1rem" }}
+      type={field}
+      placeholder={field}
+      value={value}
+      className="input-field"
+      onChange={(e) => func(e.target.value)}
+      required
+    />
+  );
 }
 
-export default Input
+export default Input;

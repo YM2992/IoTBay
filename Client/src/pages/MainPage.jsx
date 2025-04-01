@@ -7,7 +7,17 @@ function MainPage() {
   const { products } = useContext(AuthContext);
   console.log(products);
   if (products.length === 0) {
-    return <></>;
+    return (
+      <>
+        <div className="main-container">
+          <main className="main-container">
+            <h1 className="welcome-message">
+              There are some issues with the server, please check later
+            </h1>
+          </main>
+        </div>
+      </>
+    );
   }
 
   return (

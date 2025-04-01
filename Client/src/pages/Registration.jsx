@@ -17,7 +17,7 @@ function Registration() {
       password,
     };
 
-    const res = await fetch("http://localhost:8000/api/user/login/", {
+    const res = await fetch("http://localhost:8000/api/user/registration/", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -49,11 +49,13 @@ function Registration() {
           <p className="info-text">Become a member with us today.</p>
         </div>
 
-        <Input field="First Name" />
-        <Input field="Username" />
-        <Input field="Email" func={setEmail} />
-        <Input field="Password" func={setPassword} />
-        <Input field="Confirm Password" />
+        <div className="input-container">
+          <Input field="First Name" />
+          <Input field="Username" />
+          <Input field="Email" func={setEmail} />
+          <Input field="Password" func={setPassword} />
+          <Input field="Confirm Password" />
+        </div>
 
         <button onClick={handleSubmit} type="submit" className="sign-in-btn">
           Create Account

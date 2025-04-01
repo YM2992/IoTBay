@@ -46,7 +46,7 @@ function Registration() {
             <span className="text-xl font-bold text-black">IotBay</span>
           </div>
           <h2 className="welcome-text">Join Now!</h2>
-          <p className="info-text">Become a member with us today.</p>
+          <p className="info-text">Become a member with us today for FREE.</p>
         </div>
 
         <div className="input-container">

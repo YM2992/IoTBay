@@ -1,31 +1,14 @@
-body,
-h1,
-h2,
-h3,
-p,
-nav {
-  margin: 0;
-  padding: 0;
-}
-
 .landing-page {
-  max-width: 1920px;
   margin: 0 auto;
   overflow: hidden;
 }
 
-main {
-  padding: 2rem;
-}
-
 .hero {
   position: relative;
-  padding: 4rem 2rem;
+  padding: 2rem;
   color: #fff;
   font-family: sans-serif;
-  text-align: left;
-  max-width: 1920px;
-  margin: 0 auto;
+  margin: 1rem 5rem 1rem;
 }
 
 .hero-h1 {

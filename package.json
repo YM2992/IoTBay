@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "vite Client/",
+    "all": "concurrently \"npm run dev\" \"npm run server\"",
     "dev": "vite Client/",
     "server": "nodemon Server/server.js",
     "build": "vite build",
@@ -25,6 +26,7 @@
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
     "react-router-dom": "^6.16.0",
+    "swiper": "^11.2.6",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
@@ -32,6 +34,7 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
     "eslint": "^9.19.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.0.0",

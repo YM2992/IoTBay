@@ -27,8 +27,10 @@ function Header() {
           <Link to="/">IoTBay</Link>
         </h1>
         <nav>
+          <Link to="/">Home</Link>
           {loggedIn && <Link to="/main">Main</Link>}
           {loggedIn && <Link to="/logout">Logout</Link>}
+          {/* {loggedIn && <Link to="/profile">ICON + Profile</Link>} */}
 
           {!loggedIn && <Link to="/login">Login</Link>}
           {!loggedIn && <Link to="/register">Register</Link>}

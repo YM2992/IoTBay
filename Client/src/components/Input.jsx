@@ -1,9 +1,10 @@
-import PropTypes from "prop-types"; // Import PropTypes
+import PropTypes from "prop-types";
 
 function Input({ type, field, func }) {
   return (
     <input
       type={type}
+      name={field}
       placeholder={field}
       className="input-field"
       onChange={(e) => func(e.target.value)}
@@ -11,6 +12,7 @@ function Input({ type, field, func }) {
     />
   );
 }
+
 Input.propTypes = {
   type: PropTypes.string.isRequired,
   field: PropTypes.string.isRequired,

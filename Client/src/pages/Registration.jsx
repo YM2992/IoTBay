@@ -37,7 +37,7 @@ function Registration() {
       setError("Invalid email or password. Please try again.");
     }
   };
-  //asdfasdf
+
   return (
     <div className="login-container">
       <div className="login-card">
@@ -49,17 +49,16 @@ function Registration() {
           <p className="info-text">Become a member with us today for FREE.</p>
         </div>
 
-        <div className="input-container">
+        <form onSubmit={handleSubmit} className="input-container">
           <Input field="First Name" />
           <Input field="Username" />
-          <Input field="Email" func={setEmail} required />
-          <Input field="Password" func={setPassword} />
-          <Input field="Confirm Password" required />
-        </div>
-
-        <button onClick={handleSubmit} type="submit" className="sign-in-btn">
-          Create Account
-        </button>
+          <Input type="email" field="Email" func={setEmail} required />
+          <Input type="password" field="Password" func={setPassword} />
+          <Input type="password" field="Confirm Password" required />
+          <button onClick={handleSubmit} type="submit" className="sign-in-btn">
+            Create Account
+          </button>
+        </form>
 
         <p className="contact-us">
           Already a Member? <a href="/login">login here</a>

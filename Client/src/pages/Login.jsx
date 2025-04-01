@@ -49,24 +49,18 @@ function Login() {
           <p className="info-text">Please sign in to your account below</p>
         </div>
 
-        <div className="input-container ">
-          <Input
-            type="email"
-            field="email"
-            func={setEmail}
-            required
-            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-          />
-          <Input type="password" field="password" func={setPassword} required />
-        </div>
+        <form onSubmit={handleSubmit} className="input-container ">
+          <Input type="email" field="Email" func={setEmail} required />
+          <Input type="password" field="Password" func={setPassword} />
 
-        <div className="forgot-password">
-          <a href="#">Forgot Password?</a>
-        </div>
+          <div className="forgot-password">
+            <a href="#">Forgot Password?</a>
+          </div>
 
-        <button onClick={handleSubmit} type="submit" className="sign-in-btn">
-          Sign in
-        </button>
+          <button onClick={handleSubmit} type="submit" className="sign-in-btn">
+            Sign in
+          </button>
+        </form>
 
         <p className="contact-us">
           Having problems? <a href="#">Contact us</a>

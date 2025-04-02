@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./welcome.css";
 
 function Welcome() {
+
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
@@ -12,7 +13,6 @@ function Welcome() {
       navigate("/main");
     }, 3000);
   }, [navigate]);
-
   return (
     <div className="welcome-container">
       <div>

@@ -17,7 +17,6 @@ function Login() {
     if (email.trim() === "" || password.trim() === "") {
       return toast.error("Email or Password could not be empty");
     }
-
     const data = {
       email,
       password,
@@ -29,7 +28,7 @@ function Login() {
       toast.error("Wrong email or password");
       return;
     }
-
+    
     login(resData.token, resData.user);
     navigate("/welcome");
   };
@@ -45,19 +44,23 @@ function Login() {
           <p className="info-text">Please sign in to your account below</p>
         </div>
 
-        <Input field="email" func={setEmail} value={email} />
-        <Input field="password" func={setPassword} value={password} type="password" />
 
-        <div className="forgot-password">
-          <a href="#">Forgot Password?</a>
-        </div>
+        <form onSubmit={handleSubmit} className="input-container ">
+          <Input type="email" field="Email" func={setEmail} required />
+          <Input type="password" field="Password" func={setPassword} />
 
-        <button onClick={handleSubmit} type="submit" className="sign-in-btn">
-          Sign in
-        </button>
+          <div className="forgot-password">
+            <a href="#">Forgot Password?</a>
+          </div>
+
+          <button onClick={handleSubmit} type="submit" className="sign-in-btn">
+            Sign in
+          </button>
+        </form>
+
 
         <p className="contact-us">
-          Having problems? <a href="#">Contact us</a>
+          Having problems? <a href="contact-us">Contact us</a>
         </p>
       </div>
     </div>

@@ -1,14 +1,15 @@
-function Input({field,func, type="text"} ) {
+function Input({ field, func, value, type = "text" }) {
   return (
     <input
-    type={type}
-    placeholder={field}
-    className="input-field"
-    // value={email}
-    onChange={(e) => func(e.target.value)}
-    required
-  />
-  )
+      style={{ marginBottom: "1rem" }}
+      type={type}
+      placeholder={field}
+      value={value}
+      className="input-field"
+      onChange={(e) => func(e.target.value)}
+      required
+    />
+  );
 }
 
-export default Input
+export default Input;

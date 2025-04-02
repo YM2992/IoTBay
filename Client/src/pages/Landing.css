@@ -1,43 +1,14 @@
-body,
-h1,
-h2,
-h3,
-p,
-nav {
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: sans-serif;
-  line-height: 1.6;
-  background-color: #f4f4f4;
-  color: #333;
-  background-image: url('../assets/landingBackground.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  height: 100vh;
-}
-
 .landing-page {
-  max-width: 1920px;
   margin: 0 auto;
   overflow: hidden;
 }
 
-main {
-  padding: 2rem;
-}
-
 .hero {
   position: relative;
-  padding: 4rem 2rem;
+  padding: 2rem;
   color: #fff;
   font-family: sans-serif;
-  text-align: left;
-  max-width: 1920px;
-  margin: 0 auto;
+  margin: 1rem 5rem 1rem;
 }
 
 .hero-h1 {

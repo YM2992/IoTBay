@@ -1,0 +1,86 @@
+/* Main container: Split into two sections */
+.logout-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Left section (text area) */
+.logout-left {
+    flex: 1; /* Takes up half of the screen */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    text-align: center;
+    background-color: #f9f9f9; /* Light background */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+/* Logo positioning */
+.logout-logo {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    width: 120px;
+}
+
+/* Logout content container */
+.logout-content {
+    max-width: 400px;
+    animation: fadeIn 2s ease-out forwards;
+
+}
+
+/* Wave icon */
+.logout-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+
+}
+
+/* Main heading */
+.logout-h1 {
+    font-size: 36px;
+    color: #111;
+    font-weight: bold;
+
+}
+
+/* Logout message */
+.redirect-message {
+    font-size: 16px;
+    color: #444;
+    margin: 10px 0 20px;
+
+}
+
+/* Sign back in button */
+.logout-button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 2px solid #7b61ff;
+    background: transparent;
+    color: #7b61ff;
+    cursor: pointer;
+    border-radius: 25px;
+    transition: all 0.3s ease-in-out;
+
+}
+
+.logout-button:hover {
+    background: #7b61ff;
+    color: white;
+}
+
+/* Right section (background image) */

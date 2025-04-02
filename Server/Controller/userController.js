@@ -8,6 +8,16 @@ export const findUserByEmail = (email) => {
   return getOne("user", "email", email);
 };
 
+export const userExists = catchAsync(async (req, res, next) => {
+  const current = findUserByEmail(req.body.email);
+  const exist = current ? true : false;
+
+  res.status(200).json({
+    status: "success",
+    exist,
+  });
+});
+
 export const findUserById = (id) => {
   return getOne("user", "userid", id);
 };

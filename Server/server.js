@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 // const rateLimit = require("express-rate-limit");
 import errorController from "./Controller/errorController.js";
-import cors from "cors";
 
 const app = express();
 

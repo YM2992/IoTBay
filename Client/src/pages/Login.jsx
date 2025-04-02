@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../main";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import "./Login.css";
 import Input from "../components/Input";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("jeff@test.com");
   const [password, setPassword] = useState("");
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    if (email.trim === "" || password.trim === "") return "";
+    if (email.trim() === "" || password.trim() === "") {
+      return toast.error("Email or Password could not be empty");
+    }
     const data = {
       email,
       password,
@@ -20,12 +27,14 @@ function Login() {
         "Content-Type": "application/json",
       },
     });
-    // if res.status. == fail code != 200
 
-    // got the
+    if (res.status != 200) {
+      toast.error("Wrong email or password");
+      return;
+    }
     const resData = await res.json();
-    console.log(resData.token);
-    localStorage.setItem("jwt", resData.token);
+    login(resData.token, resData.user);
+    navigate("/welcome");
   };
 
   return (
@@ -39,6 +48,7 @@ function Login() {
           <p className="info-text">Please sign in to your account below</p>
         </div>
 
+
         <form onSubmit={handleSubmit} className="input-container ">
           <Input type="email" field="Email" func={setEmail} required />
           <Input type="password" field="Password" func={setPassword} />
@@ -51,6 +61,7 @@ function Login() {
             Sign in
           </button>
         </form>
+
 
         <p className="contact-us">
           Having problems? <a href="contact-us">Contact us</a>

@@ -5,8 +5,10 @@ import { AuthContext } from "../main";
 import { useEffect } from "react";
 
 function MainPage() {
+  const { user } = useContext(AuthContext);
   const { products } = useContext(AuthContext);
-
+  
+  const username = user ? user.name : "Guest";
   let noProducts = products.length === 0;
 
   useEffect(() => {
@@ -18,7 +20,7 @@ function MainPage() {
   return (
     <div className="main-container">
       <main className="main-container">
-        <h1 className="welcome-message">Welcome Back to IOT Bay</h1>
+        <h1 className="welcome-message">Welcome back to IoTBay, {username}!</h1>
 
         {noProducts && (
           <h1 style={{ color: "white" }}>
@@ -26,6 +28,7 @@ function MainPage() {
           </h1>
         )}
 
+        <h2 className="products-h">Products</h2>
         {!noProducts && (
           <div className="button-container">
             {products.map((product, index) => (

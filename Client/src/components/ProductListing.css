@@ -4,7 +4,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
 
@@ -12,8 +12,9 @@
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transform: translateY(-15px) scale(1.15);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    background-color: #b1f1d6;
 }
 
 .product-card:hover .product-title {

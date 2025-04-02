@@ -26,10 +26,9 @@ function Login() {
     const resData = await fetchPost("user/login", data);
 
     if (!resData) {
-      toast.error("Wrong email or password");
-      return;
+      return toast.error("Wrong email or password");
     }
-    
+
     login(resData.token, resData.user);
     navigate("/welcome");
   };
@@ -45,18 +44,17 @@ function Login() {
           <p className="info-text">Please sign in to your account below</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="input-container ">
-          <Input type="email" field="Email" func={setEmail} required />
-          <Input type="password" field="Password" func={setPassword} />
 
-          <div className="forgot-password">
-            <a href="#">Forgot Password?</a>
-          </div>
+        <Input type="email" field="Email" value={email} func={setEmail} required />
+        <Input type="password" field="Password" value={password} func={setPassword} />
 
-          <button onClick={handleSubmit} type="submit" className="sign-in-btn">
-            Sign in
-          </button>
-        </form>
+        <div className="forgot-password">
+          <a href="#">Forgot Password?</a>
+        </div>
+
+        <button onClick={handleSubmit} className="sign-in-btn">
+          Sign in
+        </button>
 
         <p className="contact-us">
           Having problems? <a href="contact-us">Contact us</a>

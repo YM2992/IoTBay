@@ -4,15 +4,17 @@ import { useNavigate } from "react-router-dom";
 import "./welcome.css";
 
 function Welcome() {
-
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       navigate("/main");
     }, 3000);
+
+    return () => clearTimeout(timer);
   }, [navigate]);
+
   return (
     <div className="welcome-container">
       <div>

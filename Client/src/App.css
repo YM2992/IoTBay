@@ -1,8 +1,3 @@
-.main {
-  width: 100vw;
-  position: relative;
-}
-
 /* HEADER AREA */
 header {
   display: flex;
@@ -78,19 +73,18 @@ header nav a:hover::after {
 .main {
   display: flex;
   min-height: 90vh;
+  width: 100vw;
+  position: relative;
 }
 
 /* FOOTER AREA */
 
 .footer {
-  width: 100%;
-  height: 3rem;
-  line-height: 3rem;
-  background-color: rgb(50, 50, 50);
-  color: white;
+  line-height: 1.5rem;
+  background-color: rgba(50, 50, 50, 0.8);
+  color: #dad9d9;
   text-align: center;
   align-items: center;
-  /* position: fixed; */
 
   margin-top: auto;
 }

@@ -1,21 +1,10 @@
-
-body,
-h1,
-h2,
-h3,
-p,
-nav {
-  margin: 0;
-  padding: 0;
-}
-
 body {
-  background-color:azure;
+  background-color: azure;
 }
 
 .logout-button {
-  margin-left: auto; 
-  background-color: #3bb8ab; 
+  margin-left: auto;
+  background-color: #3bb8ab;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -27,33 +16,30 @@ body {
 }
 
 .main-container {
-  
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  
-  
 }
 
 .product-button {
-  margin: 25px; 
-  padding: 30px 50px; 
-  font-size: 18px; 
+  margin: 25px;
+  padding: 30px 50px;
+  font-size: 18px;
   cursor: pointer;
-  display: inline-block; 
+  display: inline-block;
   border-radius: 20px;
 }
 
 .welcome-message {
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 20px; 
-  text-align: center; 
+  margin-bottom: 20px;
+  text-align: center;
   color: rgb(5, 71, 71);
   transform: translateX(20%);
   transform: translateY(0%);
@@ -61,36 +47,36 @@ body {
 }
 
 .item-image {
-  width: 200px; 
-  height: 200px; 
-  border-radius: 4px; 
-  margin-bottom: 10px; 
+  width: 200px;
+  height: 200px;
+  border-radius: 4px;
+  margin-bottom: 10px;
 }
 
 .button-container {
   display: flex;
-  flex-wrap: wrap; 
-  justify-content: space-around; 
-  align-items: flex-start; 
-  gap: 20px; 
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .button-container.item-image {
-  width: 40px; 
-  height: auto; 
+  width: 40px;
+  height: auto;
   border-radius: 4px;
 }
 
 .button-container > div {
   display: flex;
-  flex-direction: column; 
-  align-items: center; 
+  flex-direction: column;
+  align-items: center;
   margin: 20px;
 }
 .product-button:hover {
-  background-color: #cba6cb; 
+  background-color: #cba6cb;
   transform: scale(1.3);
-  border-color: #4B0082;
+  border-color: #4b0082;
 }
 
 @keyframes popEffect {
@@ -98,9 +84,9 @@ body {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.5); 
+    transform: scale(1.5);
   }
   100% {
-    transform: scale(1); 
+    transform: scale(1);
   }
 }

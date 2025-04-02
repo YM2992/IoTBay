@@ -1,41 +1,37 @@
-import React, { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../main";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { fetchPost } from "../api";
+
 import "./Login.css";
 import Input from "../components/Input";
-import { json } from "react-router-dom";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("jeff@test.com");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  // const emailInput = document.getElementById("email").value;
-  // const passwordInput = document.getElementsByTagName("password").value;
+
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    if (email.trim === "" || password.trim === "") return "";
+    if (email.trim() === "" || password.trim() === "") {
+      return toast.error("Email or Password could not be empty");
+    }
     const data = {
       email,
       password,
     };
 
-    const res = await fetch("http://localhost:8000/api/user/login/", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    // if res.status. == fail code != 200
+    const resData = await fetchPost("user/login", data);
 
-    // got the
-    const resData = await res.json();
-    console.log(resData.token);
-    localStorage.setItem("jwt", resData.token);
-
-    if (res.status === 200) {
-      window.location.href = "/welcome";
-    } else {
-      setError("Invalid email or password. Please try again.");
+    if (!resData) {
+      toast.error("Wrong email or password");
+      return;
     }
+    
+    login(resData.token, resData.user);
+    navigate("/welcome");
   };
 
   return (
@@ -63,7 +59,7 @@ function Login() {
         </form>
 
         <p className="contact-us">
-          Having problems? <a href="#">Contact us</a>
+          Having problems? <a href="contact-us">Contact us</a>
         </p>
       </div>
     </div>

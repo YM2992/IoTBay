@@ -27,3 +27,21 @@ export const fetchGet = async (endpoint) => {
   const resData = await response.json();
   return resData;
 };
+
+export const checkEmail = async (email) => {
+  const response = await fetch(`${API_URL}user/checkEmail`, {
+    method: "POST",
+    body: JSON.stringify({ email }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (response.status != 200 || !response.ok) {
+    console.error(response);
+    return null;
+  }
+
+  const resData = await response.json();
+  return resData;
+};

@@ -13,7 +13,6 @@ import Logout from "./pages/Logout";
 import Welcome from "./pages/Welcome";
 import Registration from "./pages/Registration";
 import NotFound from "./pages/NotFound";
-import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 // import Test from "./pages/Test";
 
@@ -30,7 +29,7 @@ function App() {
             {/* <Route path="/test" element={<Test />} /> */}
 
             {!loggedIn && <Route path="/login" element={<Login />} />}
-            {!loggedIn && <Route path="/register" element={<Signup />} />}
+            {!loggedIn && <Route path="/register" element={<Registration />} />}
 
             {loggedIn && <Route path="/welcome" element={<Welcome />} />}
             {loggedIn && <Route path="/main" element={<MainPage />} />}

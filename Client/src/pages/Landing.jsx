@@ -7,8 +7,9 @@ import Banner from "../components/Banner";
 function Landing() {
   const { loggedIn, user } = useContext(AuthContext);
   const Address = loggedIn ? "/main" : "/login";
+
   const message = loggedIn
-    ? `Hi ${user.name.split(" ")[0]}, Find out our products here`
+    ? `Hi ${user?.name.split(" ")[0]}, Find out our products here`
     : "Log in to Explore our range of devices";
 
   return (

@@ -8,7 +8,8 @@ function MainPage() {
   const { user } = useContext(AuthContext);
   const { products } = useContext(AuthContext);
   
-  const username = user ? user.name : "Guest";
+  const username = user ? user?.name.split(" ")[0] : "Guest";
+  
   let noProducts = products.length === 0;
 
   useEffect(() => {

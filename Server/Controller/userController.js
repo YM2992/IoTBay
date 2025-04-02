@@ -11,6 +11,7 @@ export const findUserByEmail = (email) => {
 export const userExists = catchAsync(async (req, res, next) => {
   const current = findUserByEmail(req.body.email);
   const exist = current ? true : false;
+  console.log(exist);
 
   res.status(200).json({
     status: "success",

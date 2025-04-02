@@ -1,41 +1,49 @@
-import React, { useState } from "react";
-import "./Login.css";
+import { useState } from "react";
 import Input from "../components/Input";
-import { json } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { strictEmailRegex, numberRegex } from "../utils/helper";
+import { fetchPost, checkEmail } from "../api";
+
+import "./Login.css";
 
 function Registration() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  // const emailInput = document.getElementById("email").value;
-  // const passwordInput = document.getElementsByTagName("password").value;
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [phone, setPhone] = useState("123456789");
 
   const handleSubmit = async () => {
-    if (email.trim === "" || password.trim === "") return "";
+    // Field guards
+    if (!email.trim() || !password.trim() || !name.trim() || !phone.trim()) {
+      return toast.error("All field must be filled");
+    }
+    if (!(passwordConfirm.trim() === password.trim())) {
+      return toast.error("Password and Confirm must be same");
+    }
+    if (!strictEmailRegex.test(email)) return toast.error("Email is not valid");
+    if (!numberRegex.test(phone) || phone.length !== 9) return toast.error("Phone is not valid");
+
+    // Check if email already exist
+    const result = await checkEmail(email);
+    if (!result || result.exist) return toast.error("Email already exist");
+
     const data = {
       email,
       password,
+      name,
+      phone: Number(phone),
     };
 
-    const res = await fetch("http://localhost:8000/api/user/registration/", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    // if res.status. == fail code != 200
-    //asdfsadf
-    // got the
-    const resData = await res.json();
-    console.log(resData.token);
-    localStorage.setItem("jwt", resData.token);
+    const resData = await fetchPost("user/", data);
 
-    if (res.status === 200) {
-      window.location.href = "/welcome";
-    } else {
-      setError("Invalid email or password. Please try again.");
+    if (!resData) {
+      return toast.error("Failed to register, please try again later");
     }
+
+    navigate("/login");
   };
 
   return (
@@ -49,19 +57,24 @@ function Registration() {
           <p className="info-text">Become a member with us today for FREE.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="input-container">
-          <Input field="First Name" />
-          <Input field="Username" />
-          <Input type="email" field="Email" func={setEmail} required />
-          <Input type="password" field="Password" func={setPassword} />
-          <Input type="password" field="Confirm Password" required />
-          <button onClick={handleSubmit} type="submit" className="sign-in-btn">
+        <div className="input-container">
+          <Input field="Full Name" value={name} func={setName} />
+          <Input field="Email" value={email} func={setEmail} />
+          <Input type="password" value={password} field="Password" func={setPassword} />
+          <Input
+            type="password"
+            value={passwordConfirm}
+            field="Confirm Password"
+            func={setPasswordConfirm}
+          />
+          <Input field="Phone" func={setPhone} value={phone} />
+          <button onClick={handleSubmit} className="sign-in-btn">
             Create Account
           </button>
-        </form>
+        </div>
 
         <p className="contact-us">
-          Already a Member? <a href="/login">login here</a>
+          Already a Member? <Link to="/login">login here</Link>
         </p>
       </div>
     </div>

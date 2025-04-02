@@ -3,6 +3,7 @@ import { AuthContext } from "../main";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { fetchPost } from "../api";
+import { strictEmailRegex } from "../utils/helper";
 
 import "./Login.css";
 import Input from "../components/Input";
@@ -15,9 +16,12 @@ function Login() {
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
+    if (!strictEmailRegex.test(email)) return toast.error("Email is not valid");
+
     if (email.trim() === "" || password.trim() === "") {
       return toast.error("Email or Password could not be empty");
     }
+
     const data = {
       email,
       password,
@@ -43,7 +47,6 @@ function Login() {
           <h2 className="welcome-text">Welcome!</h2>
           <p className="info-text">Please sign in to your account below</p>
         </div>
-
 
         <Input type="email" field="Email" value={email} func={setEmail} required />
         <Input type="password" field="Password" value={password} func={setPassword} />

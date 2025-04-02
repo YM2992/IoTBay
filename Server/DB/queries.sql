@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS order_product;
 CREATE TABLE IF NOT EXISTS user (
     userid INTEGER PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    phone int NOT NULL,
+    phone int NOT NULL DEFAULT 123456789,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     role varchar(8) Check (role in ('customer', 'manager', 'staff', 'owner')AND NOT NULL) DEFAULT 'customer'

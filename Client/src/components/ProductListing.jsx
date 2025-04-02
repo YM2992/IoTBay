@@ -4,7 +4,6 @@ import "./ProductListing.css";
 function ProductListing({ data }) {
   const { name, image, price } = data;
 
-  console.log(data);
   return (
     <>
       <a href={`/product/${name}`} className="product-card">

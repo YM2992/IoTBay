@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../main";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { fetchPost } from "../api";
 
 import "./Login.css";
 import Input from "../components/Input";
@@ -21,20 +22,14 @@ function Login() {
       email,
       password,
     };
-    const res = await fetch("http://localhost:8000/api/user/login/", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
 
-    if (res.status != 200) {
+    const resData = await fetchPost("user/login", data);
+
+    if (!resData) {
       toast.error("Wrong email or password");
       return;
     }
 
-    const resData = await res.json();
     login(resData.token, resData.user);
     navigate("/welcome");
   };

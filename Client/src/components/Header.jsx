@@ -3,21 +3,22 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../main";
 import { useContext } from "react";
 import { useEffect } from "react";
+import { fetchGet } from "../api";
+import { RxAvatar } from "react-icons/rx";
 
 function Header() {
-  const { loggedIn, updateProducts } = useContext(AuthContext);
+  const { loggedIn, updateProducts, products } = useContext(AuthContext);
+
   const fetchProducts = async () => {
-    const response = await fetch("http://localhost:8000/api/product");
-    const data = await response.json();
-    if (!response.ok) {
-      return;
-    }
-    updateProducts(data.data);
+    const response = await fetchGet("product/");
+    if (!response) return;
+    updateProducts(response.data);
   };
 
   useEffect(() => {
+    if (products.length > 0) return;
     fetchProducts();
-  }, []);
+  }, [products]);
 
   return (
     <>
@@ -30,7 +31,11 @@ function Header() {
           <Link to="/">Home</Link>
           {loggedIn && <Link to="/main">Main</Link>}
           {loggedIn && <Link to="/logout">Logout</Link>}
-          {/* {loggedIn && <Link to="/profile">ICON + Profile</Link>} */}
+          {loggedIn && (
+            <Link to="/profile" style={{ display: "flex", alignItems: "center" }}>
+              <RxAvatar style={{ fontSize: "1.2rem" }} />
+            </Link>
+          )}
 
           {!loggedIn && <Link to="/login">Login</Link>}
           {!loggedIn && <Link to="/register">Register</Link>}

@@ -1,88 +1,84 @@
 /* Main Profile Container - Aligned to the Left */
 
 .profile-container {
-    display: flex;
-    flex-direction: column;
-    width: 100vw; /* Full width */
-    height: 100vh; /* Full height */
-    padding: 40px 80px; /* Adds spacing from edges */
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-    background-color: #ffffff;
+  width: 90%;
+  min-height: 90vh;
+  padding: 40px 80px;
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+  margin: auto;
+  background: rgba(241, 236, 236, 0.7);
 }
 
 /* Profile Header - Positions the profile elements */
 .profile-header {
-display: flex;
-justify-content: space-between; /* Pushes profile info left, button right */
-align-items: center;
-width: 100%;
-padding-bottom: 15px;
+  display: flex;
+  justify-content: space-between; /* Pushes profile info left, button right */
+  align-items: center;
+  width: 100%;
+  padding-bottom: 15px;
 }
 
 /* Profile Left - Aligns Profile Picture & Info */
 .profile-left {
-display: flex;
-align-items: center;
-gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 /* Profile Image - Circular */
 .profile-image {
-width: 60px;
-height: 60px;
-border-radius: 50%;
-background-color: black;
-display: flex;
-justify-content: center;
-align-items: center;
-color: white;
-font-size: 24px;
-font-weight: bold;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 /* Profile Info */
 .profile-info {
-text-align: left;
+  text-align: left;
 }
 
 .profile-info h1 {
-font-size: 20px;
-margin: 0;
+  font-size: 20px;
+  margin: 0;
 }
 
 .profile-info p {
-font-size: 14px;
-color: #777;
-margin: 2px 0;
+  font-size: 14px;
+  color: #777;
+  margin: 2px 0;
 }
 
 /* Global Button */
 .global-btn {
-background: rgb(0, 0, 0);
-color: #fffefe;
-border: 1px solid black;
-padding: 8px 12px;
-cursor: pointer;
-font-size: 14px;
-transition: 0.3s;
+  background: rgb(0, 0, 0);
+  color: #fffefe;
+  border: 1px solid black;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
 }
 
 .global-btn:hover {
-background: rgb(255, 255, 255);
-color: rgb(0, 0, 0);
+  background: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
 }
-
 
 /* Profile Nav Bar */
 .profile-tabs {
-    display: flex;
-    border-bottom: 2px solid #000;
-    margin-top: 15px;
+  display: flex;
+  border-bottom: 2px solid #000;
+  margin-top: 15px;
 }
 
 .profile-tabs .active-tab {
-    border-bottom: 2px solid black;
-    
+  border-bottom: 2px solid black;
 }
-

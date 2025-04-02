@@ -15,6 +15,36 @@ function Registration() {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [phone, setPhone] = useState("123456789");
 
+  const inputMenu = [
+    {
+      field: "Full Name",
+      value: name,
+      func: setName,
+    },
+    {
+      field: "Email",
+      value: email,
+      func: setEmail,
+    },
+    {
+      field: "Password",
+      value: password,
+      func: setPassword,
+      type: "password",
+    },
+    {
+      field: "Confirm Password",
+      value: passwordConfirm,
+      func: setPasswordConfirm,
+      type: "password",
+    },
+    {
+      field: "Phone",
+      value: phone,
+      func: setPhone,
+    },
+  ];
+
   const handleSubmit = async () => {
     // Field guards
     if (!email.trim() || !password.trim() || !name.trim() || !phone.trim()) {
@@ -58,16 +88,16 @@ function Registration() {
         </div>
 
         <div className="input-container">
-          <Input field="Full Name" value={name} func={setName} />
-          <Input field="Email" value={email} func={setEmail} />
-          <Input type="password" value={password} field="Password" func={setPassword} />
-          <Input
-            type="password"
-            value={passwordConfirm}
-            field="Confirm Password"
-            func={setPasswordConfirm}
-          />
-          <Input field="Phone" func={setPhone} value={phone} />
+          {inputMenu.map((input) => (
+            <Input
+              key={input.field}
+              field={input.field}
+              value={input.value}
+              func={input.func}
+              type={input.type ? input.type : "text"}
+            />
+          ))}
+
           <button onClick={handleSubmit} className="sign-in-btn">
             Create Account
           </button>

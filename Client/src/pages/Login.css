@@ -53,6 +53,15 @@
   margin-top: 1rem;
 }
 
+.profile-icon img {
+  width: 95%;
+  height: 95%;
+  border-radius: 50%;
+  object-fit: cover;
+  transform: translateY(-0.2rem);
+  filter: brightness(0);
+}
+
 /* Welcome text */
 .welcome-text {
   font-size: 2rem;
@@ -123,6 +132,7 @@
   margin-bottom: 1rem;
   transition: background-color 0.3s ease;
   border: none;
+  cursor: pointer;
 }
 
 .sign-in-btn:hover {

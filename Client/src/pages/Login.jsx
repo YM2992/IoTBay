@@ -10,6 +10,7 @@ import Input from "../components/Input";
 function Login() {
   const [email, setEmail] = useState("jeff@test.com");
   const [password, setPassword] = useState("");
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -44,7 +45,6 @@ function Login() {
           <p className="info-text">Please sign in to your account below</p>
         </div>
 
-
         <form onSubmit={handleSubmit} className="input-container ">
           <Input type="email" field="Email" func={setEmail} required />
           <Input type="password" field="Password" func={setPassword} />
@@ -57,7 +57,6 @@ function Login() {
             Sign in
           </button>
         </form>
-
 
         <p className="contact-us">
           Having problems? <a href="contact-us">Contact us</a>

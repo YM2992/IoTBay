@@ -1,3 +1,4 @@
+
 function Input({ field, func, value, type = "text" }) {
   return (
     <input
@@ -11,5 +12,4 @@ function Input({ field, func, value, type = "text" }) {
     />
   );
 }
-
 export default Input;

@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import Logout from "./pages/Logout";
 import Welcome from "./pages/Welcome";
+import Registration from "./pages/Registration";
 import NotFound from "./pages/NotFound";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";

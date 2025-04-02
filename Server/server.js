@@ -10,9 +10,11 @@ import userRoute from "./Route/userRoute.js";
 import productRoute from "./Route/productRoute.js";
 dotenv.config({ path: "./Server/config.env" });
 
-app.use(cors({
-  origin:"*"
-}))
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 // const limiter = rateLimit({
 //   max: 100,
@@ -20,8 +22,6 @@ app.use(cors({
 //   message: "Too many requests from this IP, please try again in an hour!",
 // });
 // app.use("/api", limiter);
-
-
 
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));

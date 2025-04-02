@@ -13,6 +13,8 @@ import Logout from "./pages/Logout";
 import Welcome from "./pages/Welcome";
 import NotFound from "./pages/NotFound";
 import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
+// import Test from "./pages/Test";
 
 function App() {
   const { loggedIn } = useContext(AuthContext);
@@ -24,14 +26,15 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<Landing />} />
             <Route path="/landing" element={<Landing />} />
+            {/* <Route path="/test" element={<Test />} /> */}
 
             {!loggedIn && <Route path="/login" element={<Login />} />}
             {!loggedIn && <Route path="/register" element={<Signup />} />}
 
             {loggedIn && <Route path="/welcome" element={<Welcome />} />}
             {loggedIn && <Route path="/main" element={<MainPage />} />}
-
             {loggedIn && <Route path="/logout" element={<Logout />} />}
+            {loggedIn && <Route path="/profile" element={<Profile />} />}
 
             <Route path="*" element={<NotFound />} />
           </Route>

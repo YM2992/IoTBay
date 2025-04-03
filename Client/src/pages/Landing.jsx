@@ -61,32 +61,27 @@ function Landing() {
             </ul>
           </div>
         </section>
-
-        <Banner />
+        <FadeIn>
+          <Banner />
+        </FadeIn>
 
         <section className="categories">
-          <h2 className="categories-h2">View our range</h2>
+          <FadeIn>
+            <h2 className="categories-h2">View our range</h2>
+          </FadeIn>
           <div className="categories-grid">
             <LandingCategory
               link={Address}
               image={microcontroller}
               title="Microcontrollers"
             />
-            <LandingCategory
-              link={Address}
-              image={sensor}
-              title="Sensors"
-            />
+            <LandingCategory link={Address} image={sensor} title="Sensors" />
             <LandingCategory
               link={Address}
               image={actuator}
               title="Actuators"
             />
-            <LandingCategory
-              link={Address}
-              image={router}
-              title="Routers"
-            />
+            <LandingCategory link={Address} image={router} title="Routers" />
             <LandingCategory
               link={Address}
               image={accessories}

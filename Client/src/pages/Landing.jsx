@@ -68,22 +68,27 @@ function Landing() {
           <h2 className="categories-h2">View our range</h2>
           <div className="categories-grid">
             <LandingCategory
+              link={Address}
               image={microcontroller}
               title="Microcontrollers"
             />
             <LandingCategory
+              link={Address}
               image={sensor}
               title="Sensors"
             />
             <LandingCategory
+              link={Address}
               image={actuator}
               title="Actuators"
             />
             <LandingCategory
+              link={Address}
               image={router}
               title="Routers"
             />
             <LandingCategory
+              link={Address}
               image={accessories}
               title="Accessories"
             />

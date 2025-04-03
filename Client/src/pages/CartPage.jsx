@@ -10,6 +10,7 @@ const CartPage = () => {
   };
 
   return (
+    <div className="cart-container">
     <div className="cart-page">
       <h2>Your Cart</h2>
 
@@ -29,6 +30,7 @@ const CartPage = () => {
           ))}
         </div>
       )}
+    </div>
     </div>
   );
 };

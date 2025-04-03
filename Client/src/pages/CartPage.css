@@ -1,3 +1,18 @@
+
+
+
+.cart-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cart-page{
+
+  width: 100%;
+  text-align: center;
+  max-width: 1200px;
+}
 .cart-item {
     display: flex;
     justify-content: space-between;
@@ -18,4 +33,6 @@
     border-radius: 8px;
     margin-right: 20px;
   }
+  
+
 

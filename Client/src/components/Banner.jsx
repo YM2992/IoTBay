@@ -13,7 +13,7 @@ const SwiperSlideStyle = {
   textAlign: "center",
   fontSize: "18px",
   //   background: "#00285B",
-  background: "rgba(0, 40, 91, 0.5)",
+  background: "rgba(0, 39, 91, 0.05)",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",

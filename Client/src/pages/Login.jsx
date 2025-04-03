@@ -42,7 +42,7 @@ function Login() {
       <div className="login-card">
         <div className="center-content">
           <div className="profile-icon">
-            <span className="text-xl font-bold text-black">IotBay</span>
+            <img src="/assets/IoTBay_Logo.png" alt="IoTBay" />
           </div>
           <h2 className="welcome-text">Welcome!</h2>
           <p className="info-text">Please sign in to your account below</p>

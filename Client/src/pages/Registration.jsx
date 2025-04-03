@@ -81,7 +81,7 @@ function Registration() {
       <div className="login-card">
         <div className="center-content">
           <div className="profile-icon">
-            <span className="text-xl font-bold text-black">IotBay</span>
+            <img src="/assets/IoTBay_Logo.png" alt="IoTBay" />
           </div>
           <h2 className="welcome-text">Join Now!</h2>
           <p className="info-text">Become a member with us today for FREE.</p>

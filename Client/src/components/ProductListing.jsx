@@ -21,6 +21,7 @@ function ProductListing({ data }) {
         </div>
       </a>
       {/*uncomment this for cart button*/}
+      {/*uncomment this for cart button*/}
       {/*<button className="add-to-cart-btn" onClick={handleAddToCart}>Add to Cart</button>*/}
     </>
   );

@@ -28,6 +28,7 @@
     "react-icons": "^5.5.0",
     "react-router-dom": "^6.16.0",
     "react-tabs": "^6.1.0",
+    "sqlite3": "^5.1.7",
     "swiper": "^11.2.6",
     "uuid": "^11.1.0"
   },

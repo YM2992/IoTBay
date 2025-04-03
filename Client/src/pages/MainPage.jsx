@@ -35,6 +35,7 @@ function MainPage() {
             {products.map((product, index) => (
               <ProductListing key={product.productid || index} data={product} />
             ))}
+
           </div>
         )}
       </main>

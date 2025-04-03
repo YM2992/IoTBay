@@ -8,13 +8,15 @@ header {
   /* background-color: aqua; */
   background: linear-gradient(
     to bottom,
-    rgba(0, 3, 32, 0.82),
-    rgba(0, 3, 32, 0.619),
-    rgba(0, 0, 0, 0.116)
+    rgb(0, 3, 32),
+    rgba(0, 3, 32, 0.784),
+    rgba(0, 0, 0, 0.714)
   );
   text-align: center;
   align-items: center;
   top: 0;
+  position: sticky;
+  z-index: 1000;
 }
 
 header {

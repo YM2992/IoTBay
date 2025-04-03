@@ -3,6 +3,7 @@ import { createContext, useState, StrictMode } from "react";
 // import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import App from "./App.jsx";
+import { CartProvider } from './context/CartContext';
 
 export const AuthContext = createContext();
 
@@ -38,8 +39,10 @@ export const AuthProvider = ({ children }) => {
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
+    <CartProvider>
     <StrictMode>
       <App />
     </StrictMode>
+    </CartProvider>
   </AuthProvider>
 );

@@ -14,6 +14,7 @@ import Welcome from "./pages/Welcome";
 import Registration from "./pages/Registration";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
+import CartPage from "./pages/CartPage";
 // import Test from "./pages/Test";
 
 function App() {
@@ -35,6 +36,8 @@ function App() {
             {loggedIn && <Route path="/main" element={<MainPage />} />}
             {loggedIn && <Route path="/logout" element={<Logout />} />}
             {loggedIn && <Route path="/profile" element={<Profile />} />}
+            {loggedIn && <Route path="/cart" element={<CartPage />} />}
+            
 
             <Route path="*" element={<NotFound />} />
           </Route>

@@ -3,6 +3,7 @@ import ProductListing from "../components/ProductListing";
 import { useContext } from "react";
 import { AuthContext } from "../main";
 import { useEffect } from "react";
+import { Link } from 'react-router-dom';
 
 function MainPage() {
   const { user } = useContext(AuthContext);
@@ -37,8 +38,12 @@ function MainPage() {
             ))}
 
           </div>
+          
         )}
       </main>
+      <Link to="/cart">
+        <button>Go to Cart</button>
+      </Link>
     </div>
   );
 }

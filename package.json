@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "vite Client/",
-    "all": "concurrently \"npm run dev\" \"npm run server\"",
+    "all": "concurrently \"npm run server\" \"npm run dev\"",
     "dev": "vite Client/",
     "server": "nodemon Server/server.js",
     "build": "vite build",

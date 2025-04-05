@@ -10,7 +10,9 @@ CREATE TABLE IF NOT EXISTS user (
     phone int NOT NULL DEFAULT 123456789,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
-    role varchar(8) Check (role in ('customer', 'manager', 'staff', 'owner')AND NOT NULL) DEFAULT 'customer'
+    address VARCHAR(100),
+    activate boolean NOT NULL DEFAULT true,
+    role varchar(8) NOT NULL Check (role in ('customer', 'manager', 'staff', 'owner')) DEFAULT 'customer'
 );
 
 CREATE TABLE IF NOT EXISTS product (
@@ -25,11 +27,17 @@ CREATE TABLE IF NOT EXISTS product (
 CREATE TABLE IF NOT EXISTS orders(
     orderid INTEGER PRIMARY KEY,
     paymentID VARCHAR(100),
+    address VARCHAR(100) NOT NULL DEFAULT '1 The Street Ultimo',
     amount float NOT NULL check(amount >= 0),
-    status varchar(10) Check (status in ('fulfilled', 'pending', 'cancelled', 'delivered', 'paid')AND NOT NULL) DEFAULT 'pending',
+    status varchar(10) NOT NULL Check (status IN ('fulfilled', 'pending', 'cancelled', 'delivered', 'paid')) DEFAULT 'pending',
     orderDate date DEFAULT CURRENT_DATE,
     userid INTEGER,
-    FOREIGN KEY (userid) REFERENCES user(user)
+    FOREIGN KEY (userid) REFERENCES user(userid),
+    CHECK (
+        (status IN ('paid', 'fulfilled', 'delivered') AND paymentID IS NOT NULL)
+        OR
+        (status IN ('pending', 'cancelled'))
+    )
 );
 
 CREATE TABLE IF NOT EXISTS order_product (
@@ -62,8 +70,11 @@ INSERT INTO product (name, price, quantity, description) VALUES('Test Product', 
 
 INSERT INTO orders (paymentID, amount, status, orderDate, userid) VALUES
 ('PAY12345', 109.98, 'paid', '2025-03-14', (SELECT userid FROM user WHERE email = 'random@test.com')),
-('PAY67890', 45.50, 'pending', '2025-03-14', (SELECT userid FROM user WHERE email = 'jeff@test.com')),
+('PAY67890', 45.50, 'fulfilled', '2025-03-14', (SELECT userid FROM user WHERE email = 'jeff@test.com')),
 ('PAY54321', 79.99, 'delivered', '2025-03-13', (SELECT userid FROM user WHERE email = 'random@test.com'));
+
+INSERT INTO orders ( amount, status, orderDate, userid) VALUES
+( 145.50, 'pending', '2025-03-15', (SELECT userid FROM user WHERE email = 'yasir@test.com'));
 
 INSERT INTO order_product (orderid, productid, quantity) VALUES
 ((SELECT orderid FROM orders WHERE paymentID = 'PAY12345'), 

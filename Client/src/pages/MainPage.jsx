@@ -19,7 +19,9 @@ function ProductPage() {
   return (
     <div className="main-container">
       <main className="main-container">
-        <h1 style={{ color: "white" }}>Explore our product range</h1>
+        <h1 style={{ color: "white", fontSize: "2rem", fontWeight: "bold" }}>
+          Explore our product range
+        </h1>
 
         {noProducts && (
           <h1 style={{ color: "white" }}>

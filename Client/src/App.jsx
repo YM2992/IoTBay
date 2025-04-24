@@ -15,6 +15,7 @@ import Registration from "./pages/Registration";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
+import ProductDetails from "./components/ProductDetails";
 // import Test from "./pages/Test";
 
 function App() {
@@ -28,7 +29,7 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/landing" element={<Landing />} />
             {/* <Route path="/test" element={<Test />} /> */}
-            {/* <Route path="/products/:productid" element={<Product />} /> */}
+            <Route path="/products/:productid" element={<ProductDetails />} />
             <Route path="/products" element={<ProductPage />} />
             <Route path="/cart" element={<Cart />} />
 

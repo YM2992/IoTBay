@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { createContext, useState, StrictMode } from "react";
-// import "bootstrap/dist/css/bootstrap.min.css";
+
 import "./index.css";
 import App from "./App.jsx";
 
@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("jwt"));
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
   const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
 
   const login = (token, userData) => {
     localStorage.setItem("jwt", token);

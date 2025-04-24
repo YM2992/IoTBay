@@ -13,6 +13,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "antd": "^5.24.8",
     "axios": "^1.8.4",
     "bcryptjs": "^3.0.2",
     "better-sqlite3": "^11.8.1",

@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { useEffect } from "react";
 import { fetchGet } from "../api";
 import { RxAvatar } from "react-icons/rx";
+import { IoCartOutline } from "react-icons/io5";
 
 function Header() {
   const { loggedIn, updateProducts, products } = useContext(AuthContext);
@@ -29,7 +30,11 @@ function Header() {
         </h1>
         <nav>
           <Link to="/">Home</Link>
-          {loggedIn && <Link to="/main">Main</Link>}
+          <Link to="/products">Products</Link>
+          <Link to="/cart" style={{ display: "flex", alignItems: "center" }}>
+            <IoCartOutline style={{ fontSize: "1.2rem" }} />
+          </Link>
+
           {loggedIn && <Link to="/logout">Logout</Link>}
           {loggedIn && (
             <Link to="/profile" style={{ display: "flex", alignItems: "center" }}>

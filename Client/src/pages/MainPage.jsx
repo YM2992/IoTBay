@@ -4,12 +4,10 @@ import { useContext } from "react";
 import { AuthContext } from "../main";
 import { useEffect } from "react";
 
-function MainPage() {
-  const { user } = useContext(AuthContext);
+function ProductPage() {
+  // const { user } = useContext(AuthContext);
   const { products } = useContext(AuthContext);
-  
-  const username = user ? user?.name.split(" ")[0] : "Guest";
-  
+
   let noProducts = products.length === 0;
 
   useEffect(() => {
@@ -21,7 +19,7 @@ function MainPage() {
   return (
     <div className="main-container">
       <main className="main-container">
-        <h1 className="welcome-message">Welcome back to IoTBay, {username}!</h1>
+        <h1 style={{ color: "white" }}>Explore our product range</h1>
 
         {noProducts && (
           <h1 style={{ color: "white" }}>
@@ -42,4 +40,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default ProductPage;

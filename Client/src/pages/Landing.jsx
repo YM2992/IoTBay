@@ -16,7 +16,7 @@ import LandingCategory from "../components/LandingCategory";
 
 function Landing() {
   const { loggedIn, user } = useContext(AuthContext);
-  const Address = loggedIn ? "/main" : "/login";
+  const Address = loggedIn ? "/products" : "/login";
 
   const message = loggedIn
     ? `Hi ${user?.name.split(" ")[0]}, discover our products`
@@ -28,9 +28,7 @@ function Landing() {
         <section className="hero">
           <h1 className="hero-h1">Welcome to IoTBay</h1>
           <h2 className="hero-h2">Your one stop shop for all IoT needs</h2>
-          <p className="hero-p">
-            Discover our wide range of IoT components for your projects
-          </p>
+          <p className="hero-p">Discover our wide range of IoT components for your projects</p>
           <Link to={Address} className="hero-button">
             {message}
           </Link>
@@ -39,9 +37,7 @@ function Landing() {
         <section className="about">
           <img src={AboutImage} alt="About IoT" className="about-image" />
           <div>
-            <h2 className="about-h2">
-              Australia&apos;s leading IoT components supplier
-            </h2>
+            <h2 className="about-h2">Australia&apos;s leading IoT components supplier</h2>
             <ul className="about-ul">
               <FadeIn>
                 <li className="about-li">Based in Sydney</li>
@@ -70,23 +66,11 @@ function Landing() {
             <h2 className="categories-h2">View our range</h2>
           </FadeIn>
           <div className="categories-grid">
-            <LandingCategory
-              link={Address}
-              image={microcontroller}
-              title="Microcontrollers"
-            />
+            <LandingCategory link={Address} image={microcontroller} title="Microcontrollers" />
             <LandingCategory link={Address} image={sensor} title="Sensors" />
-            <LandingCategory
-              link={Address}
-              image={actuator}
-              title="Actuators"
-            />
+            <LandingCategory link={Address} image={actuator} title="Actuators" />
             <LandingCategory link={Address} image={router} title="Routers" />
-            <LandingCategory
-              link={Address}
-              image={accessories}
-              title="Accessories"
-            />
+            <LandingCategory link={Address} image={accessories} title="Accessories" />
           </div>
         </section>
       </main>

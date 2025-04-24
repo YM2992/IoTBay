@@ -9,7 +9,7 @@ function Welcome() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/main");
+      navigate("/products");
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -23,7 +23,7 @@ function Welcome() {
         <h1 className="welcome-h1">Welcome Back, {user.name.split(" ")[0]}!</h1>
         <p className="welcome-p">Good to see you</p>
         <p className="welcome-p">Role: {user.role}</p>
-        <button className="welcome-button" onClick={() => navigate("/main", { state: user })}>
+        <button className="welcome-button" onClick={() => navigate("/products", { state: user })}>
           Go to Main Page
         </button>
       </div>

@@ -18,10 +18,6 @@ function Manage() {
     if (!loading || !error) setProducts(data);
   }, [data, loading, error]);
 
-  const onChange = (key) => {
-    console.log(key);
-  };
-
   const items = [
     {
       key: "1",

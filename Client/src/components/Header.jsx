@@ -1,14 +1,51 @@
 import IoTBayLogo from "/assets/IoTBay_Logo.png";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../main";
-import { useContext } from "react";
-import { useEffect } from "react";
+import { AppContext } from "@/context/AppContext";
+import { useContext, useEffect } from "react";
 import { fetchGet } from "../api";
 import { RxAvatar } from "react-icons/rx";
-import { IoCartOutline } from "react-icons/io5";
+import { IoCartOutline, IoLogOutOutline } from "react-icons/io5";
+
+import { Dropdown } from "antd";
+
+const subBtnCSS = {
+  lineHeight: "1rem",
+  display: "flex",
+  alignItems: "center",
+  gap: 10,
+  fontSize: "1rem",
+};
+
+const items = [
+  {
+    key: "1",
+    label: (
+      <Link to="/profile" style={subBtnCSS}>
+        <RxAvatar />
+        <span>Profile</span>
+      </Link>
+    ),
+  },
+  {
+    key: "2",
+    label: (
+      <Link to="/logout" style={subBtnCSS}>
+        <IoLogOutOutline />
+        <span>Logout</span>
+      </Link>
+    ),
+  },
+];
+const SubMenu = () => (
+  <Dropdown menu={{ items }}>
+    <a style={{ display: "flex", alignItems: "center" }} onClick={(e) => e.preventDefault()}>
+      <RxAvatar style={{ fontSize: "1.2rem" }} />
+    </a>
+  </Dropdown>
+);
 
 function Header() {
-  const { loggedIn, updateProducts, products } = useContext(AuthContext);
+  const { loggedIn, updateProducts, products } = useContext(AppContext);
 
   const fetchProducts = async () => {
     const response = await fetchGet("product/");
@@ -35,12 +72,7 @@ function Header() {
             <IoCartOutline style={{ fontSize: "1.2rem" }} />
           </Link>
 
-          {loggedIn && <Link to="/logout">Logout</Link>}
-          {loggedIn && (
-            <Link to="/profile" style={{ display: "flex", alignItems: "center" }}>
-              <RxAvatar style={{ fontSize: "1.2rem" }} />
-            </Link>
-          )}
+          {loggedIn && <SubMenu />}
 
           {!loggedIn && <Link to="/login">Login</Link>}
           {!loggedIn && <Link to="/register">Register</Link>}

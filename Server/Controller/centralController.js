@@ -28,3 +28,12 @@ export const createOne = (dbname, data) => {
   //   console.log("SQL Query :", sql);
   return db.prepare(sql).run();
 };
+
+export const updateOne = (dbname, id, data) => {
+  const keys = Object.keys(data);
+  const setClause = keys.map((key) => `${key} = ?`).join(", ");
+  const values = Object.values(data);
+
+  const sql = `UPDATE ${dbname} SET ${setClause} WHERE ${dbname}id = ?`;
+  return db.prepare(sql).run(...values, id);
+};

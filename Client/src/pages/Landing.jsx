@@ -1,6 +1,6 @@
 import "./Landing.css";
 import { useContext } from "react";
-import { AuthContext } from "../main";
+import { AppContext } from "@/context/AppContext";
 import { Link } from "react-router-dom";
 import Banner from "../components/Banner";
 import AboutImage from "/assets/about_iot_image.png";
@@ -15,7 +15,7 @@ import accessories from "/assets/categories/adapter.png";
 import LandingCategory from "../components/LandingCategory";
 
 function Landing() {
-  const { loggedIn, user } = useContext(AuthContext);
+  const { loggedIn, user } = useContext(AppContext);
   const Address = loggedIn ? "/products" : "/login";
 
   const message = loggedIn

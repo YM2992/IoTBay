@@ -2,11 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import "./Logout.css";
 import { useContext } from "react";
-import { AuthContext } from "../main";
+import { AppContext } from "@/context/AppContext";
 
 function Logout() {
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
+  const { logout } = useContext(AppContext);
 
   // redirect to landing page after 3 seconds
   useEffect(() => {

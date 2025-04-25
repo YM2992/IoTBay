@@ -1,11 +1,11 @@
 import { useEffect, useContext } from "react";
-import { AuthContext } from "../main";
+import { AppContext } from "@/context/AppContext";
 import { useNavigate } from "react-router-dom";
 import "./welcome.css";
 
 function Welcome() {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(AppContext);
 
   useEffect(() => {
     const timer = setTimeout(() => {

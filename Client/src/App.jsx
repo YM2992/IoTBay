@@ -1,6 +1,6 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "./main";
+import { AppContext } from "@/context/AppContext";
 import { Toaster } from "react-hot-toast";
 import "./index.css";
 import "./App.css";
@@ -15,10 +15,11 @@ import Registration from "./pages/Registration";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
+import ProductDetails from "./components/ProductDetails";
 // import Test from "./pages/Test";
 
 function App() {
-  const { loggedIn } = useContext(AuthContext);
+  const { loggedIn } = useContext(AppContext);
 
   return (
     <>
@@ -28,7 +29,7 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/landing" element={<Landing />} />
             {/* <Route path="/test" element={<Test />} /> */}
-            {/* <Route path="/products/:productid" element={<Product />} /> */}
+            <Route path="/products/:productid" element={<ProductDetails />} />
             <Route path="/products" element={<ProductPage />} />
             <Route path="/cart" element={<Cart />} />
 

@@ -27,8 +27,11 @@ export const fetchPost = async (endpoint, options) => {
   return resData;
 };
 
-export const fetchGet = async (endpoint) => {
-  const response = await fetch(urlMaker(endpoint));
+export const fetchGet = async (endpoint, options={}) => {
+  const response = await fetch(urlMaker(endpoint), {
+    method: "GET",
+    ...options,
+  });
   if (response.status != 200 || !response.ok) {
     console.error(response);
     return null;
@@ -37,9 +40,10 @@ export const fetchGet = async (endpoint) => {
   return resData;
 };
 
-export const fetchDelete = async (endpoint) => {
+export const fetchDelete = async (endpoint, options) => {
   const response = await fetch(urlMaker(endpoint), {
     method: "DELETE",
+    ...options
   });
 
   if (response.status != 200 || !response.ok) {

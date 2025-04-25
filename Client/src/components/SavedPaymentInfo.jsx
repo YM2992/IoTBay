@@ -44,6 +44,7 @@ function SavedPaymentInfo({ paymentInfo }) {
                             className="card-number"
                             type="text"
                             name="cardNumber"
+                            placeholder="1234 5678 9012 3456"
                             value={newPaymentInfo.cardNumber}
                             onChange={handleChange}
                         />
@@ -56,6 +57,7 @@ function SavedPaymentInfo({ paymentInfo }) {
                             className="cardholder-name"
                             type="text"
                             name="cardholderName"
+                            placeholder="First Last"
                             value={newPaymentInfo.cardholderName}
                             onChange={handleChange}
                         />
@@ -68,6 +70,7 @@ function SavedPaymentInfo({ paymentInfo }) {
                             className="expiry-date"
                             type="text"
                             name="expiryDate"
+                            placeholder="MM/YY"
                             value={newPaymentInfo.expiryDate}
                             onChange={handleChange}
                         />
@@ -78,6 +81,7 @@ function SavedPaymentInfo({ paymentInfo }) {
                             className="cvv"
                             type="text"
                             name="cvv"
+                            placeholder="123"
                             value={newPaymentInfo.cvv}
                             onChange={handleChange}
                         />

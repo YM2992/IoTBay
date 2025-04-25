@@ -40,7 +40,7 @@ function SavedPaymentInfo({ paymentInfo }) {
 
   const handleRemove = async () => {
     try {
-      const resData = await fetchDelete("payment/remove", {
+      const resData = await fetchDelete("payment", {
         cardNumber: paymentInfo.cardNumber,
       });
 

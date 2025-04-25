@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_product;
 
 
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE user (
     userid INTEGER PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     phone int NOT NULL DEFAULT 123456789,
@@ -15,16 +15,17 @@ CREATE TABLE IF NOT EXISTS user (
     role varchar(8) NOT NULL Check (role in ('customer', 'manager', 'staff', 'owner')) DEFAULT 'customer'
 );
 
-CREATE TABLE IF NOT EXISTS product (
+CREATE TABLE product (
     productid INTEGER PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     price float NOT NULL check(price >= 0),
     quantity int NOT NULL check(quantity >= 0),
     description VARCHAR(100),
-    image VARCHAR(100) DEFAULT 'default_image'
+    image VARCHAR(100) DEFAULT 'default_image',
+    available boolean DEFAULT true
 );
 
-CREATE TABLE IF NOT EXISTS orders(
+CREATE TABLE orders(
     orderid INTEGER PRIMARY KEY,
     paymentID VARCHAR(100),
     address VARCHAR(100) NOT NULL DEFAULT '1 The Street Ultimo',
@@ -40,7 +41,7 @@ CREATE TABLE IF NOT EXISTS orders(
     )
 );
 
-CREATE TABLE IF NOT EXISTS order_product (
+CREATE TABLE order_product (
     orderid INTEGER,
     productid INTEGER,
     quantity int NOT NULL check(quantity > 0),

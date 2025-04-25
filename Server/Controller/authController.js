@@ -10,6 +10,7 @@ export const hashPassword = async function (password) {
 };
 
 const correctPassword = async function (typedInPassword, dbSavedPassword) {
+  if (!dbSavedPassword || !typedInPassword) return null;
   return await bcrypt.compare(typedInPassword, dbSavedPassword);
 };
 
@@ -52,10 +53,9 @@ export const login = catchAsync(async (req, res, next) => {
 
   // check if user exists && password is correct
   const user = findUserByEmail(email);
-  console.log(user);
-  const correct = await correctPassword(password, user.password);
+  const correct = await correctPassword(password, user?.password);
 
-  if (!user || !correct) {
+  if (!correct || !user) {
     return next(new cusError("incorrect email or password", 401));
   }
 

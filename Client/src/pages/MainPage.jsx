@@ -1,12 +1,12 @@
 import "./MainPage.css";
 import ProductListing from "../components/ProductListing";
 import { useContext } from "react";
-import { AuthContext } from "../main";
+import { AppContext } from "@/context/AppContext";
 import { useEffect } from "react";
 
 function ProductPage() {
   // const { user } = useContext(AuthContext);
-  const { products } = useContext(AuthContext);
+  const { products } = useContext(AppContext);
 
   let noProducts = products.length === 0;
 

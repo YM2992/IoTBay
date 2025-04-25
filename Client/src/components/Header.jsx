@@ -1,8 +1,7 @@
 import IoTBayLogo from "/assets/IoTBay_Logo.png";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../main";
-import { useContext } from "react";
-import { useEffect } from "react";
+import { AppContext } from "@/context/AppContext";
+import { useContext, useEffect } from "react";
 import { fetchGet } from "../api";
 import { RxAvatar } from "react-icons/rx";
 import { IoCartOutline, IoLogOutOutline } from "react-icons/io5";
@@ -46,7 +45,7 @@ const SubMenu = () => (
 );
 
 function Header() {
-  const { loggedIn, updateProducts, products } = useContext(AuthContext);
+  const { loggedIn, updateProducts, products } = useContext(AppContext);
 
   const fetchProducts = async () => {
     const response = await fetchGet("product/");

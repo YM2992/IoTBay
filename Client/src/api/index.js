@@ -1,13 +1,22 @@
 export const API_URL = "http://localhost:8000/api/";
 
-export const fetchPost = async (endpoint, data) => {
-  const response = await fetch(`${API_URL}${endpoint}`, {
+export const urlMaker = (endpoint) => {
+  return `${API_URL}${endpoint}`;
+};
+
+export const optionMaker = (data) => {
+  const option = {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json",
     },
-  });
+  };
+  return option;
+};
+
+export const fetchPost = async (endpoint, data) => {
+  const response = await fetch(urlMaker(endpoint), optionMaker(data));
 
   if (response.status != 200 || !response.ok) {
     console.error(response);
@@ -19,7 +28,7 @@ export const fetchPost = async (endpoint, data) => {
 };
 
 export const fetchGet = async (endpoint) => {
-  const response = await fetch(`${API_URL}${endpoint}`);
+  const response = await fetch(urlMaker(endpoint));
   if (response.status != 200 || !response.ok) {
     console.error(response);
     return null;
@@ -29,13 +38,7 @@ export const fetchGet = async (endpoint) => {
 };
 
 export const checkEmail = async (email) => {
-  const response = await fetch(`${API_URL}user/checkEmail`, {
-    method: "POST",
-    body: JSON.stringify({ email }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(`${API_URL}user/checkEmail`, optionMaker({ email }));
 
   if (response.status != 200 || !response.ok) {
     console.error(response);

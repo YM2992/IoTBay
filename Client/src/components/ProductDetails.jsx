@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../main";
+import { AppContext } from "@/context/AppContext";
 import { useParams } from "react-router-dom";
 
-import { Image, Statistic, Button, Flex, InputNumber, Divider, Layout, Card } from "antd";
+import { Image, Button, Flex, InputNumber, Divider, Layout, Card } from "antd";
 
 import { contentStyle, siderStyle, layoutStyle } from "./productLayout";
 
@@ -10,7 +10,7 @@ const { Sider, Content } = Layout;
 
 function ProductDetails() {
   const { productid } = useParams();
-  const { products } = useContext(AuthContext);
+  const { products } = useContext(AppContext);
   const [data, setData] = useState();
 
   useEffect(() => {

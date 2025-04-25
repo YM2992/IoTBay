@@ -1,46 +1,14 @@
 import { createRoot } from "react-dom/client";
-import { createContext, useState, StrictMode } from "react";
+import { StrictMode } from "react";
+import { AppProvider } from "./context/AppContext";
 
 import "./index.css";
 import App from "./App.jsx";
 
-export const AuthContext = createContext();
-
-export const AuthProvider = ({ children }) => {
-  const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("jwt"));
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
-  const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
-
-  const login = (token, userData) => {
-    localStorage.setItem("jwt", token);
-    localStorage.setItem("user", JSON.stringify(userData));
-    setLoggedIn(true);
-    setUser(userData);
-  };
-
-  const logout = () => {
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("user");
-    setLoggedIn(false);
-    setUser(null);
-  };
-
-  const updateProducts = (newProducts) => {
-    setProducts(newProducts);
-  };
-
-  return (
-    <AuthContext.Provider value={{ loggedIn, user, products, login, logout, updateProducts }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
 createRoot(document.getElementById("root")).render(
-  <AuthProvider>
+  <AppProvider>
     <StrictMode>
       <App />
     </StrictMode>
-  </AuthProvider>
+  </AppProvider>
 );

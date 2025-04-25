@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { AuthContext } from "../main";
+import { AppContext } from "@/context/AppContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { fetchPost } from "../api";
@@ -12,7 +12,7 @@ function Login() {
   const [email, setEmail] = useState("jeff@test.com");
   const [password, setPassword] = useState("");
 
-  const { login } = useContext(AuthContext);
+  const { login } = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleSubmit = async () => {

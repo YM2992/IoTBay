@@ -1,16 +1,14 @@
-import { useEffect, useState } from "react";
-
 import ProfileTabs from "../components/ProfileTabs";
 import { RxAvatar } from "react-icons/rx";
 
-import { AuthContext } from "../main";
+import { AppContext } from "@/context/AppContext";
 import { useContext } from "react";
 import "./profile.css";
 
 // Old version moved to bottom
 
 function Profile() {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(AppContext);
   const { name } = user;
   console.log(user);
 

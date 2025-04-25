@@ -1,6 +1,6 @@
 import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "./main";
+import { AppContext } from "@/context/AppContext";
 import { Toaster } from "react-hot-toast";
 import "./index.css";
 import "./App.css";
@@ -19,7 +19,7 @@ import ProductDetails from "./components/ProductDetails";
 // import Test from "./pages/Test";
 
 function App() {
-  const { loggedIn } = useContext(AuthContext);
+  const { loggedIn } = useContext(AppContext);
 
   return (
     <>

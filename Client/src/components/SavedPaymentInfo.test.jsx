@@ -6,10 +6,10 @@ import SavedPaymentInfo from "./SavedPaymentInfo";
 
 
 const mockPaymentInfo = {
-  cardNumber: "**** **** **** 1234",
+  cardNumber: "9999 8888 7777 6666",
   cardholderName: "John Doe",
   expiryDate: "12/25",
-  cvv: "***",
+  cvv: "931",
 };
 
 describe("SavedPaymentInfo Component", () => {
@@ -28,5 +28,19 @@ describe("SavedPaymentInfo Component", () => {
     expect(screen.getByDisplayValue(mockPaymentInfo.expiryDate)).toBeDefined();
     expect(screen.getByDisplayValue(mockPaymentInfo.cvv)).toBeDefined();
     expect(screen.getByText(/Update Payment/)).toBeDefined();
+  });
+
+  test("remove saved payment details", () => {
+    render(<SavedPaymentInfo paymentInfo={mockPaymentInfo} />);
+
+    const removeButton = screen.getByRole("remove-payment");
+    expect(removeButton).toBeDefined();
+
+    removeButton.click();
+
+    expect(screen.queryByDisplayValue(mockPaymentInfo.cardNumber)).toBeNull();
+    expect(screen.queryByDisplayValue(mockPaymentInfo.cardholderName)).toBeNull();
+    expect(screen.queryByDisplayValue(mockPaymentInfo.expiryDate)).toBeNull();
+    expect(screen.queryByDisplayValue(mockPaymentInfo.cvv)).toBeNull();
   });
 });

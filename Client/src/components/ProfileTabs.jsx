@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { FaCreditCard, FaFileInvoice, FaFire } from "react-icons/fa";
 import { ImProfile } from "react-icons/im";
 import "react-tabs/style/react-tabs.css";
 
-import { AuthContext } from "../main";
-import { useContext } from "react";
+import { AppContext } from "@/context/AppContext";
 
 // Import SavedPaymentInfo component
 import SavedPaymentInfo from "./SavedPaymentInfo";
@@ -33,7 +32,7 @@ const TabOptions = [
 ];
 
 function ProfileTabs() {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(AppContext);
   const { paymentInfo } = user;
   const [tabIndex, setTabIndex] = useState(0);
 

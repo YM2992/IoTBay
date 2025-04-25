@@ -1,20 +1,20 @@
 import "./MainPage.css";
 import ProductListing from "../components/ProductListing";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AppContext } from "@/context/AppContext";
-import { useEffect } from "react";
+import { useFetchProduct } from "@/hook/useFetchProduct";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 function ProductPage() {
-  // const { user } = useContext(AuthContext);
   const { products } = useContext(AppContext);
-
-  let noProducts = products.length === 0;
+  const { updateProducts } = useContext(AppContext);
+  const { data, error, loading } = useFetchProduct("product/");
 
   useEffect(() => {
-    if (!noProducts) {
-      return;
-    }
-  }, [products]);
+    if (!loading || !error) updateProducts(data);
+  }, [data, loading, error]);
+
+  let noProducts = products === null || products.length === 0;
 
   return (
     <div className="main-container">
@@ -23,13 +23,14 @@ function ProductPage() {
           Explore our product range
         </h1>
 
-        {noProducts && (
-          <h1 style={{ color: "white" }}>
+        {(loading || noProducts) && <LoadingSpinner size="large" />}
+
+        {error && (
+          <h3 style={{ color: "white", marginTop: "2rem" }}>
             There are some issues with the server, please refresh the page
-          </h1>
+          </h3>
         )}
 
-        <h2 className="products-h">Products</h2>
         {!noProducts && (
           <div className="button-container">
             {products.map((product, index) => (

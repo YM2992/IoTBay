@@ -49,6 +49,7 @@ export const createProduct = catchAsync(async (req, res, next) => {
 
 export const updateProduct = catchAsync(async (req, res, next) => {
   const { data, productid } = req.body;
+  console.log(data);
 
   const allowedFields = ["name", "price", "quantity", "description", "image", "available"];
 

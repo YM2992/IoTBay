@@ -2,11 +2,14 @@ import IoTBayLogo from "/assets/IoTBay_Logo.png";
 import { Link } from "react-router-dom";
 import { AppContext } from "@/context/AppContext";
 import { useContext, useEffect } from "react";
-import { fetchGet } from "../api";
 import { RxAvatar } from "react-icons/rx";
 import { IoCartOutline, IoLogOutOutline } from "react-icons/io5";
 
 import { Dropdown } from "antd";
+
+import { managers } from "@/utils/const";
+
+import { useFetchProduct } from "@/hook/useFetchProduct";
 
 const subBtnCSS = {
   lineHeight: "1rem",
@@ -45,18 +48,7 @@ const SubMenu = () => (
 );
 
 function Header() {
-  const { loggedIn, updateProducts, products } = useContext(AppContext);
-
-  const fetchProducts = async () => {
-    const response = await fetchGet("product/");
-    if (!response) return;
-    updateProducts(response.data);
-  };
-
-  useEffect(() => {
-    if (products.length > 0) return;
-    fetchProducts();
-  }, [products]);
+  const { loggedIn, user } = useContext(AppContext);
 
   return (
     <>
@@ -71,6 +63,8 @@ function Header() {
           <Link to="/cart" style={{ display: "flex", alignItems: "center" }}>
             <IoCartOutline style={{ fontSize: "1.2rem" }} />
           </Link>
+
+          {loggedIn && managers.includes(user.role) && <Link to="/manage">Manage</Link>}
 
           {loggedIn && <SubMenu />}
 

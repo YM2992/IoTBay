@@ -4,6 +4,7 @@ import { AppContext } from "@/context/AppContext";
 import { Toaster } from "react-hot-toast";
 import "./index.css";
 import "./App.css";
+import { managers } from "./utils/const";
 
 import Layout from "./components/Layout";
 import ProductPage from "./pages/MainPage";
@@ -16,10 +17,11 @@ import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import ProductDetails from "./components/ProductDetails";
+import Manage from "./pages/Manage";
 // import Test from "./pages/Test";
 
 function App() {
-  const { loggedIn } = useContext(AppContext);
+  const { loggedIn, user } = useContext(AppContext);
 
   return (
     <>
@@ -35,9 +37,13 @@ function App() {
 
             {!loggedIn && <Route path="/login" element={<Login />} />}
             {!loggedIn && <Route path="/register" element={<Registration />} />}
+
             {loggedIn && <Route path="/welcome" element={<Welcome />} />}
             {loggedIn && <Route path="/logout" element={<Logout />} />}
             {loggedIn && <Route path="/profile" element={<Profile />} />}
+            {loggedIn && managers.includes(user.role) && (
+              <Route path="/manage" element={<Manage />} />
+            )}
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

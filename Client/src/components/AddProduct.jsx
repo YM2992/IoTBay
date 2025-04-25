@@ -5,44 +5,44 @@ import { AppContext } from "@/context/AppContext";
 import toast from "react-hot-toast";
 
 const { TextArea } = Input;
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { Switch } from "antd";
 
-const UpdateModal = ({ product, refetch }) => {
+const defaultValue = {
+  name: "",
+  price: 1,
+  quantity: 0,
+  description: "",
+  image: "default_image",
+  available: true,
+};
+
+function AddProduct({ refetch }) {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { token } = useContext(AppContext);
-  const [pro, setPro] = useState(product);
-  const { productid, name, price, quantity, description, available, image } = pro;
+  const [product, setPro] = useState(defaultValue);
 
   const showModal = () => {
     setOpen(true);
   };
 
   const handleCancel = () => {
-    setPro(product);
+    setPro(defaultValue);
     setOpen(false);
   };
 
   const handleOk = async () => {
-    const isEqual = JSON.stringify(product) === JSON.stringify(pro);
-    if (isEqual) {
-      handleCancel();
-      return toast.success("Nothing has changed");
-    }
-
-    const { productid, ...rest } = pro;
-    const data = {
-      productid,
-      data: rest,
-    };
+    Object.entries(product).forEach(([key, value]) => {
+      if (typeof value !== "string") return;
+      if (value.trim() === "") return toast.error(`${key} can not be empty`);
+    });
 
     try {
       setConfirmLoading(true);
-      await fetchPost("product/", optionMaker(data, "PATCH", token));
-      toast.success("Successfully updated product");
+      await fetchPost("product/", optionMaker(product, "POST", token));
+      toast.success("Successfully added new product");
     } catch (error) {
-      toast.error(error.message);
+      console.log(error);
+      toast.error("Failed to add new product");
     } finally {
       setConfirmLoading(false);
       refetch();
@@ -62,27 +62,29 @@ const UpdateModal = ({ product, refetch }) => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Manage
+      <Button onClick={showModal} size="large" type="primary" style={{ marginBottom: "1rem" }}>
+        Add New Product
       </Button>
       <Modal
-        title={`Product ${productid}`}
+        title={"Add new product"}
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-        <label>Image Name</label>
-        <Input placeholder={image} value={image} onChange={handleChange("image")} />
-
         <label>Name</label>
-        <Input placeholder={name} value={name} onChange={handleChange("name")} />
+        <Input
+          placeholder={"please enter product name"}
+          value={product.name}
+          onChange={handleChange("name")}
+        />
 
         <label>Price</label>
         <InputNumber
-          min={0}
+          min={0.01}
           prefix="$"
-          value={price}
+          defaultValue={1}
+          value={product.price}
           style={{ width: "100%" }}
           onChange={handleChange("price", true)}
         />
@@ -90,35 +92,29 @@ const UpdateModal = ({ product, refetch }) => {
         <label>Quantity</label>
         <InputNumber
           min={0}
-          value={quantity}
+          value={product.quantity}
+          defaultValue={1}
           style={{ width: "100%" }}
           onChange={handleChange("quantity", true)}
         />
 
         <label>Description</label>
         <TextArea
-          value={description}
+          value={product.description}
           placeholder="Controlled autosize"
           autoSize={{ minRows: 3, maxRows: 5 }}
           onChange={handleChange("description")}
         />
 
-        <label style={{ display: "block" }}>Available to purchase</label>
-        <Switch
-          checkedChildren={<CheckOutlined />}
-          unCheckedChildren={<CloseOutlined />}
-          value={available}
-          // onChange={handleChange("available", true)}
-          onChange={(e) => {
-            setPro((prev) => ({
-              ...prev,
-              available: e ? 1 : 0,
-            }));
-          }}
+        <label>Image Name</label>
+        <Input
+          placeholder={"default_image"}
+          defaultValue={"default_image"}
+          onChange={handleChange("image")}
         />
       </Modal>
     </>
   );
-};
+}
 
-export default UpdateModal;
+export default AddProduct;

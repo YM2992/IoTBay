@@ -3,7 +3,7 @@ import Input from "../components/Input";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { strictEmailRegex, numberRegex } from "../utils/helper";
-import { fetchPost, checkEmail } from "../api";
+import { fetchPost, checkEmail, optionMaker } from "../api";
 
 import "./Login.css";
 
@@ -67,13 +67,13 @@ function Registration() {
       phone: Number(phone),
     };
 
-    const resData = await fetchPost("user/", data);
-
-    if (!resData) {
+    try {
+      const resData = await fetchPost("user/", optionMaker(data));
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
       return toast.error("Failed to register, please try again later");
     }
-
-    navigate("/login");
   };
 
   return (

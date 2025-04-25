@@ -6,6 +6,7 @@ export const AppProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("jwt"));
   const [token, setToken] = useState(localStorage.getItem("jwt"));
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
+  const [paymentCard, setPaymentCard] = useState(JSON.parse(localStorage.getItem("paymentCard")) || null);
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   // const fetchProduct = useAutoFetch("product/");
@@ -27,11 +28,16 @@ export const AppProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updatePaymentCard = (newCard) => {
+    localStorage.setItem("paymentCard", JSON.stringify(newCard));
+    setPaymentCard(newCard);
+  };
+
   const updateProducts = (newProducts) => {
     setProducts(newProducts);
   };
   return (
-    <AppContext.Provider value={{ loggedIn, user, token, products, login, logout, updateProducts }}>
+    <AppContext.Provider value={{ loggedIn, user, paymentCard, token, products, login, logout, updatePaymentCard, updateProducts }}>
       {children}
     </AppContext.Provider>
   );

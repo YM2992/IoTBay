@@ -5,41 +5,73 @@ import { getOne, getAll } from "./centralController.js";
 import cusError from "../Utils/cusError.js";
 
 export const getPaymentDetails = catchAsync(async (req, res, next) => {
-  const currentUser = req.user;
-  delete currentUser.password;
-  delete currentUser.userid;
+  const { userId } = req.user;
 
-  res.status(200).json({
-    status: "success",
-    data: currentUser,
-  });
-});
-
-export const createPaymentDetails = catchAsync(async (req, res, next) => {
-  const { cardNumber, cardholderName, expiryDate, cvv } = req.body;
-
-  if (!cardNumber || !cardholderName || !expiryDate || !cvv)
-    return next(new cusError("Please provide all necessary information", 400));
-
-  const dataFilter = {
-    cardNumber: await hashPassword(cardNumber),
-    cardholderName,
-    expiryDate,
-    cvv: await hashPassword(cvv),
-  };
+  if (!userId) return next(new cusError("Please provide all necessary information", 400));
 
   try {
-    createOne("payment", dataFilter);
-    delete dataFilter.cardNumber, delete dataFilter.cvv;
+    const paymentInfo = await getAll("payment", { userId });
+
+    if (!paymentInfo) return next(new cusError("No payment information found", 404));
 
     res.status(200).json({
       status: "success",
-      data: dataFilter,
+      data: paymentInfo,
     });
   } catch (error) {
-    let message = `${error.code} ${error.message}`;
-    if (error.code === "SQLITE_CONSTRAINT_UNIQUE") message = `Duplicate Field: ${error.message}`;
+    return next(new cusError(error.message, 400));
+  }
+});
 
-    return next(new cusError(message, 400));
+export const updatePaymentDetails = catchAsync(async (req, res, next) => {
+  const { cardNumber, expiryDate, cardholderName, cvv } = req.body;
+
+  if (!cardNumber || !expiryDate || !cardholderName || !cvv) return next(new cusError("Please provide all necessary information", 400));
+
+  try {
+    const dataFilter = {
+      cardNumber: await hashPassword(cardNumber),
+      expiryDate,
+      cardholderName,
+      cvv,
+    };
+
+    const existingPaymentInfo = await getOne("payment", { cardNumber: dataFilter.cardNumber });
+
+    if (existingPaymentInfo) return next(new cusError("Payment information already exists", 409));
+
+    await createOne("payment", dataFilter);
+
+    res.status(201).json({
+      status: "success",
+      message: "Payment information saved successfully",
+    });
+  } catch (error) {
+    return next(new cusError(error.message, 400));
+  }
+});
+
+export const removePaymentDetails = catchAsync(async (req, res, next) => {
+  const { cardNumber } = req.body;
+
+  if (!cardNumber) return next(new cusError("Please provide all necessary information", 400));
+
+  try {
+    const dataFilter = {
+      cardNumber: await hashPassword(cardNumber),
+    };
+
+    const result = await getOne("payment", dataFilter);
+
+    if (!result) return next(new cusError("No payment information found", 404));
+
+    delete dataFilter.cardNumber;
+
+    res.status(200).json({
+      status: "success",
+      message: "Payment information removed successfully",
+    });
+  } catch (error) {
+    return next(new cusError(error.message, 400));
   }
 });

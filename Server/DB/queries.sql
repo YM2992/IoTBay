@@ -15,6 +15,16 @@ CREATE TABLE user (
     role varchar(8) NOT NULL Check (role in ('customer', 'manager', 'staff', 'owner')) DEFAULT 'customer'
 );
 
+CREATE TABLE payment (
+    cardid INTEGER PRIMARY KEY,
+    cardNumber VARCHAR(16) NOT NULL UNIQUE,
+    cardHolderName VARCHAR(100) NOT NULL,
+    expiryDate DATE NOT NULL,
+    cvv int NOT NULL,
+    userid INTEGER,
+    FOREIGN KEY (userid) REFERENCES user(userid)
+);
+
 CREATE TABLE product (
     productid INTEGER PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -57,6 +67,10 @@ INSERT INTO user (name, phone, email, password, role) VALUES
 ('Customer Test', 0420111222, 'random@test.com', '$2b$12$7we9rbwYFCwnHmI0as757Ol4bBam2lzA/ICKP4pYUgQs1I5A8oh9O', 'customer'),
 ('John Test', 0420111000, 'john@test.com', '$2b$12$v7q4jwss4Ory6pO/ILhnhOr4QfzzR/BDQQ12EUUq8I/3XJxv4a9.6', 'staff');
 
+INSERT INTO payment (cardNumber, cardHolderName, expiryDate, cvv, userid) VALUES
+('1234567812345678', 'Yasir Test', '2026-12-31', 123, (SELECT userid FROM user WHERE email = 'yasir@test.com')),
+('1111222233334444', 'Customer Test', '2024-10-31', 789, (SELECT userid FROM user WHERE email = 'random@test.com')),
+('4444333322221111', 'John Test', '2027-09-30', 321, (SELECT userid FROM user WHERE email = 'john@test.com'));
 
 INSERT INTO product (name, price, quantity, description, image) VALUES
 ('Raspberry Pi 4 Model B', 85, 10, 'A small computer that can be used for a variety of projects', 'Rash'),

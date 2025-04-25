@@ -69,6 +69,8 @@ export const updateProduct = catchAsync(async (req, res, next) => {
     });
   } catch (error) {
     console.error(error);
+    if (error.code.startsWith("SQLITE")) return next(new cusError(error, 500, "Database_Error"));
+
     return next(new cusError("Something went wrong", 500));
   }
 });

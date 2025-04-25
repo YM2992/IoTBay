@@ -1,6 +1,6 @@
 import { Button, Modal, Input, InputNumber } from "antd";
 import { useState, useContext } from "react";
-import { urlMaker } from "@/api";
+import { fetchPost, optionMaker } from "@/api";
 import { AppContext } from "@/context/AppContext";
 import toast from "react-hot-toast";
 
@@ -14,17 +14,6 @@ const UpdateModal = ({ product, refetch }) => {
   const { token } = useContext(AppContext);
   const [pro, setPro] = useState(product);
   const { productid, name, price, quantity, description, available, image } = pro;
-
-  const patchOptions = (data) => {
-    return {
-      method: "PATCH",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  };
 
   const showModal = () => {
     setOpen(true);
@@ -50,15 +39,10 @@ const UpdateModal = ({ product, refetch }) => {
 
     try {
       setConfirmLoading(true);
-      const response = await fetch(urlMaker("product/"), patchOptions(data));
-
-      if (response.status != 200 || !response.ok) {
-        throw new Error(response);
-      }
-
+      await fetchPost("product/", optionMaker(data, "PATCH", token));
       toast.success("Successfully updated product");
     } catch (error) {
-      console.log(error);
+      toast.error(error.message);
     } finally {
       setConfirmLoading(false);
       refetch();

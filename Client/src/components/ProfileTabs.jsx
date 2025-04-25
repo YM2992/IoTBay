@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import { FaFileInvoice, FaFire } from "react-icons/fa";
+import { FaCreditCard, FaFileInvoice, FaFire } from "react-icons/fa";
 import { ImProfile } from "react-icons/im";
 import "react-tabs/style/react-tabs.css";
+
+import { AuthContext } from "../main";
+import { useContext } from "react";
+
+// Import SavedPaymentInfo component
+import SavedPaymentInfo from "./SavedPaymentInfo";
 
 const tabStyle = {
   display: "flex",
@@ -17,12 +23,18 @@ const TabOptions = [
     label: "Orders",
   },
   {
+    icon: <FaCreditCard />,
+    label: "Payment",
+  },
+  {
     icon: <FaFire />,
     label: "Others...",
   },
 ];
 
 function ProfileTabs() {
+  const { user } = useContext(AuthContext);
+  const { paymentInfo } = user;
   const [tabIndex, setTabIndex] = useState(0);
 
   const handleTabChange = (index) => {
@@ -52,7 +64,11 @@ function ProfileTabs() {
       </TabPanel>
 
       <TabPanel>
-        <h2>Any content 3</h2>
+        <SavedPaymentInfo paymentInfo={paymentInfo} />
+      </TabPanel>
+
+      <TabPanel>
+        <h2>Any content 4</h2>
       </TabPanel>
     </Tabs>
   );

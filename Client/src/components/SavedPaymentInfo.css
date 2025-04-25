@@ -1,0 +1,83 @@
+div.payment-info {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure the container takes the full height of the viewport */
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center; /* Center form elements horizontally */
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #555;
+  align-items: baseline; /* Center label text and inputs */
+}
+
+input.card-number,
+input.expiry-date,
+input.cardholder-name,
+input.cvv {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 5px;
+  max-width: 300px; /* Set a maximum width for the inputs */
+}
+
+input.expiry-date,
+input.cvv {
+    max-width: 90px;
+}
+
+input.card-number:focus,
+input.expiry-date:focus,
+input.cardholder-name:focus,
+input.cvv:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+button {
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+p {
+  font-size: 14px;
+  color: #444;
+  margin: 5px 0;
+}
+
+.flex-row {
+  display: flex;
+  gap: 15px;
+  justify-content: center; /* Center inputs in the row */
+}
+
+.flex-row label {
+  flex: 1;
+  max-width: 150px; /* Optional: Limit the width of labels in flex-row */
+}

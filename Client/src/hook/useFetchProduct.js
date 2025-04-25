@@ -1,10 +1,17 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import { urlMaker } from "@/api";
 
-export function useAutoFetch(url, options = {}, { refreshInterval = 0, retry = 0 } = {}) {
+const defaultConfig = {
+  refreshInterval: 10000,
+};
+
+export function useFetchProduct(endpoint, options = {}, config = {}) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const retryCount = useRef(0);
+  const { refreshInterval } = { ...defaultConfig, ...config };
+
+  const url = urlMaker(endpoint);
 
   const fetchData = async () => {
     try {
@@ -12,16 +19,10 @@ export function useAutoFetch(url, options = {}, { refreshInterval = 0, retry = 0
       const res = await fetch(url, options);
       if (!res.ok) throw new Error("Fetch failed");
 
-      const result = await res.json();
-      setData(result);
-      setError(null);
-      retryCount.current = 0;
+      const { data } = await res.json();
+      setData(data);
     } catch (err) {
       setError(err);
-      if (retryCount.current < retry) {
-        retryCount.current += 1;
-        setTimeout(fetchData, 1000 * retryCount.current);
-      }
     } finally {
       setLoading(false);
     }

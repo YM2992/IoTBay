@@ -4,9 +4,9 @@ export const urlMaker = (endpoint) => {
   return `${API_URL}${endpoint}`;
 };
 
-export const optionMaker = (data) => {
+export const optionMaker = (data, method = "POST") => {
   const option = {
-    method: "POST",
+    method: method,
     body: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json",
@@ -15,8 +15,8 @@ export const optionMaker = (data) => {
   return option;
 };
 
-export const fetchPost = async (endpoint, data) => {
-  const response = await fetch(urlMaker(endpoint), optionMaker(data));
+export const fetchPost = async (endpoint, options) => {
+  const response = await fetch(urlMaker(endpoint), optionMaker(options));
 
   if (response.status != 200 || !response.ok) {
     console.error(response);

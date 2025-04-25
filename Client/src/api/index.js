@@ -37,6 +37,19 @@ export const fetchGet = async (endpoint) => {
   return resData;
 };
 
+export const fetchDelete = async (endpoint) => {
+  const response = await fetch(urlMaker(endpoint), {
+    method: "DELETE",
+  });
+
+  if (response.status != 200 || !response.ok) {
+    console.error(response);
+    return null;
+  }
+  const resData = await response.json();
+  return resData;
+};
+
 export const checkEmail = async (email) => {
   const response = await fetch(`${API_URL}user/checkEmail`, optionMaker({ email }));
 

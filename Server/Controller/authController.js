@@ -66,7 +66,7 @@ export const login = catchAsync(async (req, res, next) => {
 export const protect = catchAsync(async (req, res, next) => {
   let token = req.headers.authorization;
   if (!token || !token.startsWith("Bearer"))
-    next(new cusError("You are not logged in, please login first"), 401);
+    next(new cusError("You are not logged in, please login first", 401));
 
   token = token.split(" ")[1];
 

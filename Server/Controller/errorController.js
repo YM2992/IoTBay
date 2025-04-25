@@ -18,25 +18,12 @@ const senErrorProd = (err, req, res) => {
       msg: "something went very wrong!",
     });
   }
-
-  // render website
-  if (err.isOperational) {
-    res.status(err.statusCode).render("error", {
-      title: "Something went wrong",
-      msg: err.message,
-    });
-  }
-
-  res.status(err.statusCode).render("error", {
-    title: "Something went wrong!",
-    msg: "Please try again later.",
-  });
 };
 
 const handleValidationErrorDB = (err) => {
-  const errors = Object.values(err.errors).map((el) => el.message);
+  const [, secondPart, thirdPart] = err.message.split(":");
 
-  const message = `Invalid input data: ${errors.join(". ")}`;
+  const message = `Invalid input data: ${thirdPart}`;
   return new cusError(message, 400);
 };
 
@@ -45,13 +32,16 @@ const handleJWTExpireError = (err) => {
 };
 
 export default (err, req, res, next) => {
+  console.log("=========ERROR CONTROLLER============");
+  console.log(err);
+  console.log("=========ERROR ENDS============");
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
 
   let error = { ...err, message: err.message };
 
-  if (error._message === "Validation failed") error = handleValidationErrorDB(error);
-  if (error.name === "TokenExpiredError") error = handleJWTExpireError(error);
+  if (error?.name === "Database_Error") error = handleValidationErrorDB(error);
+  if (error?.name === "TokenExpiredError") error = handleJWTExpireError(error);
 
   senErrorProd(error, req, res);
 };

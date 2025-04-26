@@ -19,14 +19,14 @@ function AddProduct({ refetch }) {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { token } = useContext(AppContext);
-  const [product, setPro] = useState(defaultValue);
+  const [product, setProduct] = useState(defaultValue);
 
   const showModal = () => {
     setOpen(true);
   };
 
   const handleCancel = () => {
-    setPro(defaultValue);
+    setProduct(defaultValue);
     setOpen(false);
   };
 
@@ -40,6 +40,7 @@ function AddProduct({ refetch }) {
       setConfirmLoading(true);
       await fetchPost("product/", optionMaker(product, "POST", token));
       toast.success("Successfully added new product");
+      setProduct(defaultValue);
     } catch (error) {
       console.log(error);
       toast.error("Failed to add new product");
@@ -54,7 +55,7 @@ function AddProduct({ refetch }) {
     (field, number = false) =>
     (e) => {
       const data = number ? e : e.target.value;
-      setPro((prev) => ({
+      setProduct((prev) => ({
         ...prev,
         [field]: data,
       }));

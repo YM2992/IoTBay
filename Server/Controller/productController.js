@@ -1,9 +1,23 @@
-import { createOne, getAll, updateOne } from "./centralController.js";
+import { createOne, getAll, updateOne, deleteOne } from "./centralController.js";
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
   const products = getAll("product");
+
+  res.status(200).json({
+    status: "success",
+    data: products,
+  });
+});
+
+export const deleteOneProduct = catchAsync(async (req, res, next) => {
+  const { productid } = req.body;
+  if (!productid) {
+    throw new cusError("You have to provide product id", 401);
+  }
+
+  const products = deleteOne("product", productid);
 
   res.status(200).json({
     status: "success",
@@ -59,7 +73,7 @@ export const updateProduct = catchAsync(async (req, res, next) => {
   if (Object.keys(filteredData).length === 0) {
     return next(new cusError("No valid fields provided for update.", 500));
   }
-  console.log(filteredData);
+  // console.log(filteredData);
 
   try {
     updateOne("product", productid, filteredData);

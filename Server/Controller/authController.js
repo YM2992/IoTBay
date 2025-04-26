@@ -10,6 +10,7 @@ export const hashPassword = async function (password) {
 };
 
 const correctPassword = async function (typedInPassword, dbSavedPassword) {
+  if (!dbSavedPassword || !typedInPassword) return null;
   return await bcrypt.compare(typedInPassword, dbSavedPassword);
 };
 
@@ -52,10 +53,9 @@ export const login = catchAsync(async (req, res, next) => {
 
   // check if user exists && password is correct
   const user = findUserByEmail(email);
-  console.log(user);
-  const correct = await correctPassword(password, user.password);
+  const correct = await correctPassword(password, user?.password);
 
-  if (!user || !correct) {
+  if (!correct || !user) {
     return next(new cusError("incorrect email or password", 401));
   }
 
@@ -66,7 +66,7 @@ export const login = catchAsync(async (req, res, next) => {
 export const protect = catchAsync(async (req, res, next) => {
   let token = req.headers.authorization;
   if (!token || !token.startsWith("Bearer"))
-    next(new cusError("You are not logged in, please login first"), 401);
+    next(new cusError("You are not logged in, please login first", 401));
 
   token = token.split(" ")[1];
 

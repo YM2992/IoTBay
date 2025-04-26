@@ -1,12 +1,20 @@
 import express from "express";
 import { protect, restrictTo } from "../Controller/authController.js";
-import { getAllProducts, createProduct } from "../Controller/productController.js";
+import {
+  getAllProducts,
+  createProduct,
+  updateProduct,
+  getAllAvailableProducts,
+} from "../Controller/productController.js";
 
 const productRoute = express.Router();
 
 productRoute
   .route("/")
-  .get(getAllProducts)
-  .post(protect, restrictTo("manager", "staff", "owner"), createProduct);
+  .get(getAllAvailableProducts)
+  .post(protect, restrictTo("manager", "staff", "owner"), createProduct)
+  .patch(protect, restrictTo("manager", "staff", "owner"), updateProduct);
+
+productRoute.route("/all").get(protect, restrictTo("manager", "staff", "owner"), getAllProducts);
 
 export default productRoute;

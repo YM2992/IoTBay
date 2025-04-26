@@ -1,35 +1,36 @@
 import "./MainPage.css";
 import ProductListing from "../components/ProductListing";
-import { useContext } from "react";
-import { AuthContext } from "../main";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { AppContext } from "@/context/AppContext";
+import { useFetchProduct } from "@/hook/useFetchProduct";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
-function MainPage() {
-  const { user } = useContext(AuthContext);
-  const { products } = useContext(AuthContext);
-  
-  const username = user ? user?.name.split(" ")[0] : "Guest";
-  
-  let noProducts = products.length === 0;
+function ProductPage() {
+  const { products } = useContext(AppContext);
+  const { updateProducts } = useContext(AppContext);
+  const { data, error, loading } = useFetchProduct("product/");
 
   useEffect(() => {
-    if (!noProducts) {
-      return;
-    }
-  }, [products]);
+    if (!loading || !error) updateProducts(data);
+  }, [data, loading, error]);
+
+  let noProducts = products === null || products.length === 0;
 
   return (
     <div className="main-container">
       <main className="main-container">
-        <h1 className="welcome-message">Welcome back to IoTBay, {username}!</h1>
+        <h1 style={{ color: "white", fontSize: "2rem", fontWeight: "bold" }}>
+          Explore our product range
+        </h1>
 
-        {noProducts && (
-          <h1 style={{ color: "white" }}>
+        {(loading || noProducts) && <LoadingSpinner size="large" />}
+
+        {error && (
+          <h3 style={{ color: "white", marginTop: "2rem" }}>
             There are some issues with the server, please refresh the page
-          </h1>
+          </h3>
         )}
 
-        <h2 className="products-h">Products</h2>
         {!noProducts && (
           <div className="button-container">
             {products.map((product, index) => (
@@ -42,4 +43,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default ProductPage;

@@ -1,18 +1,61 @@
 import "../pages/MainPage.css";
 import "./ProductListing.css";
+import { Link } from "react-router-dom";
+
+import { Button, Card, ConfigProvider } from "antd";
+const { Meta } = Card;
+import { createStyles } from "antd-style";
+
+const useStyle = createStyles(({ prefixCls, css }) => ({
+  linearGradientButton: css`
+    &.${prefixCls}-btn-primary:not([disabled]):not(.${prefixCls}-btn-dangerous) {
+      > span {
+        position: relative;
+      }
+
+      &::before {
+        content: "";
+        background: linear-gradient(135deg, #6253e1, #04befe);
+        position: absolute;
+        inset: -1px;
+        opacity: 1;
+        transition: all 0.3s;
+        border-radius: inherit;
+      }
+
+      &:hover::before {
+        opacity: 0;
+      }
+    }
+  `,
+}));
 
 function ProductListing({ data }) {
-  const { name, image, price } = data;
+  const { styles } = useStyle();
+  const { name, image, price, productid } = data;
 
   return (
     <>
-      <a href={`/product/${name}`} className="product-card">
-        <img className="product-image" src={`/assets/products/${image}.jpg`} />
-        <div className="product-details">
-          <p className="product-title">{name}</p>
-          <p className="product-price">${price.toFixed(2)}</p>
-        </div>
-      </a>
+      <Card
+        style={{ width: 300 }}
+        cover={<img className="product-image" src={`/assets/products/${image}.jpg`} />}
+        actions={[
+          <ConfigProvider
+            key={"test"}
+            button={{
+              className: styles.linearGradientButton,
+            }}
+          >
+            <Link to={`/products/${productid}`}>
+              <Button type="primary" size="large">
+                See Details
+              </Button>
+            </Link>
+          </ConfigProvider>,
+        ]}
+      >
+        <Meta title={name} description={`$${price.toFixed(2)}`} />
+      </Card>
     </>
   );
 }

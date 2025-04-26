@@ -1,8 +1,8 @@
 import { useState, useContext } from "react";
-import { AuthContext } from "../main";
+import { AppContext } from "@/context/AppContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { fetchPost } from "../api";
+import { fetchPost, optionMaker } from "../api";
 import { strictEmailRegex } from "../utils/helper";
 
 import "./Login.css";
@@ -12,29 +12,27 @@ function Login() {
   const [email, setEmail] = useState("jeff@test.com");
   const [password, setPassword] = useState("");
 
-  const { login } = useContext(AuthContext);
+  const { login } = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
     if (!strictEmailRegex.test(email)) return toast.error("Email is not valid");
-
     if (email.trim() === "" || password.trim() === "") {
       return toast.error("Email or Password could not be empty");
     }
-
     const data = {
       email,
       password,
     };
 
-    const resData = await fetchPost("user/login", data);
+    try {
+      const resData = await fetchPost("user/login", optionMaker(data));
 
-    if (!resData) {
-      return toast.error("Wrong email or password");
+      login(resData.token, resData.user);
+      navigate("/welcome");
+    } catch (error) {
+      toast.error(error.message);
     }
-
-    login(resData.token, resData.user);
-    navigate("/welcome");
   };
 
   return (

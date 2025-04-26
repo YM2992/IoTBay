@@ -1,16 +1,15 @@
 import { useContext } from "react";
 import { RxAvatar } from "react-icons/rx";
 import ProfileTabs from "../components/ProfileTabs";
-import { AuthContext } from "../main";
+import { AppContext } from "@/context/AppContext";
 import "./profile.css";
 
 function Profile() {
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(AppContext);
   const { name } = user;
 
   return (
     <div className="profile-page">
-      {/* Top Profile Info */}
       <div className="profile-header">
         <div className="profile-left">
           <div className="profile-image">
@@ -22,8 +21,8 @@ function Profile() {
           </div>
           <div className="profile-info">
             <h2>{name}</h2>
-            <p> 0 Transactions</p>
-            <p>Joined in 2025</p> 
+            <p>0 Transactions</p>
+            <p>Joined in 2025</p>
           </div>
         </div>
         <div className="profile-actions">
@@ -31,12 +30,9 @@ function Profile() {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="tabs-wrapper">
         <ProfileTabs />
       </div>
-
-
     </div>
   );
 }

@@ -1,6 +1,8 @@
 // empty template
 import db from "./dbController.js";
 
+const tables = ["user", "product", "orders", "order_product"];
+
 export const getAll = (dbname) => {
   const sql = `SELECT * FROM ${dbname} WHERE 1=1`;
   return db.prepare(sql).all();
@@ -36,4 +38,15 @@ export const updateOne = (dbname, id, data) => {
 
   const sql = `UPDATE ${dbname} SET ${setClause} WHERE ${dbname}id = ?`;
   return db.prepare(sql).run(...values, id);
+};
+
+export const deleteOne = (dbname, id) => {
+  const allowedTables = ["user", "product", "orders", "order_product"];
+
+  if (!allowedTables.includes(dbname)) {
+    throw new Error("Invalid table name");
+  }
+
+  const sql = `DELETE FROM ${dbname} WHERE ${dbname}id = ?`;
+  return db.prepare(sql).run(id);
 };

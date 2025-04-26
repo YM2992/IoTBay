@@ -1,4 +1,5 @@
 export const API_URL = "http://localhost:8000/api/";
+const successCodes = [200, 201, 204];
 
 export const urlMaker = (endpoint) => {
   return `${API_URL}${endpoint}`;
@@ -19,7 +20,7 @@ export const fetchPost = async (endpoint, options) => {
   const response = await fetch(urlMaker(endpoint), options);
   const resData = await response.json();
 
-  if (response.status != 200 || !response.ok) {
+  if (!successCodes.includes(response.status) || !response.ok) {
     throw new Error(resData.message);
   }
   return resData;
@@ -29,7 +30,7 @@ export const fetchGet = async (endpoint) => {
   const response = await fetch(urlMaker(endpoint));
   const resData = await response.json();
 
-  if (response.status != 200 || !response.ok) {
+  if (!successCodes.includes(response.status) || !response.ok) {
     throw new Error(resData.message);
   }
 

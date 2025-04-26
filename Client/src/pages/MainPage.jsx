@@ -8,7 +8,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 
 import { filterCompare, filterIncludes } from "@/utils/filter";
 
-import { Layout, Space, Input, Button, Slider, InputNumber } from "antd";
+import { Layout, Space, Input, Button, Slider, InputNumber, Empty, Typography } from "antd";
 const { Content, Sider } = Layout;
 const { Search } = Input;
 
@@ -156,6 +156,19 @@ function ProductPage() {
             <ProductListing key={product.productid || index} data={product} />
           ))}
         </div>
+        {productAfterSearch.length < 1 && (
+          <Empty
+            description={
+              <p style={{ color: "white" }}>
+                There is no product matches your requirement, try something different
+              </p>
+            }
+          >
+            <Button type="primary" onClick={clearFilter}>
+              Reset filter
+            </Button>
+          </Empty>
+        )}
       </Content>
     </Layout>
   );

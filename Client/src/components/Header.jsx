@@ -1,15 +1,13 @@
 import IoTBayLogo from "/assets/IoTBay_Logo.png";
-import { Link } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { AppContext } from "@/context/AppContext";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { RxAvatar } from "react-icons/rx";
 import { IoCartOutline, IoLogOutOutline } from "react-icons/io5";
 
 import { Dropdown } from "antd";
 
 import { managers } from "@/utils/const";
-
-import { useFetchProduct } from "@/hook/useFetchProduct";
 
 const subBtnCSS = {
   lineHeight: "1rem",
@@ -39,9 +37,13 @@ const items = [
     ),
   },
 ];
-const SubMenu = () => (
+const SubMenu = ({ active }) => (
   <Dropdown menu={{ items }}>
-    <a style={{ display: "flex", alignItems: "center" }} onClick={(e) => e.preventDefault()}>
+    <a
+      style={{ display: "flex", alignItems: "center" }}
+      className={active ? "active" : ""}
+      onClick={(e) => e.preventDefault()}
+    >
       <RxAvatar style={{ fontSize: "1.2rem" }} />
     </a>
   </Dropdown>
@@ -49,6 +51,8 @@ const SubMenu = () => (
 
 function Header() {
   const { loggedIn, user } = useContext(AppContext);
+  const location = useLocation();
+  const isProfileActive = location.pathname === "/profile";
 
   return (
     <>
@@ -58,18 +62,18 @@ function Header() {
           <Link to="/">IoTBay</Link>
         </h1>
         <nav>
-          <Link to="/">Home</Link>
-          <Link to="/products">Products</Link>
-          <Link to="/cart" style={{ display: "flex", alignItems: "center" }}>
+          <NavLink to="/">Home</NavLink>
+          <NavLink to="/products">Products</NavLink>
+          <NavLink to="/cart" style={{ display: "flex", alignItems: "center" }}>
             <IoCartOutline style={{ fontSize: "1.2rem" }} />
-          </Link>
+          </NavLink>
 
-          {loggedIn && managers.includes(user.role) && <Link to="/manage">Manage</Link>}
+          {loggedIn && managers.includes(user.role) && <NavLink to="/manage">Manage</NavLink>}
 
-          {loggedIn && <SubMenu />}
+          {loggedIn && <SubMenu active={isProfileActive} />}
 
-          {!loggedIn && <Link to="/login">Login</Link>}
-          {!loggedIn && <Link to="/register">Register</Link>}
+          {!loggedIn && <NavLink to="/login">Login</NavLink>}
+          {!loggedIn && <NavLink to="/register">Register</NavLink>}
         </nav>
       </header>
     </>

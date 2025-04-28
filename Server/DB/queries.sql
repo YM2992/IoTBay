@@ -12,7 +12,7 @@ CREATE TABLE user (
     password VARCHAR(100) NOT NULL,
     address VARCHAR(100),
     activate boolean NOT NULL DEFAULT true,
-    role varchar(8) NOT NULL Check (role in ('customer', 'manager', 'staff', 'owner')) DEFAULT 'customer'
+    role varchar(8) NOT NULL Check (role in ('customer','admin' ,'manager', 'staff', 'owner')) DEFAULT 'customer'
 );
 
 CREATE TABLE product (
@@ -52,7 +52,7 @@ CREATE TABLE order_product (
 
 
 INSERT INTO user (name, phone, email, password, role) VALUES
-('Yasir Test', 0420555666, 'yasir@test.com', '$2b$12$AQDnbnawQkAeeQmKFhjNpe.eoDuoVLyDRhJEvRRwYF4j9wEzbk6wW', 'manager'),
+('Yasir Test', 0420555666, 'yasir@test.com', '$2b$12$AQDnbnawQkAeeQmKFhjNpe.eoDuoVLyDRhJEvRRwYF4j9wEzbk6wW', 'admin'),
 ('Jeff Test', 0420222333, 'jeff@test.com', '$2b$12$yTgqJX5rr9KafAU2aDDJQuTpuqW0RN.ubNNroElpXaOLYjf.y00Ze', 'manager'),
 ('Customer Test', 0420111222, 'random@test.com', '$2b$12$7we9rbwYFCwnHmI0as757Ol4bBam2lzA/ICKP4pYUgQs1I5A8oh9O', 'customer'),
 ('John Test', 0420111000, 'john@test.com', '$2b$12$v7q4jwss4Ory6pO/ILhnhOr4QfzzR/BDQQ12EUUq8I/3XJxv4a9.6', 'staff');

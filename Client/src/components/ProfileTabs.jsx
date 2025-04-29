@@ -1,13 +1,15 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { FaCreditCard, FaFileInvoice, FaFire } from "react-icons/fa";
 import { ImProfile } from "react-icons/im";
 import "react-tabs/style/react-tabs.css";
 
 import { AppContext } from "@/context/AppContext";
+import { fetchGet } from "@/api";
 
 // Import SavedPaymentInfo component
 import SavedPaymentInfo from "./SavedPaymentInfo";
+import toast from "react-hot-toast";
 
 const tabStyle = {
   display: "flex",
@@ -32,9 +34,27 @@ const TabOptions = [
 ];
 
 function ProfileTabs() {
-  const { user } = useContext(AppContext);
-  const { paymentInfo } = user;
+  const { user, token, paymentCard, updatePaymentCard } = useContext(AppContext);
   const [tabIndex, setTabIndex] = useState(0);
+
+  useEffect(() => {
+    fetchGet("payment/", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        console.log("Payment info:", res);
+        if (res && res.status === "success" && res.data && res.data.length > 0) {
+          localStorage.setItem("paymentCard", JSON.stringify(res.data[0]));
+          updatePaymentCard(res.data[0]);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching payment card:", error);
+        toast.error("Failed to fetch payment card information.");
+      });
+  }, []); // Fetch payment info on component mount
 
   const handleTabChange = (index) => {
     console.log(index);
@@ -63,7 +83,7 @@ function ProfileTabs() {
       </TabPanel>
 
       <TabPanel>
-        <SavedPaymentInfo paymentInfo={paymentInfo} />
+        <SavedPaymentInfo paymentCard={paymentCard} token={token} />
       </TabPanel>
 
       <TabPanel>

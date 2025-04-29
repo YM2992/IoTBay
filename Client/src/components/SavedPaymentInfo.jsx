@@ -5,16 +5,21 @@ import { fetchDelete, fetchPost } from "../api";
 import { toast } from "react-hot-toast";
 
 import "./SavedPaymentInfo.css";
+import { FaTrash } from "react-icons/fa";
 
-function SavedPaymentInfo({ paymentInfo }) {
-  const [newPaymentInfo, setNewPaymentInfo] = useState(
-    paymentInfo || {
+function SavedPaymentInfo({ paymentCard, token }) {
+  const [newPaymentCard, setNewPaymentInfo] = useState(
+    paymentCard || {
       cardNumber: "",
       expiryDate: "",
       cardholderName: "",
       cvv: "",
     }
   );
+
+  React.useEffect(() => {
+    console.log("Current Payment Info:", newPaymentCard);
+  }, [newPaymentCard]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,7 +28,12 @@ function SavedPaymentInfo({ paymentInfo }) {
 
   const handleSave = async () => {
     try {
-      const resData = await fetchPost("payment/", newPaymentInfo);
+      const resData = await fetchPost("payment/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: newPaymentCard
+      });
 
       if (!resData) {
         return toast.error(
@@ -41,7 +51,7 @@ function SavedPaymentInfo({ paymentInfo }) {
   const handleRemove = async () => {
     try {
       const resData = await fetchDelete("payment", {
-        cardNumber: paymentInfo.cardNumber,
+        cardNumber: paymentCard.cardNumber,
       });
 
       if (!resData) {
@@ -65,7 +75,7 @@ function SavedPaymentInfo({ paymentInfo }) {
 
   return (
     <div className="payment-info">
-      <h2>{paymentInfo ? "Saved Payment Details" : "Payment Details"}</h2>
+      <h2>{paymentCard ? "Saved Payment Details" : "Payment Details"}</h2>
       <form>
         <div>
           <label>
@@ -75,7 +85,7 @@ function SavedPaymentInfo({ paymentInfo }) {
               type="text"
               name="cardNumber"
               placeholder="1234 5678 9012 3456"
-              value={newPaymentInfo.cardNumber}
+              value={newPaymentCard.cardNumber}
               onChange={handleChange}
             />
           </label>
@@ -88,7 +98,7 @@ function SavedPaymentInfo({ paymentInfo }) {
               type="text"
               name="cardholderName"
               placeholder="First Last"
-              value={newPaymentInfo.cardholderName}
+              value={newPaymentCard.cardholderName}
               onChange={handleChange}
             />
           </label>
@@ -101,7 +111,7 @@ function SavedPaymentInfo({ paymentInfo }) {
               type="text"
               name="expiryDate"
               placeholder="MM/YY"
-              value={newPaymentInfo.expiryDate}
+              value={newPaymentCard.expiryDate}
               onChange={handleChange}
             />
           </label>
@@ -112,24 +122,22 @@ function SavedPaymentInfo({ paymentInfo }) {
               type="text"
               name="cvv"
               placeholder="123"
-              value={newPaymentInfo.cvv}
+              value={newPaymentCard.cvv}
               onChange={handleChange}
             />
           </label>
         </div>
         <button type="button" onClick={handleSave}>
-          {paymentInfo
-            ? "Update Payment Information"
-            : "Save Payment Information"}
+          {paymentCard ? "Update Payment Information" : "Save Payment Information"}
         </button>
-        {paymentInfo && (
+        {paymentCard && (
           <button
             role="remove-payment"
             type="button"
             onClick={handleRemove}
-            className="remove-button"
+            className="remove-payment-btn"
           >
-            <i className="fa fa-trash" aria-hidden="true"></i>
+            <i aria-hidden="true"><FaTrash /></i>
           </button>
         )}
       </form>
@@ -138,7 +146,8 @@ function SavedPaymentInfo({ paymentInfo }) {
 }
 
 SavedPaymentInfo.propTypes = {
-  paymentInfo: PropTypes.shape({
+  token: PropTypes.string.isRequired,
+  paymentCard: PropTypes.shape({
     cardNumber: PropTypes.string.isRequired,
     expiryDate: PropTypes.string.isRequired,
     cardholderName: PropTypes.string.isRequired,

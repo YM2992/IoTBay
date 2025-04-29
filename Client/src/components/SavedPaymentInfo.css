@@ -81,3 +81,13 @@ p {
   flex: 1;
   max-width: 150px; /* Optional: Limit the width of labels in flex-row */
 }
+
+
+.remove-payment-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.remove-payment-btn:hover {
+  background-color: #a01c29;
+}

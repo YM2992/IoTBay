@@ -1,4 +1,7 @@
 DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS payment;
+DROP TABLE IF EXISTS paymentCard;
+DROP TABLE IF EXISTS card;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_product;
@@ -18,7 +21,7 @@ CREATE TABLE user (
 CREATE TABLE payment (
     cardid INTEGER PRIMARY KEY,
     cardNumber VARCHAR(16) NOT NULL UNIQUE,
-    cardHolderName VARCHAR(100) NOT NULL,
+    cardholderName VARCHAR(100) NOT NULL,
     expiryDate DATE NOT NULL,
     cvv int NOT NULL,
     userid INTEGER,
@@ -68,9 +71,9 @@ INSERT INTO user (name, phone, email, password, role) VALUES
 ('John Test', 0420111000, 'john@test.com', '$2b$12$v7q4jwss4Ory6pO/ILhnhOr4QfzzR/BDQQ12EUUq8I/3XJxv4a9.6', 'staff');
 
 INSERT INTO payment (cardNumber, cardHolderName, expiryDate, cvv, userid) VALUES
-('1234567812345678', 'Yasir Test', '2026-12-31', 123, (SELECT userid FROM user WHERE email = 'yasir@test.com')),
-('1111222233334444', 'Customer Test', '2024-10-31', 789, (SELECT userid FROM user WHERE email = 'random@test.com')),
-('4444333322221111', 'John Test', '2027-09-30', 321, (SELECT userid FROM user WHERE email = 'john@test.com'));
+('1234567812345678', 'Yasir Test', '10/25', 123, (SELECT userid FROM user WHERE email = 'yasir@test.com')),
+('1111222233334444', 'Customer Test', '01/23', 789, (SELECT userid FROM user WHERE email = 'random@test.com')),
+('4444333322221111', 'John Test', '05/26', 321, (SELECT userid FROM user WHERE email = 'john@test.com'));
 
 INSERT INTO product (name, price, quantity, description, image) VALUES
 ('Raspberry Pi 4 Model B', 85, 10, 'A small computer that can be used for a variety of projects', 'Rash'),

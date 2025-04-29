@@ -15,22 +15,32 @@ export const optionMaker = (data, method = "POST") => {
   return option;
 };
 
-export const fetchPost = async (endpoint, options) => {
-  const response = await fetch(urlMaker(endpoint), optionMaker(options));
+export const fetchPost = async (endpoint, options={}) => {
+  const response = await fetch(urlMaker(endpoint), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+    body: JSON.stringify(options.body),
+  });
 
   if (response.status != 200 || !response.ok) {
     console.error(response);
     return null;
   }
   const resData = await response.json();
-
   return resData;
 };
 
 export const fetchGet = async (endpoint, options={}) => {
   const response = await fetch(urlMaker(endpoint), {
     method: "GET",
-    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+    ...options
   });
   if (response.status != 200 || !response.ok) {
     console.error(response);

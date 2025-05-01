@@ -1,15 +1,17 @@
 import { hashPassword } from "./authController.js";
 import catchAsync from "../Utils/catchAsync.js";
-import { createOne, getAllWithFilter, updateOneWithFilter } from "./centralController.js";
+import { createOne, deleteOne, getAllWithFilter, getOne, updateOneWithFilter } from "./centralController.js";
 import cusError from "../Utils/cusError.js";
 
-export const getPaymentDetails = catchAsync(async (req, res, next) => {
+
+/* Payment Card */
+export const getPaymentCard = catchAsync(async (req, res, next) => {
   const { userid } = req.user;
 
   try {
-    const paymentInfo = await getAllWithFilter("payment", { userid: userid });
+    const paymentInfo = await getAllWithFilter("payment_card", { userid: userid });
 
-    if (!paymentInfo) return next(new cusError("No payment information found", 404));
+    if (!paymentInfo) return next(new cusError("No payment card found", 404));
 
     res.status(200).json({
       status: "success",
@@ -20,7 +22,7 @@ export const getPaymentDetails = catchAsync(async (req, res, next) => {
   }
 });
 
-export const updatePaymentDetails = catchAsync(async (req, res, next) => {
+export const updatePaymentCard = catchAsync(async (req, res, next) => {
   const { userid } = req.user;
   let { cardNumber, expiryDate, cardholderName, cvv } = req.body;
 
@@ -45,56 +47,76 @@ export const updatePaymentDetails = catchAsync(async (req, res, next) => {
       cvv,
     };
 
-    const existingPaymentInfo = await getAllWithFilter("payment", {
+    const existingPaymentInfo = await getAllWithFilter("payment_card", {
       userid: userid,
       cardNumber: dataFilter.cardNumber
     });
 
     if (existingPaymentInfo && existingPaymentInfo.length > 0) {
-      console.log("Payment information already exists for this user");
       // Update existing payment information
-      await updateOneWithFilter("payment", { userid: userid }, dataFilter);
+      await updateOneWithFilter("payment_card", { cardNumber: cardNumber }, dataFilter);
 
-      console.log("Payment information updated successfully");
+      console.log("Payment card information updated successfully");
 
       res.status(200).json({
         status: "success",
-        message: "Payment information updated successfully",
+        message: "Payment card information updated successfully",
       });
       return;
     }
 
-    await createOne("payment", dataFilter);
+    await createOne("payment_card", dataFilter);
 
     res.status(200).json({
       status: "success",
-      message: "Payment information saved successfully",
+      message: "Payment card saved successfully",
     });
   } catch (error) {
     return next(new cusError(error.message, 400));
   }
 });
 
-export const removePaymentDetails = catchAsync(async (req, res, next) => {
+export const removePaymentCard = catchAsync(async (req, res, next) => {
+  const { userid } = req.user;
   const { cardNumber } = req.body;
 
   if (!cardNumber) return next(new cusError("Please provide all necessary information", 400));
 
   try {
     const dataFilter = {
-      cardNumber: await hashPassword(cardNumber),
+      userid: userid,
+      cardNumber: cardNumber
     };
 
-    const result = await getOne("payment", dataFilter);
+    const result = await getAllWithFilter("payment_card", dataFilter);
+    if (!result || result.length === 0) return next(new cusError("No payment card found", 404));
 
-    if (!result) return next(new cusError("No payment information found", 404));
-
-    delete dataFilter.cardNumber;
+    await deleteOne("payment_card", dataFilter);
 
     res.status(200).json({
       status: "success",
-      message: "Payment information removed successfully",
+      message: "Payment card removed successfully",
     });
+  } catch (error) {
+    return next(new cusError(error.message, 400));
+  }
+});
+
+
+/* Payment History */
+export const getPaymentHistory = catchAsync(async (req, res, next) => {
+  const { userid } = req.user;
+
+  try {
+    const paymentHistory = await getAllWithFilter("order_payment", { userid: userid });
+
+    if (!paymentHistory) return next(new cusError("No payment history found", 404));
+
+    res.status(200).json({
+      status: "success",
+      data: paymentHistory,
+    });
+
   } catch (error) {
     return next(new cusError(error.message, 400));
   }

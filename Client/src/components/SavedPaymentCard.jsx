@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { fetchDelete, fetchPost } from "../api";
+import { API_ROUTES, fetchDelete, fetchGet, fetchPost } from "../api";
 import { toast } from "react-hot-toast";
+import { AppContext } from "@/context/AppContext";
 
-import "./SavedPaymentInfo.css";
+import "./SavedPaymentCard.css";
 import { FaTrash } from "react-icons/fa";
 
-function SavedPaymentInfo({ paymentCard, token }) {
+function SavedPaymentCard({ paymentCard }) {
+    const { user, token, paymentCards, updatePaymentCards } = useContext(AppContext);
+  
   const [newPaymentCard, setNewPaymentInfo] = useState(
     paymentCard || {
       cardNumber: "",
@@ -17,9 +20,34 @@ function SavedPaymentInfo({ paymentCard, token }) {
     }
   );
 
-  React.useEffect(() => {
-    console.log("Current Payment Info:", newPaymentCard);
-  }, [newPaymentCard]);
+  const clearPaymentInfo = () => {
+    setNewPaymentInfo({
+      cardNumber: "",
+      expiryDate: "",
+      cardholderName: "",
+      cvv: "",
+    });
+  };
+
+  const refreshPaymentCards = () => {
+    fetchGet(API_ROUTES.payment.getPaymentCards, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        console.log("Payment_cards:", res);
+        if (res && res.status === "success") {
+          localStorage.setItem("payment_cards", JSON.stringify(res.data));
+          updatePaymentCards(res.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching payment card:", error);
+        toast.error("Failed to fetch payment card information.");
+      });
+  };
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,8 +55,10 @@ function SavedPaymentInfo({ paymentCard, token }) {
   };
 
   const handleSave = async () => {
+    let resData = null;
+
     try {
-      const resData = await fetchPost("payment/", {
+      resData = await fetchPost(API_ROUTES.payment.updatePaymentCard, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -37,45 +67,53 @@ function SavedPaymentInfo({ paymentCard, token }) {
 
       if (!resData) {
         return toast.error(
-          "Failed to save payment details, please try again later"
+          "Failed to save payment details" + (resData ? resData.message : "")
         );
       }
 
-      alert("Payment information saved successfully!");
+      toast.success(resData.message);
     } catch (error) {
       console.error(error);
-      alert("An error occurred while saving payment information.");
+      toast.error("An error occurred while saving payment information.");
+    }
+
+    if (resData.status === "success") {
+      if (resData.message.includes("saved")) {
+        clearPaymentInfo();
+        refreshPaymentCards();
+      } else if (resData.message.includes("updated")) {
+        refreshPaymentCards();
+      }
     }
   };
 
   const handleRemove = async () => {
     try {
-      const resData = await fetchDelete("payment", {
-        cardNumber: paymentCard.cardNumber,
+      const resData = await fetchDelete(API_ROUTES.payment.removePaymentCard, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: {
+          cardNumber: paymentCard.cardNumber,
+        }
       });
 
       if (!resData) {
         return toast.error(
-          "Failed to remove payment details, please try again later"
+          "Failed to remove payment details." + (resData ? resData.message : "")
         );
       }
 
-      alert("Payment information removed successfully!");
-      setNewPaymentInfo({
-        cardNumber: "",
-        expiryDate: "",
-        cardholderName: "",
-        cvv: "",
-      });
+      toast.success("Payment card removed successfully!");
+      refreshPaymentCards();
     } catch (error) {
       console.error(error);
-      alert("An error occurred while removing payment information.");
+      toast.success("An error occurred while removing payment information.");
     }
   };
 
   return (
-    <div className="payment-info">
-      <h2>{paymentCard ? "Saved Payment Details" : "Payment Details"}</h2>
+    <div className="payment-card-info">
       <form>
         <div>
           <label>
@@ -127,26 +165,27 @@ function SavedPaymentInfo({ paymentCard, token }) {
             />
           </label>
         </div>
-        <button type="button" onClick={handleSave}>
-          {paymentCard ? "Update Payment Information" : "Save Payment Information"}
-        </button>
-        {paymentCard && (
-          <button
+        <div className="button-row">
+          <button type="button" onClick={handleSave}>
+            {paymentCard ? "Update Payment Card" : "Save Payment Card"}
+          </button>
+          {paymentCard && (
+            <button
             role="remove-payment"
             type="button"
             onClick={handleRemove}
             className="remove-payment-btn"
-          >
-            <i aria-hidden="true"><FaTrash /></i>
-          </button>
-        )}
+            >
+              <i aria-hidden="true"><FaTrash /></i>
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );
 }
 
-SavedPaymentInfo.propTypes = {
-  token: PropTypes.string.isRequired,
+SavedPaymentCard.propTypes = {
   paymentCard: PropTypes.shape({
     cardNumber: PropTypes.string.isRequired,
     expiryDate: PropTypes.string.isRequired,
@@ -155,4 +194,4 @@ SavedPaymentInfo.propTypes = {
   }).isRequired,
 };
 
-export default SavedPaymentInfo;
+export default SavedPaymentCard;

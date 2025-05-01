@@ -55,3 +55,10 @@ export const updateOneWithFilter = (dbname, filter, data) => {
     .join(" AND ")}`;
   return db.prepare(sql).run(...values, ...Object.values(filter));
 };
+
+export const deleteOne = (dbname, filter) => {
+  const sql = `DELETE FROM ${dbname} WHERE ${Object.keys(filter)
+    .map((key) => `${key} = ?`)
+    .join(" AND ")}`;
+  return db.prepare(sql).run(...Object.values(filter));
+};

@@ -1,9 +1,8 @@
-div.payment-info {
+div.payment-card-info {
   font-family: Arial, sans-serif;
   margin: 20px;
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensure the container takes the full height of the viewport */
 }
 
 h2 {
@@ -15,7 +14,7 @@ form {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  align-items: center; /* Center form elements horizontally */
+  align-items: center;
 }
 
 label {
@@ -23,7 +22,7 @@ label {
   flex-direction: column;
   font-size: 14px;
   color: #555;
-  align-items: baseline; /* Center label text and inputs */
+  align-items: baseline;
 }
 
 input.card-number,
@@ -35,7 +34,7 @@ input.cvv {
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-top: 5px;
-  max-width: 300px; /* Set a maximum width for the inputs */
+  max-width: 300px;
 }
 
 input.expiry-date,
@@ -74,12 +73,12 @@ p {
 .flex-row {
   display: flex;
   gap: 15px;
-  justify-content: center; /* Center inputs in the row */
+  justify-content: center;
 }
 
 .flex-row label {
   flex: 1;
-  max-width: 150px; /* Optional: Limit the width of labels in flex-row */
+  max-width: 150px;
 }
 
 
@@ -90,4 +89,10 @@ p {
 
 .remove-payment-btn:hover {
   background-color: #a01c29;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
 }

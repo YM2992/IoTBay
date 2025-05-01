@@ -2,9 +2,11 @@ DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS payment;
 DROP TABLE IF EXISTS paymentCard;
 DROP TABLE IF EXISTS card;
+DROP TABLE IF EXISTS payment_card;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_product;
+DROP TABLE IF EXISTS order_payment;
 
 
 CREATE TABLE user (
@@ -18,7 +20,7 @@ CREATE TABLE user (
     role varchar(8) NOT NULL Check (role in ('customer', 'manager', 'staff', 'owner')) DEFAULT 'customer'
 );
 
-CREATE TABLE payment (
+CREATE TABLE payment_card (
     cardid INTEGER PRIMARY KEY,
     cardNumber VARCHAR(16) NOT NULL UNIQUE,
     cardholderName VARCHAR(100) NOT NULL,
@@ -63,6 +65,16 @@ CREATE TABLE order_product (
     FOREIGN KEY (productid) REFERENCES product(productid)
 );
 
+CREATE TABLE order_payment (
+    paymentid INTEGER PRIMARY KEY,
+    paymentDate DATE DEFAULT CURRENT_DATE,
+    amount float NOT NULL check(amount >= 0),
+    cardNumber VARCHAR(16) NOT NULL,
+    orderid INTEGER,
+    FOREIGN KEY (orderid) REFERENCES orders(orderid),
+    FOREIGN KEY (cardNumber) REFERENCES payment_card(cardNumber)
+);
+
 
 INSERT INTO user (name, phone, email, password, role) VALUES
 ('Yasir Test', 0420555666, 'yasir@test.com', '$2b$12$AQDnbnawQkAeeQmKFhjNpe.eoDuoVLyDRhJEvRRwYF4j9wEzbk6wW', 'manager'),
@@ -70,10 +82,12 @@ INSERT INTO user (name, phone, email, password, role) VALUES
 ('Customer Test', 0420111222, 'random@test.com', '$2b$12$7we9rbwYFCwnHmI0as757Ol4bBam2lzA/ICKP4pYUgQs1I5A8oh9O', 'customer'),
 ('John Test', 0420111000, 'john@test.com', '$2b$12$v7q4jwss4Ory6pO/ILhnhOr4QfzzR/BDQQ12EUUq8I/3XJxv4a9.6', 'staff');
 
-INSERT INTO payment (cardNumber, cardHolderName, expiryDate, cvv, userid) VALUES
+INSERT INTO payment_card (cardNumber, cardHolderName, expiryDate, cvv, userid) VALUES
 ('1234567812345678', 'Yasir Test', '10/25', 123, (SELECT userid FROM user WHERE email = 'yasir@test.com')),
 ('1111222233334444', 'Customer Test', '01/23', 789, (SELECT userid FROM user WHERE email = 'random@test.com')),
-('4444333322221111', 'John Test', '05/26', 321, (SELECT userid FROM user WHERE email = 'john@test.com'));
+('4444333322221111', 'John Test', '05/26', 321, (SELECT userid FROM user WHERE email = 'john@test.com')),
+('2222333344445555', 'Jeff Test', '12/24', 456, (SELECT userid FROM user WHERE email = 'jeff@test.com')),
+('5555666677778888', 'Jeff Test', '11/25', 654, (SELECT userid FROM user WHERE email = 'jeff@test.com'));
 
 INSERT INTO product (name, price, quantity, description, image) VALUES
 ('Raspberry Pi 4 Model B', 85, 10, 'A small computer that can be used for a variety of projects', 'Rash'),
@@ -107,6 +121,10 @@ INSERT INTO order_product (orderid, productid, quantity) VALUES
 ((SELECT orderid FROM orders WHERE paymentID = 'PAY54321'), 
  (SELECT productid FROM product WHERE name = 'Switch'), 2);
 
+INSERT INTO order_payment (paymentDate, amount, cardNumber, orderid) VALUES
+('2025-03-14', 109.98, '1111222233334444', (SELECT orderid FROM orders WHERE paymentID = 'PAY12345')),
+('2025-03-14', 45.50, '1234567812345678', (SELECT orderid FROM orders WHERE paymentID = 'PAY67890')),
+('2025-03-13', 79.99, '1111222233334444', (SELECT orderid FROM orders WHERE paymentID = 'PAY54321'));
 
 
 SELECT * FROM user;

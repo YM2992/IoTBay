@@ -1,5 +1,27 @@
 export const API_URL = "http://localhost:8000/api/";
 
+export const API_ROUTES = {
+  user: {
+    login: "user/login",
+    register: "user/register",
+    checkEmail: "user/checkEmail",
+    getUser: "user/getUser",
+    updateUser: "user/updateUser",
+  },
+  product: {
+    getProducts: "product/getProducts",
+    getProductById: "product/getProductById",
+  },
+  payment: {
+    getPaymentCards: "payment/card/",
+    updatePaymentCard: "payment/card/",
+    removePaymentCard: "payment/card/",
+
+    getPaymentHistory: "payment/history/",
+    addPayment: "payment/addPayment"
+  },
+};
+
 export const urlMaker = (endpoint) => {
   return `${API_URL}${endpoint}`;
 };
@@ -22,7 +44,7 @@ export const fetchPost = async (endpoint, options={}) => {
       "Content-Type": "application/json",
       ...options.headers,
     },
-    body: JSON.stringify(options.body),
+    body: JSON.stringify(options.body)
   });
 
   if (response.status != 200 || !response.ok) {
@@ -50,10 +72,14 @@ export const fetchGet = async (endpoint, options={}) => {
   return resData;
 };
 
-export const fetchDelete = async (endpoint, options) => {
+export const fetchDelete = async (endpoint, options={}) => {
   const response = await fetch(urlMaker(endpoint), {
     method: "DELETE",
-    ...options
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+    body: JSON.stringify(options.body)
   });
 
   if (response.status != 200 || !response.ok) {

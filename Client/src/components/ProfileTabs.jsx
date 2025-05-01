@@ -1,14 +1,15 @@
 import { useState, useContext, useEffect } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import { FaCreditCard, FaFileInvoice, FaFire } from "react-icons/fa";
+import { FaCreditCard, FaFileInvoice, FaFire, FaHistory } from "react-icons/fa";
 import { ImProfile } from "react-icons/im";
 import "react-tabs/style/react-tabs.css";
 
 import { AppContext } from "@/context/AppContext";
-import { fetchGet } from "@/api";
+import { API_ROUTES, fetchGet } from "@/api";
 
 // Import SavedPaymentInfo component
-import SavedPaymentInfo from "./SavedPaymentInfo";
+import SavedPaymentCard from "./SavedPaymentCard";
+import PaymentHistory from "./PaymentHistory";
 import toast from "react-hot-toast";
 
 const tabStyle = {
@@ -28,33 +29,50 @@ const TabOptions = [
     label: "Payment",
   },
   {
+    icon: <FaHistory />,
+    label: "Payment History",
+  },
+  {
     icon: <FaFire />,
     label: "Others...",
   },
 ];
 
 function ProfileTabs() {
-  const { user, token, paymentCard, updatePaymentCard } = useContext(AppContext);
+  const { user, token, paymentCards, updatePaymentCards } = useContext(AppContext);
   const [tabIndex, setTabIndex] = useState(0);
+  const [cards, setCards] = useState(paymentCards || []);
 
   useEffect(() => {
-    fetchGet("payment/", {
+    fetchGet(API_ROUTES.payment.getPaymentCards, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
-        console.log("Payment info:", res);
-        if (res && res.status === "success" && res.data && res.data.length > 0) {
-          localStorage.setItem("paymentCard", JSON.stringify(res.data[0]));
-          updatePaymentCard(res.data[0]);
+        console.log("Payment_cards:", res);
+        if (res && res.status === "success") {
+          localStorage.setItem("payment_cards", JSON.stringify(res.data));
+          updatePaymentCards(res.data);
         }
       })
       .catch((error) => {
         console.error("Error fetching payment card:", error);
         toast.error("Failed to fetch payment card information.");
       });
-  }, []); // Fetch payment info on component mount
+  }, []);
+
+  useEffect(() => {
+    if (paymentCards && paymentCards.length > 0) {
+      let cards = paymentCards.map((card, index) => {
+        return <SavedPaymentCard paymentCard={card} key={index} />;
+      });
+
+      setCards(cards);
+    } else {
+      setCards([]);
+    }
+  }, [paymentCards, updatePaymentCards]);
 
   const handleTabChange = (index) => {
     console.log(index);
@@ -83,7 +101,28 @@ function ProfileTabs() {
       </TabPanel>
 
       <TabPanel>
-        <SavedPaymentInfo paymentCard={paymentCard} token={token} />
+        {paymentCards.length > 0 && 
+          <h2>
+            {paymentCards.length > 1 ? "Saved Payment Methods" : "Saved Payment Method"}
+          </h2>}
+        {paymentCards.length === 0 && <h2>No saved payment methods</h2>}
+        
+        {cards.length > 0 && (
+          <div>
+            {cards.map((card, index) => (
+              <div key={index}>{card}</div>
+            ))}
+          </div>
+        )}
+
+        <h3>Add New Payment Method</h3>
+        <SavedPaymentCard
+          token={token}
+        />
+      </TabPanel>
+
+      <TabPanel>
+        <PaymentHistory />
       </TabPanel>
 
       <TabPanel>

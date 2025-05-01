@@ -2,7 +2,7 @@ import React from "react";
 import { test, expect, describe } from "vitest";
 
 import { render, screen } from "@testing-library/react";
-import SavedPaymentInfo from "./SavedPaymentInfo";
+import SavedPaymentCard from "./SavedPaymentCard";
 
 
 const mockPaymentInfo = {
@@ -12,15 +12,15 @@ const mockPaymentInfo = {
   cvv: "931",
 };
 
-describe("SavedPaymentInfo Component", () => {
+describe("SavedPaymentCard Component", () => {
   test("add new payment details", () => {
-    render(<SavedPaymentInfo paymentInfo={null} />);
+    render(<SavedPaymentCard paymentInfo={null} />);
 
     expect(screen.getByText(/Save Payment/)).toBeDefined();
   });
 
   test("see saved payment details", () => {
-    render(<SavedPaymentInfo paymentInfo={mockPaymentInfo} />);
+    render(<SavedPaymentCard paymentInfo={mockPaymentInfo} />);
     
     expect(screen.getByText("Saved Payment Details")).toBeDefined();
     expect(screen.getByDisplayValue(mockPaymentInfo.cardNumber)).toBeDefined();
@@ -31,7 +31,7 @@ describe("SavedPaymentInfo Component", () => {
   });
 
   test("remove saved payment details", () => {
-    render(<SavedPaymentInfo paymentInfo={mockPaymentInfo} />);
+    render(<SavedPaymentCard paymentInfo={mockPaymentInfo} />);
 
     const removeButton = screen.getByRole("remove-payment");
     expect(removeButton).toBeDefined();

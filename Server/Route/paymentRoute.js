@@ -1,13 +1,16 @@
 import express from "express";
-import { getPaymentDetails, updatePaymentDetails, removePaymentDetails } from "../Controller/paymentController.js";
+import { getPaymentCard, updatePaymentCard, removePaymentCard } from "../Controller/paymentController.js";
 import { protect, restrictTo } from "../Controller/authController.js";
 
 const paymentRoute = express.Router();
 
 paymentRoute
-    .route("/")
-    .get(protect, getPaymentDetails)
-    .post(protect, updatePaymentDetails)
-    .delete(protect, removePaymentDetails);
+    .route("/card/")
+    .get(protect, getPaymentCard)
+    .post(protect, updatePaymentCard)
+    .delete(protect, removePaymentCard);
+
+paymentRoute
+    .route("/history/")
 
 export default paymentRoute;

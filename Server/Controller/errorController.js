@@ -5,7 +5,7 @@ const senErrorProd = (err, req, res) => {
   if (req.originalUrl.startsWith("/api")) {
     // Operational, trusted error: send a message to client
     if (err.isOperational) {
-      res.status(err.statusCode).json({
+      return res.status(err.statusCode).json({
         status: err.status,
         message: err.message,
       });
@@ -13,7 +13,7 @@ const senErrorProd = (err, req, res) => {
 
     // Programming or other unknown error: don't show error details
     console.error("ERROR!", err);
-    res.status(500).json({
+    return res.status(500).json({
       status: "error",
       msg: "something went very wrong!",
     });
@@ -31,6 +31,10 @@ const handleJWTExpireError = (err) => {
   return new cusError("Your token has expired! Please Login again");
 };
 
+const handleJWTError = (err) => {
+  return new cusError("Your token has some issue, please logout and re login");
+};
+
 export default (err, req, res, next) => {
   console.log("=========ERROR CONTROLLER============");
   console.log(err);
@@ -42,6 +46,7 @@ export default (err, req, res, next) => {
 
   if (error?.name === "Database_Error") error = handleValidationErrorDB(error);
   if (error?.name === "TokenExpiredError") error = handleJWTExpireError(error);
+  if (error?.name === "JsonWebTokenError") error = handleJWTError(error);
 
   senErrorProd(error, req, res);
 };

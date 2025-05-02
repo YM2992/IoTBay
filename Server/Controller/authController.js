@@ -66,11 +66,14 @@ export const login = catchAsync(async (req, res, next) => {
 export const protect = catchAsync(async (req, res, next) => {
   let token = req.headers.authorization;
   if (!token || !token.startsWith("Bearer"))
-    next(new cusError("You are not logged in, please login first", 401));
+    return next(new cusError("You are not logged in, please login first", 401));
 
   token = token.split(" ")[1];
+  if (token.trim() == "null")
+    return next(new cusError("There is a token issue, please report it to us", 401));
 
   const result = await jwt.verify(token, process.env.JWT_SECRET);
+
   const currentUser = findUserById(result.id);
   if (!currentUser) {
     return next(new cusError("The user no longer exist", 401));
@@ -89,10 +92,3 @@ export const restrictTo = (...roles) => {
     next();
   };
 };
-
-// const user = findUserByEmail("John111@example.com");
-// const pass = "charliepass789";
-// const result = await correctPassword(pass, user.password);
-
-// console.log(user);
-// console.log(result);

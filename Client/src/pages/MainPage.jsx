@@ -8,7 +8,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 
 import { filterCompare, filterIncludes } from "@/utils/filter";
 
-import { Layout, Space, Input, Button, Slider, InputNumber, Empty, Typography } from "antd";
+import { Layout, Space, Input, Button, Slider, InputNumber, Empty } from "antd";
 const { Content, Sider } = Layout;
 const { Search } = Input;
 
@@ -68,6 +68,8 @@ function ProductPage() {
     }
   }, [loading, error, data, updateProducts]);
 
+  console.log(data);
+
   if (loading || !loaded || error) {
     return (
       <div className="main-container">
@@ -80,8 +82,6 @@ function ProductPage() {
       </div>
     );
   }
-
-  // filterProductsName
 
   const productAfterMinPrice = filterCompare(products, filterMinPrice, "price");
   const productAfterMaxPrice = filterCompare(productAfterMinPrice, filterMaxPrice, "price", true);

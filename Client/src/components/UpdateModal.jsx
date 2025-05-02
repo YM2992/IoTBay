@@ -1,12 +1,12 @@
-import { Button, Modal, Input, InputNumber } from "antd";
 import { useState, useContext } from "react";
-import { urlMaker } from "@/api";
 import { AppContext } from "@/context/AppContext";
+import { fetchPost, optionMaker } from "@/api";
+
+import { Button, Modal, Input, InputNumber, Switch, Popconfirm } from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import toast from "react-hot-toast";
 
 const { TextArea } = Input;
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { Switch } from "antd";
 
 const UpdateModal = ({ product, refetch }) => {
   const [open, setOpen] = useState(false);
@@ -15,15 +15,18 @@ const UpdateModal = ({ product, refetch }) => {
   const [pro, setPro] = useState(product);
   const { productid, name, price, quantity, description, available, image } = pro;
 
-  const patchOptions = (data) => {
-    return {
-      method: "PATCH",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
+  const handleSubmit = async (data, method, message) => {
+    try {
+      setConfirmLoading(true);
+      await fetchPost("product/", optionMaker(data, method, token));
+      toast.success(message);
+    } catch (error) {
+      toast.error(error.message || "An error occurred");
+    } finally {
+      setConfirmLoading(false);
+      refetch();
+      setOpen(false);
+    }
   };
 
   const showModal = () => {
@@ -48,22 +51,11 @@ const UpdateModal = ({ product, refetch }) => {
       data: rest,
     };
 
-    try {
-      setConfirmLoading(true);
-      const response = await fetch(urlMaker("product/"), patchOptions(data));
+    handleSubmit(data, "PATCH", "Successfully updated product");
+  };
 
-      if (response.status != 200 || !response.ok) {
-        throw new Error(response);
-      }
-
-      toast.success("Successfully updated product");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setConfirmLoading(false);
-      refetch();
-      setOpen(false);
-    }
+  const confirm = (e) => {
+    handleSubmit({ productid }, "DELETE", "Successfully deleted product");
   };
 
   const handleChange =
@@ -84,9 +76,29 @@ const UpdateModal = ({ product, refetch }) => {
       <Modal
         title={`Product ${productid}`}
         open={open}
-        onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
+        footer={[
+          <Button key="back" onClick={handleCancel}>
+            Cancel
+          </Button>,
+          <Popconfirm
+            key="delete"
+            title="Delete the product"
+            description="Are you sure to delete this product?"
+            onConfirm={confirm}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button key="deleteBtn" type="primary" danger loading={confirmLoading}>
+              Delete
+            </Button>
+          </Popconfirm>,
+
+          <Button key="submit" type="primary" loading={confirmLoading} onClick={handleOk}>
+            Update
+          </Button>,
+        ]}
       >
         <label>Image Name</label>
         <Input placeholder={image} value={image} onChange={handleChange("image")} />

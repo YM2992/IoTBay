@@ -1,6 +1,6 @@
 import { hashPassword } from "./authController.js";
 import catchAsync from "../Utils/catchAsync.js";
-import { createOne, deleteOne, getAllWithFilter, getOne, updateOneWithFilter } from "./centralController.js";
+import { createOne, deleteOne, deleteOneByFilter, getAllWithFilter, getOne, updateOneWithFilter } from "./centralController.js";
 import cusError from "../Utils/cusError.js";
 
 
@@ -91,7 +91,7 @@ export const removePaymentCard = catchAsync(async (req, res, next) => {
     const result = await getAllWithFilter("payment_card", dataFilter);
     if (!result || result.length === 0) return next(new cusError("No payment card found", 404));
 
-    await deleteOne("payment_card", dataFilter);
+    await deleteOneByFilter("payment_card", dataFilter);
 
     res.status(200).json({
       status: "success",

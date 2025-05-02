@@ -21,6 +21,7 @@ const tabStyle = {
 const TabOptions = [
   { icon: <FaBoxOpen />, label: "Listings" },
   { icon: <FaFileInvoice />, label: "Orders" },
+  { icon: <FaStar />, label: "Reviews" },
   {
     icon: <FaCreditCard />,
     label: "Payment",
@@ -28,8 +29,7 @@ const TabOptions = [
   {
     icon: <FaHistory />,
     label: "Payment History",
-  },
-  { icon: <FaStar />, label: "Reviews" },
+  }
 ];
 
 function ProfileTabs() {

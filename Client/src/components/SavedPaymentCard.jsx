@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { API_ROUTES, fetchDelete, fetchGet, fetchPost } from "../api";
+import { API_ROUTES, fetchDelete, fetchGet, fetchPost, optionMaker } from "../api";
 import { toast } from "react-hot-toast";
 import { AppContext } from "@/context/AppContext";
 
@@ -58,12 +58,7 @@ function SavedPaymentCard({ paymentCard }) {
     let resData = null;
 
     try {
-      resData = await fetchPost(API_ROUTES.payment.updatePaymentCard, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: newPaymentCard
-      });
+      resData = await fetchPost(API_ROUTES.payment.updatePaymentCard, optionMaker(newPaymentCard));
 
       if (!resData) {
         return toast.error(
@@ -74,7 +69,7 @@ function SavedPaymentCard({ paymentCard }) {
       toast.success(resData.message);
     } catch (error) {
       console.error(error);
-      toast.error("An error occurred while saving payment information.");
+      return toast.error("An error occurred while saving payment information.");
     }
 
     if (resData.status === "success") {

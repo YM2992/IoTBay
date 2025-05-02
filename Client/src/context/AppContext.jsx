@@ -24,6 +24,7 @@ export const AppProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("user");
+    localStorage.removeItem("payment_cards");
     setLoggedIn(false);
     setUser(null);
   };

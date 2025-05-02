@@ -47,10 +47,12 @@ export const fetchDelete = async (endpoint, options={}) => {
     },
     body: JSON.stringify(options.body)
   });
+  const resData = await response.json();
 
   if (response.status != 200 || !response.ok) {
     throw new Error(response.message);
   }
+  return resData;
 };
 
 export const fetchPost = async (endpoint, options) => {

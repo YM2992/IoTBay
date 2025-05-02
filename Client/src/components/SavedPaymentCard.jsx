@@ -58,7 +58,7 @@ function SavedPaymentCard({ paymentCard }) {
     let resData = null;
 
     try {
-      resData = await fetchPost(API_ROUTES.payment.updatePaymentCard, optionMaker(newPaymentCard));
+      resData = await fetchPost(API_ROUTES.payment.updatePaymentCard, optionMaker(newPaymentCard, "POST", token));
 
       if (!resData) {
         return toast.error(
@@ -103,7 +103,7 @@ function SavedPaymentCard({ paymentCard }) {
       refreshPaymentCards();
     } catch (error) {
       console.error(error);
-      toast.success("An error occurred while removing payment information.");
+      return toast.error("An error occurred while removing payment information.");
     }
   };
 

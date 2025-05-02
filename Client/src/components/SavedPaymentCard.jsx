@@ -7,6 +7,7 @@ import { AppContext } from "@/context/AppContext";
 
 import "./SavedPaymentCard.css";
 import { FaTrash } from "react-icons/fa";
+import { getPaymentCards, removePaymentCard, savePaymentCard } from "./Payment";
 
 function SavedPaymentCard({ paymentCard }) {
     const { user, token, paymentCards, updatePaymentCards } = useContext(AppContext);
@@ -30,22 +31,18 @@ function SavedPaymentCard({ paymentCard }) {
   };
 
   const refreshPaymentCards = () => {
-    fetchGet(API_ROUTES.payment.getPaymentCards, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
+    getPaymentCards(token).then((res) => {
+      if (res && res.status === "success") {
         console.log("Payment_cards:", res);
         if (res && res.status === "success") {
           localStorage.setItem("payment_cards", JSON.stringify(res.data));
           updatePaymentCards(res.data);
         }
-      })
-      .catch((error) => {
-        console.error("Error fetching payment card:", error);
-        toast.error("Failed to fetch payment card information.");
-      });
+      }
+    }).catch((error) => {
+      console.error("Error fetching payment card:", error);
+      toast.error("Failed to fetch payment card information.");
+    });
   };
 
 
@@ -55,56 +52,36 @@ function SavedPaymentCard({ paymentCard }) {
   };
 
   const handleSave = async () => {
-    let resData = null;
-
-    try {
-      resData = await fetchPost(API_ROUTES.payment.updatePaymentCard, optionMaker(newPaymentCard, "POST", token));
-
-      if (!resData) {
-        return toast.error(
-          "Failed to save payment details" + (resData ? resData.message : "")
-        );
-      }
-
-      toast.success(resData.message);
-    } catch (error) {
-      console.error(error);
-      return toast.error("An error occurred while saving payment information.");
-    }
-
-    if (resData.status === "success") {
-      if (resData.message.includes("saved")) {
-        clearPaymentInfo();
+    savePaymentCard(newPaymentCard, token).then((res) => {
+      if (res && res.status === "success") {
+        if (res.message.includes("updated")) {
+          toast.success("Payment card updated successfully!");
+        } else {
+          toast.success("Payment card saved successfully!");
+          clearPaymentInfo();
+        }
         refreshPaymentCards();
-      } else if (resData.message.includes("updated")) {
-        refreshPaymentCards();
+      } else {
+        toast.error("Failed to save payment card.");
       }
-    }
+    }).catch((error) => {
+      console.error("Error saving payment card:", error);
+      toast.error("An error occurred while saving payment information.");
+    });
   };
 
   const handleRemove = async () => {
-    try {
-      const resData = await fetchDelete(API_ROUTES.payment.removePaymentCard, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: {
-          cardNumber: paymentCard.cardNumber,
-        }
-      });
-
-      if (!resData) {
-        return toast.error(
-          "Failed to remove payment details." + (resData ? resData.message : "")
-        );
+    removePaymentCard(paymentCard.cardNumber, token).then((res) => {
+      if (res && res.status === "success") {
+        toast.success("Payment card removed successfully!");
+        refreshPaymentCards();
+      } else {
+        toast.error("Failed to remove payment card.");
       }
-
-      toast.success("Payment card removed successfully!");
-      refreshPaymentCards();
-    } catch (error) {
-      console.error(error);
-      return toast.error("An error occurred while removing payment information.");
-    }
+    }).catch((error) => {
+      console.error("Error removing payment card:", error);
+      toast.error("An error occurred while removing payment information.");
+    });
   };
 
   return (

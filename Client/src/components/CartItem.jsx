@@ -1,16 +1,19 @@
+import { useContext } from "react";
 import { Card, Typography, Select, Space, Tooltip } from "antd";
 import { HeartOutlined, DeleteOutlined } from "@ant-design/icons";
+import { AppContext } from "@/context/AppContext";
 
 const { Text } = Typography;
 const { Option } = Select;
 
-function CartItem({ item, onQtyChange, onDelete }) {
+function CartItem({ item, onDelete, onQtyChange }) {
+  const { user } = useContext(AppContext);
+
   return (
     <Card
-      style={{ marginBottom: "1px", borderRadius: "0px", marginLeft: "15px", marginRight: "-15px"}}
+      style={{ marginBottom: "1px", borderRadius: "0px", marginLeft: "15px", marginRight: "-15px" }}
     >
       <div style={{ display: "flex" }}>
-        {/* Product Image */}
         <img
           src={`/assets/products/${item.image}.jpg`}
           alt={item.name}
@@ -22,9 +25,7 @@ function CartItem({ item, onQtyChange, onDelete }) {
           }}
         />
 
-        {/* Info and Actions */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          {/* Title and Price */}
           <div>
             <Text strong style={{ fontSize: "18px" }}>{item.name}</Text><br />
             <Text type="secondary" style={{ fontSize: "16px" }}>
@@ -32,7 +33,6 @@ function CartItem({ item, onQtyChange, onDelete }) {
             </Text>
           </div>
 
-          {/* Bottom-right Actions */}
           <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginTop: "auto", gap: 16 }}>
             <Select
               defaultValue={item.quantity}

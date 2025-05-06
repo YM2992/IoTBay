@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 
 function EmptyCartCard() {
   return (
-    <div style={{ marginTop: "5rem", padding: "10rem", background: "#021029" }}>
+    <div style={{ marginTop: "5rem", padding: "10rem", background: "#021029", marginLeft: "15px" }}>
       <Empty
         description={
-          <Typography.Text style={{ color: "white" }}>Your cart is Empty</Typography.Text>
+          <Typography.Text style={{ color: "white", }}>Your cart is Empty</Typography.Text>
         }
       >
         <Button>

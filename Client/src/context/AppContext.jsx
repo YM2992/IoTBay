@@ -1,17 +1,21 @@
 import { createContext, useState } from "react";
-import { fetchCart as fetchCartAPI, addToCart as addToCartAPI } from "@/api/cartAPI";
+import {
+  fetchCart as fetchCartAPI,
+  addToCart as addToCartAPI,
+  removeCartItem as removeCartItemAPI,
+} from "@/api/cartAPI";
 import axios from "axios";
 
 export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("jwt"));
   const [token, setToken] = useState(localStorage.getItem("jwt"));
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || null
+  );
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   // const fetchProduct = useAutoFetch("product/");
-
-  // const
 
   const login = (token, userData) => {
     localStorage.setItem("jwt", token);
@@ -33,25 +37,43 @@ export const AppProvider = ({ children }) => {
   };
 
   const fetchCart = async (userid) => {
-    console.log("🔄 Fetching cart...");
+    console.log("Fetching cart...");
     try {
       const cartData = await fetchCartAPI(userid);
       console.log("✅ Cart fetched from API:", cartData);
-      setCart(cartData);  // ✅ This updates the global cart
+      setCart(cartData);
     } catch (err) {
       console.error("❌ Failed to fetch cart in context:", err);
     }
   };
-  
 
-const addToCart = async (userid, productid, quantity) => {
-  return await addToCartAPI(userid, productid, quantity);
-};
-  
+  const addToCart = async (userid, productid, quantity) => {
+    return await addToCartAPI(userid, productid, quantity);
+  };
+
+  const removeItemFromCart = async (productid) => {
+    if (!user?.userid) return;
+    await removeCartItemAPI(user.userid, productid);
+    await fetchCart(user.userid); // Refresh cart
+  };
+
   return (
-    <AppContext.Provider value={{ loggedIn, user, token, products, cart, login, logout, updateProducts, fetchCart, addToCart }}>
+    <AppContext.Provider
+      value={{
+        loggedIn,
+        user,
+        token,
+        products,
+        cart,
+        login,
+        logout,
+        updateProducts,
+        fetchCart,
+        addToCart,
+        removeCartItemAPI,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );
 };
-

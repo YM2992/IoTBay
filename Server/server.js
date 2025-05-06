@@ -41,8 +41,6 @@ app.use((req, res, next) => {
 // Routes
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
-
-
 app.use("/api/cart", cartRoute);
 
 // Error handler

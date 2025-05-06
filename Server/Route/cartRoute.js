@@ -14,9 +14,10 @@ router.post("/add", (req, res, next) => {
   }, addToCart);
   
 
+
 router.post("/add", addToCart);
 router.get("/:userid", getCartItems);
-router.patch("/update-quantity", updateCartQuantity);
+router.post("/update-quantity", updateCartQuantity);
 router.delete("/remove", removeCartItem);
 
 export default router;

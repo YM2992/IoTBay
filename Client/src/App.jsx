@@ -16,7 +16,7 @@ import Registration from "./pages/Registration";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
-import ProductDetails from "./components/ProductDetails";
+import ProductDetails from "./pages/ProductPage";
 import Manage from "./pages/Manage";
 // import Test from "./pages/Test";
 

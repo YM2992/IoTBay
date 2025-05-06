@@ -1,49 +1,55 @@
+// server.js
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-// const rateLimit = require("express-rate-limit");
 import errorController from "./Controller/errorController.js";
+
+// Routes
+import userRoute from "./Route/userRoute.js";
+import productRoute from "./Route/productRoute.js";
+import cartRoute from "./Route/cartRoute.js";
+
+// Load env vars
+dotenv.config({ path: "./Server/config.env" });
 
 const app = express();
 
-import userRoute from "./Route/userRoute.js";
-import productRoute from "./Route/productRoute.js";
-dotenv.config({ path: "./Server/config.env" });
-
+// CORS middleware
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true,
   })
 );
+app.options("*", cors());
 
-// const limiter = rateLimit({
-//   max: 100,
-//   windowMs: 60 * 60 * 1000,
-//   message: "Too many requests from this IP, please try again in an hour!",
-// });
-// app.use("/api", limiter);
 
+// Body parsers
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
-app.use(function (req, res, next) {
+// Logger for debugging
+app.use((req, res, next) => {
+  console.log(`Hit ${req.method} ${req.originalUrl}`);
   console.log("Query:", req.query);
   console.log("Params:", req.params);
   console.log("Body:", req.body);
   next();
 });
 
-dotenv.config({ path: "./Server/config.env" });
-
-// app.use("/api/order", orderRoute);
+// Routes
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 
+
+app.use("/api/cart", cartRoute);
+
+// Error handler
 app.use(errorController);
 
-// Server
-const port = 8000 || process.env.PORT;
-
-const server = app.listen(port, () => {
-  console.log(`app running on ${port}...`);
+// Start server
+const port = process.env.PORT || 8000;
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });

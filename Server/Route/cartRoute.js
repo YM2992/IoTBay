@@ -8,13 +8,6 @@ import {
 
 const router = express.Router();
 
-router.post("/add", (req, res, next) => {
-    console.log("🔥 Hit /api/cart/add route");
-    next();
-  }, addToCart);
-  
-
-
 router.post("/add", addToCart);
 router.get("/:userid", getCartItems);
 router.post("/update-quantity", updateCartQuantity);

@@ -10,6 +10,8 @@ const EditUserPage = () => {
   const { token } = useContext(AppContext);
 
   useEffect(() => {
+    console.log("Decoded Token:", atob(token.split('.')[1]));
+    console.log("Stored Token:", token);
     fetch(urlMaker("user"), {
       headers: {
         "Content-Type": "application/json",

@@ -15,15 +15,15 @@ const correctPassword = async function (typedInPassword, dbSavedPassword) {
 };
 
 // sign new json web token
-const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const signToken = (user) => {
+  return jwt.sign({ id: user.userid, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
 // send token to user
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user.userid);
+  const token = signToken(user);
 
   user.password = undefined;
 

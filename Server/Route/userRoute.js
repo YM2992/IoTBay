@@ -6,7 +6,7 @@ const userRoute = express.Router();
 
 userRoute
   .route("/")
-  .get(protect, restrictTo("manager", "staff", "owner"), getAllUser)
+  .get(protect, restrictTo("admin","manager", "staff", "owner"), getAllUser)
   .post(createUser);
 
 userRoute.route("/login").post(login);

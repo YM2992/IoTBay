@@ -4,14 +4,13 @@ import catchAsync from "../Utils/catchAsync.js";
 import { getOne, getAll } from "./centralController.js";
 import cusError from "../Utils/cusError.js";
 
-export const findUserByEmail = (email) => {
-  return getOne("user", "email", email);
+export const findUserByEmail = async (email) => {
+  return await getOne("user", "email", email);
 };
 
 export const userExists = catchAsync(async (req, res, next) => {
-  const current = findUserByEmail(req.body.email);
+  const current = await findUserByEmail(req.body.email);
   const exist = current ? true : false;
-  console.log(exist);
 
   res.status(200).json({
     status: "success",
@@ -19,8 +18,9 @@ export const userExists = catchAsync(async (req, res, next) => {
   });
 });
 
-export const findUserById = (id) => {
-  return getOne("user", "userid", id);
+
+export const findUserById = async (id) => {
+  return await getOne("user", "userid", id);
 };
 
 export const getMe = catchAsync(async (req, res, next) => {
@@ -35,7 +35,7 @@ export const getMe = catchAsync(async (req, res, next) => {
 });
 
 export const getAllUser = catchAsync(async (req, res, next) => {
-  const users = getAll("user");
+  const users = await getAll("user");
 
   res.status(200).json({
     status: "success",
@@ -58,7 +58,7 @@ export const createUser = catchAsync(async (req, res, next) => {
   };
 
   try {
-    createOne("user", dataFilter);
+    await createOne("user", dataFilter); // ✅ add await
     delete dataFilter.password;
 
     res.status(200).json({

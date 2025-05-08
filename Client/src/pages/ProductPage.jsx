@@ -11,8 +11,7 @@ function ProductPage() {
   const { productid } = useParams();
   const [data, setData] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [showPopup, setShowPopup] = useState(false);
-  const { addToCart, fetchCart, products } = useContext(AppContext);
+  const { addToCart, fetchCart, products, loggedIn } = useContext(AppContext);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -27,35 +26,32 @@ function ProductPage() {
 
   const handleAddToCart = async () => {
     try {
-      const userData = JSON.parse(localStorage.getItem("user"));
-  
-      if (!userData || !userData.userid) {
+      if (!loggedIn) {
         toast.error("You must be logged in to add to cart");
         return;
       }
   
+      const userData = JSON.parse(localStorage.getItem("user"));
       const payload = {
         userid: userData.userid,
         productid: data.productid,
         quantity,
       };
   
-      console.log("🛒 Adding to cart with payload:", payload);
+      console.log("🛒 Adding to cart:", payload);
   
-      // Call API to add item to cart
-      const response = await addToCart(payload.userid, payload.productid, payload.quantity);
+      const response = await addToCart(data.productid, quantity);
   
-      if (response?.status === "success") {
-        // Refresh the global cart
+      // ✅ Adjusted this to reflect actual response shape
+      if (Array.isArray(response)) {
         await fetchCart(payload.userid);
-  
-        // Show success popup
+      
         toast.custom((t) => (
-            <Card
+          <Card
             className="cart-toast-popup"
             style={{
               position: "fixed",
-              bottom: "-130px", // ⬅️ move it down here
+              bottom: "-150px",
               right: "20px",
               zIndex: 9999,
               width: 280,
@@ -70,14 +66,17 @@ function ProductPage() {
           </Card>
         ));
       } else {
+        console.warn("⚠️ Unexpected response in addToCart:", response);
         toast.error("❌ Could not add to cart");
       }
+      
     } catch (err) {
       console.error("❌ Error in handleAddToCart:", err);
       toast.error("Something went wrong adding to cart");
     }
   };
   
+
   return (
     <div className="page-wrapper">
       <div className="product-page">

@@ -1,52 +1,47 @@
-// src/api/cartAPI.js
 import axios from "axios";
-const API_URL = "http://localhost:8000/api/cart"; // Or your real backend base URL
 
-export const fetchCart = async (userid) => {
-    const res = await axios.get(`${API_URL}/${userid}`);
-    return res.data.data;
-  };
-  
-  
+const axiosInstance = axios.create({
+  baseURL: "http://localhost:8000/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-export const addToCart = async (userid, productid, quantity) => {
-  try {
-    const res = await axios.post(`${API_URL}/add`, {
-      userid,
-      productid,
-      quantity,
-    });
-    return res.data;
-  } catch (error) {
-    console.error("❌ Failed to add to cart:", error);
-    return null;
+// 🔐 Attach JWT token from localStorage on each request
+axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("jwt");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+    console.log("📤 Token attached to request:", token);
   }
+  return config;
+});
+
+// ➕ Add item to cart
+export const addToCart = async (productid, quantity) => {
+  const res = await axiosInstance.post("/cart/add", { productid, quantity });
+  return res.data.data; // standardized
 };
 
-export async function removeCartItem(userid, productid) {
-    const res = await fetch(`${API_URL}/remove`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userid, productid }),
-    });
-  
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Failed to remove item");
-    return data;
-  }
+// 🗑️ Remove item from cart
+export const removeCartItem = async (productid) => {
+  const res = await axiosInstance.delete("/cart/remove", {
+    data: { productid },
+  });
+  return res.data.data;
+};
 
-  export const updateCartQuantity = async (userid, productid, quantity) => {
-    const res = await fetch(`${API_URL}/update-quantity`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userid, productid, quantity }),
-    });
-  
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Failed to update quantity");
-    return data;
-  };
+// 🔄 Update quantity
+export const updateCartQuantity = async (productid, quantity) => {
+  const res = await axiosInstance.post("/cart/update-quantity", {
+    productid,
+    quantity,
+  });
+  return res.data.data;
+};
+
+// 🛒 Fetch cart
+export const fetchCart = async () => {
+  const res = await axiosInstance.get("/cart");
+  return res.data.data;
+};

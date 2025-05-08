@@ -5,18 +5,14 @@ import {
   updateCartQuantity,
   removeCartItem,
 } from "../Controller/cartController.js";
+import { protect } from "../Controller/authController.js";
 
 const router = express.Router();
 
-router.post("/add", (req, res, next) => {
-    console.log("🔥 Hit /api/cart/add route");
-    next();
-  }, addToCart);
-  
-
+router.use(protect); // ✅ Make sure this is applied BEFORE all routes
 
 router.post("/add", addToCart);
-router.get("/:userid", getCartItems);
+router.get("/", getCartItems);
 router.post("/update-quantity", updateCartQuantity);
 router.delete("/remove", removeCartItem);
 

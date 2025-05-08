@@ -1,31 +1,34 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { promisify } from "util";
 
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
 import { findUserByEmail, findUserById } from "./userController.js";
 
+// 🔐 Password Hashing
 export const hashPassword = async function (password) {
   return await bcrypt.hash(password, 12);
 };
 
+// ✅ Password Checker
 const correctPassword = async function (typedInPassword, dbSavedPassword) {
   if (!dbSavedPassword || !typedInPassword) return null;
   return await bcrypt.compare(typedInPassword, dbSavedPassword);
 };
 
-// sign new json web token
+// 🧾 Sign JWT
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
-// send token to user
+// 📦 Send JWT in Cookie + Body
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user.userid);
+  const token = signToken(user.userid); // 👈 you use 'userid' in DB, not 'id'
 
-  user.password = undefined;
+  user.password = undefined; // Hide password in frontend
 
   const cookieOptions = {
     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
@@ -43,44 +46,66 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
+// 🔑 Login Controller
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email);
 
   if (!email || !password) {
-    return next(new cusError("please provide email and password", 400));
+    return next(new cusError("Please provide email and password", 400));
   }
 
-  // check if user exists && password is correct
-  const user = findUserByEmail(email);
-  const correct = await correctPassword(password, user?.password);
+  const user = await findUserByEmail(email); // 👈 FIX: await it
 
-  if (!correct || !user) {
-    return next(new cusError("incorrect email or password", 401));
+  if (!user) {
+    return next(new cusError("Incorrect email or password", 401));
   }
 
-  // if all correct, send token back to user
+  const correct = await correctPassword(password, user.password);
+
+  if (!correct) {
+    return next(new cusError("Incorrect email or password", 401));
+  }
+
   createSendToken(user, 200, res);
 });
 
-export const protect = catchAsync(async (req, res, next) => {
-  let token = req.headers.authorization;
-  if (!token || !token.startsWith("Bearer"))
-    next(new cusError("You are not logged in, please login first", 401));
+// 🔐 Protect Middleware
+export const protect = async (req, res, next) => {
+  try {
+    let token;
 
-  token = token.split(" ")[1];
+    // ✅ Get token from Authorization header
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
 
-  const result = await jwt.verify(token, process.env.JWT_SECRET);
-  const currentUser = findUserById(result.id);
-  if (!currentUser) {
-    return next(new cusError("The user no longer exist", 401));
+    if (!token) {
+      return next(new cusError("You are not logged in!", 401));
+    }
+
+    // ✅ Verify token
+    const decoded = await promisify(jwt.verify)(
+      token,
+      process.env.JWT_SECRET || "secret" // update as needed
+    );
+
+    // ✅ Log decoded for debug
+    console.log("Decoded JWT:", decoded);
+
+    // ✅ Attach to request
+    req.user = { id: decoded.id };
+
+    next();
+  } catch (err) {
+    console.log("❌ Invalid token:", err.message);
+    next(new cusError("Invalid token", 401));
   }
+};
 
-  // Grand Access to Protected Route
-  req.user = currentUser;
-  next();
-});
-
+// 🔒 Role-Based Restriction
 export const restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
@@ -89,10 +114,3 @@ export const restrictTo = (...roles) => {
     next();
   };
 };
-
-// const user = findUserByEmail("John111@example.com");
-// const pass = "charliepass789";
-// const result = await correctPassword(pass, user.password);
-
-// console.log(user);
-// console.log(result);

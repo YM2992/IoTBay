@@ -8,11 +8,11 @@ import "./Cart.css";
 const { Text } = Typography;
 
 function Cart() {
-  const { user, cart, fetchCart } = useContext(AppContext);
+  const { cart, fetchCart } = useContext(AppContext);
 
   useEffect(() => {
-    if (user?.userid) fetchCart(user.userid);
-  }, [user]);
+    fetchCart();
+  }, []);
 
   const totalPrice = Array.isArray(cart)
     ? cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)
@@ -20,8 +20,8 @@ function Cart() {
 
   const removeItemFromCart = async (productid) => {
     try {
-      await removeCartItemAPI(user.userid, productid);
-      fetchCart(user.userid);
+      await removeCartItemAPI(productid);
+      await fetchCart();
     } catch (err) {
       console.error("❌ Failed to remove item:", err.message);
     }
@@ -29,8 +29,8 @@ function Cart() {
 
   const handleQtyChange = async (item, newQty) => {
     try {
-      await updateCartQuantity(user.userid, item.productid, newQty);
-      fetchCart(user.userid);
+      await updateCartQuantity(item.productid, newQty);
+      await fetchCart();
     } catch (err) {
       console.error("❌ Failed to update quantity:", err.message);
     }

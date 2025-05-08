@@ -3,10 +3,12 @@ import {
   fetchCart as fetchCartAPI,
   addToCart as addToCartAPI,
   removeCartItem as removeCartItemAPI,
+  updateCartQuantity as updateCartQuantityAPI,
 } from "@/api/cartAPI";
 import axios from "axios";
 
 export const AppContext = createContext();
+
 export const AppProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("jwt"));
   const [token, setToken] = useState(localStorage.getItem("jwt"));
@@ -15,7 +17,6 @@ export const AppProvider = ({ children }) => {
   );
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
-  // const fetchProduct = useAutoFetch("product/");
 
   const login = (token, userData) => {
     localStorage.setItem("jwt", token);
@@ -36,10 +37,10 @@ export const AppProvider = ({ children }) => {
     setProducts(newProducts);
   };
 
-  const fetchCart = async (userid) => {
-    console.log("Fetching cart...");
+  const fetchCart = async () => {
+    console.log("🛒 Fetching cart...");
     try {
-      const cartData = await fetchCartAPI(userid);
+      const cartData = await fetchCartAPI();
       console.log("✅ Cart fetched from API:", cartData);
       setCart(cartData);
     } catch (err) {
@@ -47,14 +48,18 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const addToCart = async (userid, productid, quantity) => {
-    return await addToCartAPI(userid, productid, quantity);
+  const addToCart = async (productid, quantity) => {
+    return await addToCartAPI(productid, quantity);
   };
 
   const removeItemFromCart = async (productid) => {
-    if (!user?.userid) return;
-    await removeCartItemAPI(user.userid, productid);
-    await fetchCart(user.userid); // Refresh cart
+    await removeCartItemAPI(productid);
+    await fetchCart(); // Refresh cart
+  };
+
+  const updateCartQuantity = async (productid, quantity) => {
+    await updateCartQuantityAPI(productid, quantity);
+    await fetchCart(); // Refresh cart
   };
 
   return (
@@ -70,7 +75,8 @@ export const AppProvider = ({ children }) => {
         updateProducts,
         fetchCart,
         addToCart,
-        removeCartItemAPI,
+        removeItemFromCart,
+        updateCartQuantity,
       }}
     >
       {children}

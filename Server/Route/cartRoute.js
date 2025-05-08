@@ -9,7 +9,7 @@ import { protect } from "../Controller/authController.js";
 
 const router = express.Router();
 
-router.use(protect); // ✅ Make sure this is applied BEFORE all routes
+router.use(protect); 
 
 router.post("/add", addToCart);
 router.get("/", getCartItems);

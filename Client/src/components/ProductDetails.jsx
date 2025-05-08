@@ -7,7 +7,7 @@ function ProductDetails({ product }) {
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    setQuantity(1); // reset on product change
+    setQuantity(1);
   }, [product]);
 
   if (!product) return <p>Loading...</p>;

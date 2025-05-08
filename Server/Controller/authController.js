@@ -6,29 +6,29 @@ import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
 import { findUserByEmail, findUserById } from "./userController.js";
 
-// 🔐 Password Hashing
+// Password Hashing
 export const hashPassword = async function (password) {
   return await bcrypt.hash(password, 12);
 };
 
-// ✅ Password Checker
+// Password Checker
 const correctPassword = async function (typedInPassword, dbSavedPassword) {
   if (!dbSavedPassword || !typedInPassword) return null;
   return await bcrypt.compare(typedInPassword, dbSavedPassword);
 };
 
-// 🧾 Sign JWT
+//  Sign JWT
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
-// 📦 Send JWT in Cookie + Body
+// Send JWT in Cookie + Body
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user.userid); // 👈 you use 'userid' in DB, not 'id'
+  const token = signToken(user.userid); 
 
-  user.password = undefined; // Hide password in frontend
+  user.password = undefined;
 
   const cookieOptions = {
     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
@@ -46,7 +46,7 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-// 🔑 Login Controller
+// Login Controller
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -54,7 +54,7 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new cusError("Please provide email and password", 400));
   }
 
-  const user = await findUserByEmail(email); // 👈 FIX: await it
+  const user = await findUserByEmail(email); 
 
   if (!user) {
     return next(new cusError("Incorrect email or password", 401));
@@ -69,12 +69,12 @@ export const login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-// 🔐 Protect Middleware
+// Protect Middleware
 export const protect = async (req, res, next) => {
   try {
     let token;
 
-    // ✅ Get token from Authorization header
+    // Get token from Authorization header
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
@@ -86,16 +86,16 @@ export const protect = async (req, res, next) => {
       return next(new cusError("You are not logged in!", 401));
     }
 
-    // ✅ Verify token
+    // Verify token
     const decoded = await promisify(jwt.verify)(
       token,
       process.env.JWT_SECRET || "secret" // update as needed
     );
 
-    // ✅ Log decoded for debug
+    // Log decoded for debug
     console.log("Decoded JWT:", decoded);
 
-    // ✅ Attach to request
+    // Attach to request
     req.user = { id: decoded.id };
 
     next();
@@ -105,7 +105,7 @@ export const protect = async (req, res, next) => {
   }
 };
 
-// 🔒 Role-Based Restriction
+// Role-Based Restriction
 export const restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {

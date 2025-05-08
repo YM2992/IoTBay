@@ -1,4 +1,3 @@
-// Controller/cartController.js
 import catchAsync from "../Utils/catchAsync.js";
 import {
   addItemToCart,
@@ -7,7 +6,7 @@ import {
   fetchUserCart,
 } from "../Services/cartService.js";
 
-// ✅ Add product to cart
+// Add product to cart
 export const addToCart = catchAsync(async (req, res, next) => {
   const userid = req.user.id;
   const { productid, quantity } = req.body;
@@ -24,7 +23,7 @@ export const addToCart = catchAsync(async (req, res, next) => {
   });
 });
 
-// ✅ Update quantity in cart
+// Update quantity in cart
 export const updateCartQuantity = catchAsync(async (req, res, next) => {
   const userid = req.user.id;
   const { productid, quantity } = req.body;
@@ -41,7 +40,7 @@ export const updateCartQuantity = catchAsync(async (req, res, next) => {
   });
 });
 
-// ✅ Remove item from cart
+// Remove item from cart
 export const removeCartItem = catchAsync(async (req, res, next) => {
   const userid = req.user.id;
   const { productid } = req.body;
@@ -58,7 +57,7 @@ export const removeCartItem = catchAsync(async (req, res, next) => {
   });
 });
 
-// ✅ Fetch cart items
+// Fetch cart items
 export const getCartItems = catchAsync(async (req, res, next) => {
   const userid = req.user.id;
 

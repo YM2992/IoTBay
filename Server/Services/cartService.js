@@ -1,7 +1,6 @@
-// services/cartService.js
 import { db } from "../DB/database.js";
 
-// ✅ Add or update product in cart
+// Add or update product in cart
 export const addItemToCart = async (userid, productid, quantity) => {
     if (!userid || !productid || !quantity) {
       throw new Error("Missing required fields");
@@ -77,7 +76,7 @@ export const addItemToCart = async (userid, productid, quantity) => {
     });
   };
   
-// ✅ Update quantity
+// Update quantity
 export async function updateItemQuantity(userid, productid, quantity) {
   if (!userid || !productid || quantity == null) {
     throw new Error("Missing required fields");
@@ -106,7 +105,7 @@ export async function updateItemQuantity(userid, productid, quantity) {
   });
 }
 
-// ✅ Remove item
+// Remove item
 export async function removeItemFromCart(userid, productid) {
   if (!userid || !productid) {
     throw new Error("Missing required fields");
@@ -156,7 +155,7 @@ export async function removeItemFromCart(userid, productid) {
   });
 }
 
-// ✅ Fetch cart items
+// Fetch cart items
 export async function fetchUserCart(userid) {
   if (!userid) {
     throw new Error("User ID required");

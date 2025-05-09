@@ -5,6 +5,7 @@ import {
   createUser,
   getMe,
   userExists,
+  updateUser,
 } from "../Controller/userController.js";
 
 const userRoute = express.Router();
@@ -12,7 +13,8 @@ const userRoute = express.Router();
 userRoute
   .route("/")
   .get(protect, restrictTo("manager", "staff", "owner"), getAllUser)
-  .post(createUser);
+  .post(createUser)
+  .patch(protect, updateUser);
 
 userRoute.route("/login").post(login);
 

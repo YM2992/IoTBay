@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { AppContext } from "@/context/AppContext";
+import { fetchPost, optionMaker } from "@/api";
+import { toast } from "react-hot-toast";
 
 const ViewProfile = () => {
+  const { user, token } = useContext(AppContext);
+  const { name, email, password, address, phone } = user;
+
   const [profile, setProfile] = useState({
-    username: "JohnDoe",
-    password: "********",
-    email: "johndoe@example.com",
-    phone: "123-456-7890",
-    address: "123 Main St, City, Country",
+    username: name,
+    password: password,
+    email: email,
+    phone: phone,
+    address: address,
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -17,11 +23,30 @@ const ViewProfile = () => {
     setEditedProfile({ ...editedProfile, [name]: value });
   };
 
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
+  const handleEditToggle = async () => {
     if (isEditing) {
-      setProfile({ ...editedProfile });
+      try {
+        // Prepare data for the API call
+        const data = {
+          name: editedProfile.username,
+          email: editedProfile.email,
+          password: editedProfile.password,
+          phone: editedProfile.phone,
+          address: editedProfile.address,
+          userid: user.id,
+        };
+
+        // Make API call to update the user profile
+        await fetchPost("user/", optionMaker(data, "PATCH", token));
+        toast.success("Profile updated successfully!");
+
+        // Update the local state
+        setProfile({ ...editedProfile });
+      } catch (error) {
+        toast.error("Failed to update profile. Please try again.");
+      }
     }
+    setIsEditing(!isEditing);
   };
 
   return (

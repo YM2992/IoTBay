@@ -1,7 +1,7 @@
 import { createOne } from "./centralController.js";
 import { hashPassword } from "./authController.js";
 import catchAsync from "../Utils/catchAsync.js";
-import { getOne, getAll } from "./centralController.js";
+import { getOne, getAll, updateOne } from "./centralController.js";
 import cusError from "../Utils/cusError.js";
 
 export const findUserByEmail = (email) => {
@@ -64,6 +64,38 @@ export const createUser = catchAsync(async (req, res, next) => {
     res.status(200).json({
       status: "success",
       data: dataFilter,
+    });
+  } catch (error) {
+    let message = `${error.code} ${error.message}`;
+    if (error.code === "SQLITE_CONSTRAINT_UNIQUE")
+      message = `Duplicate Field: ${error.message}`;
+
+    return next(new cusError(message, 400));
+  }
+});
+
+export const updateUser = catchAsync(async (req, res, next) => {
+  const { name, email, password, phone, address } = req.body;
+
+  // Filter out null or undefined values and provide defaults
+  const data = { name, email, password, phone, address };
+
+  // Remove undefined fields (e.g., if password is not provided)
+  Object.keys(data).forEach((key) => {
+    if (data[key] === undefined || !data[key]) {
+      delete data[key];
+    }
+  });
+
+  try {
+    updateOne("user", req.user.userid, data);
+
+    // Remove sensitive data before sending the response
+    delete data.password;
+
+    res.status(200).json({
+      status: "success",
+      data: data,
     });
   } catch (error) {
     let message = `${error.code} ${error.message}`;

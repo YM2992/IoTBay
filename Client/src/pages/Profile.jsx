@@ -3,13 +3,15 @@ import { RxAvatar } from "react-icons/rx";
 import ProfileTabs from "../components/ProfileTabs";
 import { AppContext } from "@/context/AppContext";
 import "./profile.css";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
+  const navigate = useNavigate();
   const { user } = useContext(AppContext);
   const { name } = user;
 
   const navigateToViewProfile = () => {
-    window.location.href = "/view-profile";
+    navigate("/view-profile");
   };
 
   return (

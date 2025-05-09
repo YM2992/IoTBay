@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { AppContext } from "@/context/AppContext";
 import { fetchPost, optionMaker } from "@/api";
 import { toast } from "react-hot-toast";
+import "./ViewProfile.css"; // Assuming you have a CSS file for styling
 
 const ViewProfile = () => {
   const { user, token } = useContext(AppContext);
@@ -26,7 +27,6 @@ const ViewProfile = () => {
   const handleEditToggle = async () => {
     if (isEditing) {
       try {
-        // Prepare data for the API call
         const data = {
           name: editedProfile.username,
           email: editedProfile.email,
@@ -36,11 +36,8 @@ const ViewProfile = () => {
           userid: user.id,
         };
 
-        // Make API call to update the user profile
         await fetchPost("user/", optionMaker(data, "PATCH", token));
         toast.success("Profile updated successfully!");
-
-        // Update the local state
         setProfile({ ...editedProfile });
       } catch (error) {
         toast.error("Failed to update profile. Please try again.");
@@ -50,71 +47,68 @@ const ViewProfile = () => {
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
-      <h1>View Profile</h1>
-      <div style={{ marginBottom: "20px" }}>
-        <label>
-          Username:
+    <div className="view-profile-container">
+      <h1 className="view-profile-title">View Profile</h1>
+      <div className="view-profile-form">
+        <div className="form-group">
+          <label>Username:</label>
           <input
             type="text"
             name="username"
             value={isEditing ? editedProfile.username : profile.username}
             onChange={handleInputChange}
             disabled={!isEditing}
+            className="form-input"
           />
-        </label>
-      </div>
-      <div style={{ marginBottom: "20px" }}>
-        <label>
-          Password:
+        </div>
+        <div className="form-group">
+          <label>Password:</label>
           <input
             type="password"
             name="password"
             value={isEditing ? editedProfile.password : profile.password}
             onChange={handleInputChange}
             disabled={!isEditing}
+            className="form-input"
           />
-        </label>
-      </div>
-      <div style={{ marginBottom: "20px" }}>
-        <label>
-          Email:
+        </div>
+        <div className="form-group">
+          <label>Email:</label>
           <input
             type="email"
             name="email"
             value={isEditing ? editedProfile.email : profile.email}
             onChange={handleInputChange}
             disabled={!isEditing}
+            className="form-input"
           />
-        </label>
-      </div>
-      <div style={{ marginBottom: "20px" }}>
-        <label>
-          Phone:
+        </div>
+        <div className="form-group">
+          <label>Phone:</label>
           <input
             type="tel"
             name="phone"
             value={isEditing ? editedProfile.phone : profile.phone}
             onChange={handleInputChange}
             disabled={!isEditing}
+            className="form-input"
           />
-        </label>
-      </div>
-      <div style={{ marginBottom: "20px" }}>
-        <label>
-          Address:
+        </div>
+        <div className="form-group">
+          <label>Address:</label>
           <input
             type="text"
             name="address"
             value={isEditing ? editedProfile.address : profile.address}
             onChange={handleInputChange}
             disabled={!isEditing}
+            className="form-input"
           />
-        </label>
+        </div>
+        <button onClick={handleEditToggle} className="form-button">
+          {isEditing ? "Save Changes" : "Edit Profile"}
+        </button>
       </div>
-      <button onClick={handleEditToggle}>
-        {isEditing ? "Save Changes" : "Edit Profile"}
-      </button>
     </div>
   );
 };

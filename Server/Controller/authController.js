@@ -28,7 +28,9 @@ const createSendToken = (user, statusCode, res) => {
   user.password = undefined;
 
   const cookieOptions = {
-    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
     secure: true,
     httpOnly: true,
     sameSite: "none",
@@ -70,7 +72,9 @@ export const protect = catchAsync(async (req, res, next) => {
 
   token = token.split(" ")[1];
   if (token.trim() == "null")
-    return next(new cusError("There is a token issue, please report it to us", 401));
+    return next(
+      new cusError("There is a token issue, please report it to us", 401)
+    );
 
   const result = await jwt.verify(token, process.env.JWT_SECRET);
 
@@ -87,7 +91,9 @@ export const protect = catchAsync(async (req, res, next) => {
 export const restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return next(new cusError("You do not have permission to perform this action", 403));
+      return next(
+        new cusError("You do not have permission to perform this action", 403)
+      );
     }
     next();
   };

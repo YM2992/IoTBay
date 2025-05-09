@@ -67,7 +67,8 @@ export const createUser = catchAsync(async (req, res, next) => {
     });
   } catch (error) {
     let message = `${error.code} ${error.message}`;
-    if (error.code === "SQLITE_CONSTRAINT_UNIQUE") message = `Duplicate Field: ${error.message}`;
+    if (error.code === "SQLITE_CONSTRAINT_UNIQUE")
+      message = `Duplicate Field: ${error.message}`;
 
     return next(new cusError(message, 400));
   }

@@ -15,6 +15,14 @@ CREATE TABLE user (
     role varchar(8) NOT NULL Check (role in ('customer', 'manager', 'staff', 'owner')) DEFAULT 'customer'
 );
 
+CREATE TABLE access_logs (
+    logid INTEGER PRIMARY KEY,
+    userid INTEGER NOT NULL,
+    login_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    logout_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userid) REFERENCES user(userid)
+);
+
 CREATE TABLE product (
     productid INTEGER PRIMARY KEY,
     name VARCHAR(100) NOT NULL,

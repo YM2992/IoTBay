@@ -8,6 +8,10 @@ function Profile() {
   const { user } = useContext(AppContext);
   const { name } = user;
 
+  const navigateToViewProfile = () => {
+    window.location.href = "/view-profile";
+  };
+
   return (
     <div className="profile-page">
       <div className="profile-header">
@@ -26,7 +30,9 @@ function Profile() {
           </div>
         </div>
         <div className="profile-actions">
-          <button className="edit-btn">Edit Profile</button>
+          <button className="edit-btn" onClick={navigateToViewProfile}>
+            Edit Profile
+          </button>
         </div>
       </div>
 

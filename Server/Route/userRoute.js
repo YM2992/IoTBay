@@ -1,6 +1,11 @@
 import express from "express";
 import { protect, restrictTo, login } from "../Controller/authController.js";
-import { getAllUser, createUser, getMe, userExists } from "../Controller/userController.js";
+import {
+  getAllUser,
+  createUser,
+  getMe,
+  userExists,
+} from "../Controller/userController.js";
 
 const userRoute = express.Router();
 

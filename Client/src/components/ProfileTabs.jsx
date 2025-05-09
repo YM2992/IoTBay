@@ -107,11 +107,11 @@ function ProfileTabs() {
       </TabPanel>
 
       <TabPanel>
-      {paymentCards.length > 0 && 
+      {paymentCards && paymentCards.length > 0 && 
           <h2>
             {paymentCards.length > 1 ? "Saved Payment Methods" : "Saved Payment Method"}
           </h2>}
-        {paymentCards.length === 0 && <h2>No saved payment methods</h2>}
+        {paymentCards && paymentCards.length === 0 && <h2>No saved payment methods</h2>}
         
         {cards.length > 0 && (
           <div>

@@ -14,10 +14,14 @@ import { AppContext } from "@/context/AppContext";
 import "./SavedPaymentCard.css";
 import { FaTrash } from "react-icons/fa";
 import { getPaymentCards, removePaymentCard, savePaymentCard } from "./Payment";
+import { Modal, Button } from "antd"; // Import Button
+import { ExclamationCircleFilled } from '@ant-design/icons'; // Import an icon
 
 function SavedPaymentCard({ paymentCard }) {
   const { user, token, paymentCards, updatePaymentCards } = useContext(AppContext);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const [newPaymentCard, setNewPaymentInfo] = useState(
     paymentCard || {
@@ -83,7 +87,7 @@ function SavedPaymentCard({ paymentCard }) {
       })
       .catch((error) => {
         console.error("Error saving payment card:", error);
-        toast.error("An error occurred while saving payment information.");
+        toast.error(error.message || "An error occurred while saving payment card.");
       });
   };
 
@@ -99,7 +103,7 @@ function SavedPaymentCard({ paymentCard }) {
       })
       .catch((error) => {
         console.error("Error removing payment card:", error);
-        toast.error("An error occurred while removing payment information.");
+        toast.error(error.message || "An error occurred while removing payment card.");
       });
   };
 
@@ -116,6 +120,44 @@ function SavedPaymentCard({ paymentCard }) {
 
   return (
     <div className="payment-card-info">
+      <Modal
+        title={
+          <div className="modal-title-container">
+            <ExclamationCircleFilled className="modal-title-icon" />
+            Delete Payment Card
+          </div>
+        }
+        open={isDeleteModalOpen}
+        onCancel={() => setDeleteModalOpen(false)}
+        centered
+        closable={true}
+        className="delete-modal"
+        width={400}
+        footer={
+          <div className="modal-footer-container">
+            <Button
+              key="cancel"
+              onClick={() => setDeleteModalOpen(false)}
+              className="modal-cancel-button"
+            >
+              Cancel
+            </Button>
+            <Button
+              key="delete"
+              type="primary"
+              danger
+              onClick={() => {
+                handleRemove(); 
+                setDeleteModalOpen(false); 
+              }}
+            >
+              Delete
+            </Button>
+          </div>
+        }
+      >
+        <p className="modal-body-text">Are you sure you want to delete this payment card?</p>
+      </Modal>
       {paymentCard && (
         <div className="payment-card bordered-card">
           <div className="card-number">
@@ -128,15 +170,15 @@ function SavedPaymentCard({ paymentCard }) {
           </div>
           <div className="expiry-date">
             <span className="label">Expiry Date:</span>
-            <span className="value">{paymentCard.expiryDate}</span>
+            {
+              getExpiryDateStatus() === "Expired" ? (
+                <span className="value expired">{paymentCard.expiryDate}</span>
+              ) : (
+                <span className="value">{paymentCard.expiryDate}</span>
+              )
+            }
           </div>
-          {
-            getExpiryDateStatus() === "Expired" ? (
-              <div className="card-status-expired">
-                <span className="value">This card is expired</span>
-              </div>
-            ) : (<></>)
-          }
+          
           <button
             type="button"
             onClick={() => setIsExpanded((prev) => !prev)}
@@ -146,7 +188,7 @@ function SavedPaymentCard({ paymentCard }) {
           </button>
           <button
             type="button"
-            onClick={handleRemove}
+            onClick={() => setDeleteModalOpen(true)}
             className="remove-btn"
           >
             <i aria-hidden="true">

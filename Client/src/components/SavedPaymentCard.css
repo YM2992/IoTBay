@@ -115,8 +115,9 @@ p {
   color: #555;
 }
 
-.bordered-card .card-status-expired .value {
+.bordered-card .expired {
   color: #ff0000;
+  font-weight: bold;
 }
 
 .bordered-card button {
@@ -140,4 +141,28 @@ p {
 
 .bordered-card .remove-btn:hover {
   background-color: #a01c29;
+}
+
+.modal-title-container {
+  display: flex;
+  align-items: center;
+}
+
+.modal-title-icon {
+  color: #faad14;
+  margin-right: 10px;
+  font-size: 22px;
+}
+
+.modal-footer-container {
+  text-align: right;
+  padding-top: 12px;
+}
+
+.modal-cancel-button {
+  margin-right: 8px;
+}
+
+.modal-body-text {
+  margin-left: 32px;
 }

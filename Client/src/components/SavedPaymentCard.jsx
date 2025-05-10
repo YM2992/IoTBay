@@ -1,7 +1,13 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { API_ROUTES, fetchDelete, fetchGet, fetchPost, optionMaker } from "../api";
+import {
+  API_ROUTES,
+  fetchDelete,
+  fetchGet,
+  fetchPost,
+  optionMaker,
+} from "../api";
 import { toast } from "react-hot-toast";
 import { AppContext } from "@/context/AppContext";
 
@@ -10,8 +16,9 @@ import { FaTrash } from "react-icons/fa";
 import { getPaymentCards, removePaymentCard, savePaymentCard } from "./Payment";
 
 function SavedPaymentCard({ paymentCard }) {
-    const { user, token, paymentCards, updatePaymentCards } = useContext(AppContext);
-  
+  const { user, token, paymentCards, updatePaymentCards } = useContext(AppContext);
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const [newPaymentCard, setNewPaymentInfo] = useState(
     paymentCard || {
       cardNumber: "",
@@ -31,20 +38,21 @@ function SavedPaymentCard({ paymentCard }) {
   };
 
   const refreshPaymentCards = () => {
-    getPaymentCards(token).then((res) => {
-      if (res && res.status === "success") {
-        console.log("Payment_cards:", res);
+    getPaymentCards(token)
+      .then((res) => {
         if (res && res.status === "success") {
-          localStorage.setItem("payment_cards", JSON.stringify(res.data));
-          updatePaymentCards(res.data);
+          console.log("Payment_cards:", res);
+          if (res && res.status === "success") {
+            localStorage.setItem("payment_cards", JSON.stringify(res.data));
+            updatePaymentCards(res.data);
+          }
         }
-      }
-    }).catch((error) => {
-      console.error("Error fetching payment card:", error);
-      toast.error("Failed to fetch payment card information.");
-    });
+      })
+      .catch((error) => {
+        console.error("Error fetching payment card:", error);
+        toast.error("Failed to fetch payment card information.");
+      });
   };
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,113 +60,226 @@ function SavedPaymentCard({ paymentCard }) {
   };
 
   const handleSave = async () => {
-    savePaymentCard(newPaymentCard, token).then((res) => {
-      if (res && res.status === "success") {
-        if (res.message.includes("updated")) {
-          toast.success("Payment card updated successfully!");
+    savePaymentCard(newPaymentCard, token)
+      .then((res) => {
+        if (res && res.status === "success") {
+          if (res.message.includes("updated")) {
+            toast.success("Payment card updated successfully!");
+            paymentCard = {
+              ...paymentCard,
+              cardNumber: newPaymentCard.cardNumber,
+              expiryDate: newPaymentCard.expiryDate,
+              cardholderName: newPaymentCard.cardholderName,
+              cvv: newPaymentCard.cvv,
+            };
+          } else {
+            toast.success("Payment card saved successfully!");
+            clearPaymentInfo();
+          }
+          refreshPaymentCards();
         } else {
-          toast.success("Payment card saved successfully!");
-          clearPaymentInfo();
+          toast.error("Failed to save payment card.");
         }
-        refreshPaymentCards();
-      } else {
-        toast.error("Failed to save payment card.");
-      }
-    }).catch((error) => {
-      console.error("Error saving payment card:", error);
-      toast.error("An error occurred while saving payment information.");
-    });
+      })
+      .catch((error) => {
+        console.error("Error saving payment card:", error);
+        toast.error("An error occurred while saving payment information.");
+      });
   };
 
   const handleRemove = async () => {
-    removePaymentCard(paymentCard.cardNumber, token).then((res) => {
-      if (res && res.status === "success") {
-        toast.success("Payment card removed successfully!");
-        refreshPaymentCards();
-      } else {
-        toast.error("Failed to remove payment card.");
-      }
-    }).catch((error) => {
-      console.error("Error removing payment card:", error);
-      toast.error("An error occurred while removing payment information.");
-    });
+    removePaymentCard(paymentCard.cardid, paymentCard.cardNumber, token)
+      .then((res) => {
+        if (res && res.status === "success") {
+          toast.success("Payment card removed successfully!");
+          refreshPaymentCards();
+        } else {
+          toast.error("Failed to remove payment card.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error removing payment card:", error);
+        toast.error("An error occurred while removing payment information.");
+      });
   };
+
+  const getExpiryDateStatus = () => {
+    const [month, year] = paymentCard.expiryDate.split("/");
+    const expiryDateObj = new Date(`20${year}`, month - 1);
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    expiryDateObj.setMonth(expiryDateObj.getMonth() + 1);
+    expiryDateObj.setDate(0);
+    expiryDateObj.setHours(23, 59, 59, 999);
+    return expiryDateObj < currentDate ? "Expired" : "Active";
+  }
 
   return (
     <div className="payment-card-info">
-      <form>
-        <div>
-          <label>
-            Card Number
-            <input
-              className="card-number"
-              type="text"
-              name="cardNumber"
-              placeholder="1234 5678 9012 3456"
-              value={newPaymentCard.cardNumber}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Cardholder Name
-            <input
-              className="cardholder-name"
-              type="text"
-              name="cardholderName"
-              placeholder="First Last"
-              value={newPaymentCard.cardholderName}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div className="flex-row">
-          <label>
-            Expiry Date
-            <input
-              className="expiry-date"
-              type="text"
-              name="expiryDate"
-              placeholder="MM/YY"
-              value={newPaymentCard.expiryDate}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            CVV
-            <input
-              className="cvv"
-              type="text"
-              name="cvv"
-              placeholder="123"
-              value={newPaymentCard.cvv}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        <div className="button-row">
-          <button type="button" onClick={handleSave}>
-            {paymentCard ? "Update Payment Card" : "Save Payment Card"}
+      {paymentCard && (
+        <div className="payment-card bordered-card">
+          <div className="card-number">
+            <span className="label">Card Number:</span>
+            <span className="value">**** **** **** {paymentCard.cardNumber.slice(-4)}</span>
+          </div>
+          <div className="cardholder-name">
+            <span className="label">Cardholder Name:</span>
+            <span className="value">{paymentCard.cardholderName}</span>
+          </div>
+          <div className="expiry-date">
+            <span className="label">Expiry Date:</span>
+            <span className="value">{paymentCard.expiryDate}</span>
+          </div>
+          {
+            getExpiryDateStatus() === "Expired" ? (
+              <div className="card-status-expired">
+                <span className="value">This card is expired</span>
+              </div>
+            ) : (<></>)
+          }
+          <button
+            type="button"
+            onClick={() => setIsExpanded((prev) => !prev)}
+            className="edit-btn"
+          >
+            {isExpanded ? "Cancel" : "Edit"}
           </button>
-          {paymentCard && (
-            <button
-            role="remove-payment"
+          <button
             type="button"
             onClick={handleRemove}
-            className="remove-payment-btn"
-            >
-              <i aria-hidden="true"><FaTrash /></i>
-            </button>
-          )}
+            className="remove-btn"
+          >
+            <i aria-hidden="true">
+              <FaTrash />
+            </i>
+          </button>
         </div>
-      </form>
+      )}
+      {paymentCard ? (isExpanded && (
+        <form>
+          <div>
+            <label>
+              Card Number
+              <input
+                className="card-number"
+                type="text"
+                name="cardNumber"
+                placeholder="1234 5678 9012 3456"
+                value={newPaymentCard.cardNumber}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Cardholder Name
+              <input
+                className="cardholder-name"
+                type="text"
+                name="cardholderName"
+                placeholder="First Last"
+                value={newPaymentCard.cardholderName}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+          <div className="flex-row">
+            <label>
+              Expiry Date
+              <input
+                className="expiry-date"
+                type="text"
+                name="expiryDate"
+                placeholder="MM/YY"
+                value={newPaymentCard.expiryDate}
+                onChange={handleChange}
+              />
+            </label>
+            <label>
+              CVV
+              <input
+                className="cvv"
+                type="text"
+                name="cvv"
+                placeholder="123"
+                value={newPaymentCard.cvv}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+          <div className="button-row">
+            <button type="button" onClick={handleSave}>
+              {paymentCard ? "Update Payment Card" : "Save Payment Card"}
+            </button>
+          </div>
+        </form>
+      )) : (
+        
+        <form>
+          <div>
+            <label>
+              Card Number
+              <input
+                className="card-number"
+                type="text"
+                name="cardNumber"
+                placeholder="1234 5678 9012 3456"
+                value={newPaymentCard.cardNumber}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+          <div>
+            <label>
+              Cardholder Name
+              <input
+                className="cardholder-name"
+                type="text"
+                name="cardholderName"
+                placeholder="First Last"
+                value={newPaymentCard.cardholderName}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+          <div className="flex-row">
+            <label>
+              Expiry Date
+              <input
+                className="expiry-date"
+                type="text"
+                name="expiryDate"
+                placeholder="MM/YY"
+                value={newPaymentCard.expiryDate}
+                onChange={handleChange}
+              />
+            </label>
+            <label>
+              CVV
+              <input
+                className="cvv"
+                type="text"
+                name="cvv"
+                placeholder="123"
+                value={newPaymentCard.cvv}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+          <div className="button-row">
+            <button type="button" onClick={handleSave}>
+              {paymentCard ? "Update Payment Card" : "Save Payment Card"}
+            </button>
+          </div>
+        </form>
+        )}
     </div>
   );
 }
 
 SavedPaymentCard.propTypes = {
   paymentCard: PropTypes.shape({
+    cardid: PropTypes.string.isRequired,
     cardNumber: PropTypes.string.isRequired,
     expiryDate: PropTypes.string.isRequired,
     cardholderName: PropTypes.string.isRequired,

@@ -24,81 +24,138 @@ export const getPaymentCard = catchAsync(async (req, res, next) => {
 
 export const updatePaymentCard = catchAsync(async (req, res, next) => {
   const { userid } = req.user;
-  let { cardNumber, expiryDate, cardholderName, cvv } = req.body;
+  let { cardid, cardNumber, expiryDate, cardholderName, cvv } = req.body; // cardid is now potentially undefined
+  console.log("Payment card data received:", req.body);
 
-  // input data validity checks
-  if (!cardNumber || !expiryDate || !cardholderName || !cvv) return next(new cusError("Please provide all necessary information", 400));
+  if (!cardNumber || !expiryDate || !cardholderName || !cvv) {
+    return next(new cusError("Please provide all necessary card information (cardNumber, expiryDate, cardholderName, cvv).", 400));
+  }
   
   const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/; // MM/YY format
   cardNumber = cardNumber.replace(/\s+/g, ""); // remove whitespace
   
-  if (cardNumber.length !== 16) return next(new cusError("Card number must be 16 digits", 400));
-  if (isNaN(cardNumber) || isNaN(cvv)) return next(new cusError("Card number and CVV must be numeric", 400));
-  if (cvv.toString().length !== 3) return next(new cusError("CVV must be 3 digits", 400));
-  if (!expiryDateRegex.test(expiryDate)) return next(new cusError("Expiry date must be in MM/YY format", 400));
-  if (expiryDate[0] > 12) return next(new cusError("Expiry month must be between 01 and 12", 400));
+  if (cardNumber.length !== 16) {
+    return next(new cusError("Card number must be 16 digits.", 400));
+  }
+  if (isNaN(cardNumber) || isNaN(cvv)) {
+    return next(new cusError("Card number and CVV must be numeric.", 400));
+  }
+  if (cvv.toString().length !== 3) {
+    return next(new cusError("CVV must be 3 digits.", 400));
+  }
+  if (!expiryDateRegex.test(expiryDate)) {
+    return next(new cusError("Expiry date must be in MM/YY format.", 400));
+  }
 
   try {
-    const dataFilter = {
-      userid: userid,
-      cardNumber: cardNumber,
+    const cardDetailsPayload = {
+      cardNumber,
       expiryDate,
       cardholderName,
       cvv,
     };
 
-    const existingPaymentInfo = await getAllWithFilter("payment_card", {
-      userid: userid,
-      cardNumber: dataFilter.cardNumber
-    });
+    if (cardid) { // If cardid is provided, attempt to update
+      // Verify the card exists and belongs to the user
+      const existingCard = await getOne("payment_card", "cardid", cardid);
 
-    if (existingPaymentInfo && existingPaymentInfo.length > 0) {
+      if (!existingCard) {
+        return next(new cusError("Payment card with the provided ID not found.", 404));
+      }
+      if (existingCard.userid !== userid) {
+        return next(new cusError("Access denied. You can only update your own payment cards.", 403));
+      }
+
       // Update existing payment information
-      await updateOneWithFilter("payment_card", { cardNumber: cardNumber }, dataFilter);
+      const updateResult = await updateOneWithFilter(
+        "payment_card",
+        { cardid: cardid, userid: userid }, // Filter criteria
+        cardDetailsPayload // Fields to update
+      );
 
-      console.log("Payment card information updated successfully");
-
+      if (updateResult.changes === 0) {
+        // no changes made
+        console.log("No changes made to the payment card, data might be identical or card not found for update despite initial check.");
+      }
+      
+      console.log("Payment card information updated successfully for cardid:", cardid);
       res.status(200).json({
         status: "success",
-        message: "Payment card information updated successfully",
+        message: "Payment card information updated successfully.",
+        data: { cardid, ...cardDetailsPayload }
       });
-      return;
+
+    } else { // create a new card
+      const newCardData = {
+        ...cardDetailsPayload,
+        userid
+      };
+      const createdCard = await createOne("payment_card", newCardData);
+
+      console.log("New payment card saved successfully");
+      res.status(201).json({
+        status: "success",
+        message: "Payment card saved successfully.",
+        data: createdCard
+      });
     }
-
-    await createOne("payment_card", dataFilter);
-
-    res.status(200).json({
-      status: "success",
-      message: "Payment card saved successfully",
-    });
   } catch (error) {
-    return next(new cusError(error.message, 400));
+    console.error("Error in updatePaymentCard:", error);
+    // Ensure a generic message for unexpected errors, and pass status code if available
+    return next(new cusError(error.message || "An internal server error occurred while processing the payment card.", error.statusCode || 500));
   }
 });
 
 export const removePaymentCard = catchAsync(async (req, res, next) => {
   const { userid } = req.user;
-  const { cardNumber } = req.body;
+  const { cardid, cardNumber } = req.body;
 
-  if (!cardNumber) return next(new cusError("Please provide all necessary information", 400));
+  if (!cardid || !cardNumber) {
+    return next(new cusError("Please provide all necessary information (card ID and card number).", 400));
+  }
 
   try {
+    // Verify the card exists, belongs to the user, and matches cardNumber
+    const paymentCardEntry = await getOne("payment_card", "cardid", cardid);
+
+    if (!paymentCardEntry) {
+      return next(new cusError("Payment card not found.", 404));
+    }
+    if (paymentCardEntry.userid !== userid) {
+      return next(new cusError("Access denied. You can only delete your own payment cards.", 403));
+    }
+    if (paymentCardEntry.cardNumber !== cardNumber) {
+        return next(new cusError("Card number does not match the provided card ID.", 400));
+    }
+
+    // Delete associated records in order_payment table first to satisfy foreign key constraints
+    // This assumes cardid in order_payment references payment_card.cardid
+    await deleteOneByFilter("order_payment", { cardid: cardid });
+    console.log(`Associated payment history for cardid ${cardid} removed from order_payment.`);
+
+    // Now, delete the payment card itself
     const dataFilter = {
-      userid: userid,
-      cardNumber: cardNumber
+      userid,
+      cardid,
+      cardNumber
     };
 
-    const result = await getAllWithFilter("payment_card", dataFilter);
-    if (!result || result.length === 0) return next(new cusError("No payment card found", 404));
+    const result = await deleteOneByFilter("payment_card", dataFilter);
 
-    await deleteOneByFilter("payment_card", dataFilter);
+    if (result.changes === 0) {
+      // This might happen if the card was already deleted or filter criteria didn't match perfectly after the initial check.
+      return next(new cusError("Failed to remove payment card. Card may have already been deleted or details mismatch.", 404));
+    }
+
+    console.log("Payment card removed successfully");
 
     res.status(200).json({
       status: "success",
       message: "Payment card removed successfully",
     });
   } catch (error) {
-    return next(new cusError(error.message, 400));
+    console.error("Error in removePaymentCard:", error);
+    return next(new cusError(error.message || "An internal server error occurred while removing the payment card.", error.statusCode || 500));
   }
 });
 

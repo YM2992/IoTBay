@@ -69,12 +69,12 @@ CREATE TABLE order_payment (
     paymentid INTEGER PRIMARY KEY,
     paymentDate DATE DEFAULT CURRENT_DATE,
     amount float NOT NULL check(amount >= 0),
-    userid INTEGER,
-    cardNumber VARCHAR(16) NOT NULL,
-    orderid INTEGER,
+    userid INTEGER NOT NULL,
+    cardid INTEGER NOT NULL,
+    orderid INTEGER NOT NULL,
     FOREIGN KEY (userid) REFERENCES user(userid),
     FOREIGN KEY (orderid) REFERENCES orders(orderid),
-    FOREIGN KEY (cardNumber) REFERENCES payment_card(cardNumber)
+    FOREIGN KEY (cardid) REFERENCES payment_card(cardid)
 );
 
 
@@ -126,15 +126,15 @@ INSERT INTO order_product (orderid, productid, quantity) VALUES
 ((SELECT orderid FROM orders WHERE paymentID = 'PAY54321'), 
  (SELECT productid FROM product WHERE name = 'Switch'), 2);
 
-INSERT INTO order_payment (paymentid, paymentDate, amount, userid, cardNumber, orderid) VALUES
-(1, '2024-03-12', 109.98, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', (SELECT orderid FROM orders WHERE paymentID = 'PAY12345')),
-(2, '2025-03-23', 45.50, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '5555666677778888', (SELECT orderid FROM orders WHERE paymentID = 'PAY67890')),
-(3, '2025-03-01', 79.99, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', (SELECT orderid FROM orders WHERE paymentID = 'PAY54321')),
-(4, '2025-03-29', 120.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', (SELECT orderid FROM orders WHERE paymentID = 'PAY98765')),
-(5, '2025-04-27', 75.25, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', (SELECT orderid FROM orders WHERE paymentID = 'PAY87654'));
+INSERT INTO order_payment (paymentid, paymentDate, amount, userid, cardid, orderid) VALUES
+(1, '2024-03-12', 109.98, (SELECT userid FROM user WHERE email = 'random@test.com'), 2, (SELECT orderid FROM orders WHERE paymentID = 'PAY12345')),
+(2, '2025-03-23', 45.50, (SELECT userid FROM user WHERE email = 'jeff@test.com'), 5, (SELECT orderid FROM orders WHERE paymentID = 'PAY67890')),
+(3, '2025-03-01', 79.99, (SELECT userid FROM user WHERE email = 'random@test.com'), 2, (SELECT orderid FROM orders WHERE paymentID = 'PAY54321')),
+(4, '2025-03-29', 120.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), 4, (SELECT orderid FROM orders WHERE paymentID = 'PAY98765')),
+(5, '2025-04-27', 75.25, (SELECT userid FROM user WHERE email = 'jeff@test.com'), 4, (SELECT orderid FROM orders WHERE paymentID = 'PAY87654'));
 
-INSERT INTO order_payment (paymentid, amount, userid, cardNumber, orderid) VALUES
-(6, 50.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '5555666677778888', (SELECT orderid FROM orders WHERE paymentID = 'PAY76543'));
+INSERT INTO order_payment (paymentid, amount, userid, cardid, orderid) VALUES
+(6, 50.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), 5, (SELECT orderid FROM orders WHERE paymentID = 'PAY76543'));
 
 
 SELECT * FROM user;

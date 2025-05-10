@@ -81,7 +81,6 @@ p {
   max-width: 150px;
 }
 
-
 .remove-payment-btn {
   background-color: #dc3545;
   color: white;
@@ -95,4 +94,50 @@ p {
   display: flex;
   justify-content: center;
   gap: 15px;
+}
+
+.bordered-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bordered-card .label {
+  font-weight: bold;
+  color: #333;
+  margin-right: 5px;
+}
+
+.bordered-card .value {
+  color: #555;
+}
+
+.bordered-card .card-status-expired .value {
+  color: #ff0000;
+}
+
+.bordered-card button {
+  margin-right: 10px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.bordered-card button:hover {
+  background-color: #0056b3;
+}
+
+.bordered-card .remove-btn {
+  background-color: #dc3545;
+}
+
+.bordered-card .remove-btn:hover {
+  background-color: #a01c29;
 }

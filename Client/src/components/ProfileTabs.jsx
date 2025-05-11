@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { FaBoxOpen, FaFileInvoice, FaStar } from "react-icons/fa";
 import "react-tabs/style/react-tabs.css";
+import AccessLog from "../pages/AccessLog";
 
 const tabStyle = {
   display: "flex",
@@ -28,8 +29,8 @@ function ProfileTabs() {
       <TabList>
         {TabOptions.map((tab, index) => (
           <Tab key={index} style={tabStyle}>
-              {tab.icon}
-              {tab.label}
+            {tab.icon}
+            {tab.label}
           </Tab>
         ))}
       </TabList>
@@ -56,6 +57,9 @@ function ProfileTabs() {
       <TabPanel>
         <p className="empty-msg">You don’t have any reviews yet.</p>
       </TabPanel>
+
+      {/* Access Log Tab */}
+      <AccessLog />
     </Tabs>
   );
 }

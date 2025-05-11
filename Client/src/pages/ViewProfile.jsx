@@ -1,7 +1,9 @@
 import React, { useState, useContext } from "react";
 import { AppContext } from "@/context/AppContext";
 import { fetchPost, optionMaker } from "@/api";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { toast } from "react-hot-toast";
+import "react-tabs/style/react-tabs.css";
 import "./ViewProfile.css"; // Assuming you have a CSS file for styling
 
 const ViewProfile = () => {
@@ -18,6 +20,8 @@ const ViewProfile = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedProfile, setEditedProfile] = useState({ ...profile });
+  const [tabIndex, setTabIndex] = useState(0);
+  const [showConfirmPopup, setShowConfirmPopup] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,69 +50,137 @@ const ViewProfile = () => {
     setIsEditing(!isEditing);
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      // Call the API to delete the account
+      await fetch("/api/user/delete", {
+        method: "DELETE",
+        credentials: "include",
+      });
+      toast.success("Account deleted successfully!");
+      // Redirect or log out the user after account deletion
+      window.location.href = "/logout";
+    } catch (error) {
+      toast.error("Failed to delete account. Please try again.");
+    }
+  };
+
+  const handleConfirmDelete = () => {
+    setShowConfirmPopup(true);
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmPopup(false);
+  };
+
   return (
     <div className="view-profile-container">
-      <h1 className="view-profile-title">View Profile</h1>
-      <div className="view-profile-form">
-        <div className="form-group">
-          <label>Username:</label>
-          <input
-            type="text"
-            name="username"
-            value={isEditing ? editedProfile.username : profile.username}
-            onChange={handleInputChange}
-            disabled={!isEditing}
-            className="form-input"
-          />
-        </div>
-        <div className="form-group">
-          <label>Password:</label>
-          <input
-            type="password"
-            name="password"
-            value={isEditing ? editedProfile.password : profile.password}
-            onChange={handleInputChange}
-            disabled={!isEditing}
-            className="form-input"
-          />
-        </div>
-        <div className="form-group">
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={isEditing ? editedProfile.email : profile.email}
-            onChange={handleInputChange}
-            disabled={!isEditing}
-            className="form-input"
-          />
-        </div>
-        <div className="form-group">
-          <label>Phone:</label>
-          <input
-            type="tel"
-            name="phone"
-            value={isEditing ? editedProfile.phone : profile.phone}
-            onChange={handleInputChange}
-            disabled={!isEditing}
-            className="form-input"
-          />
-        </div>
-        <div className="form-group">
-          <label>Address:</label>
-          <input
-            type="text"
-            name="address"
-            value={isEditing ? editedProfile.address : profile.address}
-            onChange={handleInputChange}
-            disabled={!isEditing}
-            className="form-input"
-          />
-        </div>
-        <button onClick={handleEditToggle} className="form-button">
-          {isEditing ? "Save Changes" : "Edit Profile"}
-        </button>
-      </div>
+      <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
+        <TabList>
+          <Tab>Profile</Tab>
+          <Tab>Delete Account</Tab>
+        </TabList>
+
+        {/* Profile Tab */}
+        <TabPanel>
+          <h1 className="view-profile-title">Profile</h1>
+          <div className="view-profile-form">
+            <div className="form-group">
+              <label>Username:</label>
+              <input
+                type="text"
+                name="username"
+                value={isEditing ? editedProfile.username : profile.username}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label>Password:</label>
+              <input
+                type="password"
+                name="password"
+                value={isEditing ? editedProfile.password : profile.password}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label>Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={isEditing ? editedProfile.email : profile.email}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label>Phone:</label>
+              <input
+                type="tel"
+                name="phone"
+                value={isEditing ? editedProfile.phone : profile.phone}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label>Address:</label>
+              <input
+                type="text"
+                name="address"
+                value={isEditing ? editedProfile.address : profile.address}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                className="form-input"
+              />
+            </div>
+            <button onClick={handleEditToggle} className="form-button">
+              {isEditing ? "Save Changes" : "Edit Profile"}
+            </button>
+          </div>
+        </TabPanel>
+
+        {/* Delete Account Tab */}
+        <TabPanel>
+          <h1 className="delete-account-title">Delete Account</h1>
+          <p className="delete-account-warning">
+            Deleting your account is permanent and cannot be undone. Are you
+            sure you want to proceed?
+          </p>
+          <button
+            className="delete-account-button"
+            onClick={handleConfirmDelete}
+          >
+            Delete My Account
+          </button>
+
+          {showConfirmPopup && (
+            <div className="confirm-popup">
+              <p>
+                Are you sure you want to delete your account? This action cannot
+                be undone.
+              </p>
+              <div className="popup-buttons">
+                <button
+                  className="confirm-button"
+                  onClick={handleDeleteAccount}
+                >
+                  Yes, Delete
+                </button>
+                <button className="cancel-button" onClick={handleCancelDelete}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </TabPanel>
+      </Tabs>
     </div>
   );
 };

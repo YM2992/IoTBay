@@ -105,3 +105,14 @@ export const updateUser = catchAsync(async (req, res, next) => {
     return next(new cusError(message, 400));
   }
 });
+
+export const deactivateUser = catchAsync(async (req, res, next) => {
+  const userId = req.user.userid;
+
+  await updateOne("user", userId, { activate: 0 });
+
+  res.status(200).json({
+    status: "success",
+    message: "Account deactivated successfully",
+  });
+});

@@ -6,6 +6,7 @@ import {
   getMe,
   userExists,
   updateUser,
+  deactivateUser,
 } from "../Controller/userController.js";
 
 const userRoute = express.Router();
@@ -21,5 +22,7 @@ userRoute.route("/login").post(login);
 userRoute.route("/checkEmail").post(userExists);
 
 userRoute.route("/me").get(protect, getMe);
+
+userRoute.route("/deactivate").delete(protect, deactivateUser);
 
 export default userRoute;

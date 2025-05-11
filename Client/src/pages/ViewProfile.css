@@ -65,14 +65,14 @@
 @media (max-width: 600px) {
   .view-profile-container {
     padding: 15px;
-    width: 100%; /* Use full width for smaller screens */
+    width: 100%;
   }
 
   .form-input {
-    font-size: 13px; /* Adjust font size for smaller screens */
+    font-size: 13px;
   }
 
   .form-button {
-    font-size: 14px; /* Adjust button font size for smaller screens */
+    font-size: 14px;
   }
 }

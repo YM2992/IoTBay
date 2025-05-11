@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import { FaBoxOpen, FaFileInvoice, FaStar } from "react-icons/fa";
+import { FaBoxOpen, FaFileInvoice, FaStar, FaUser } from "react-icons/fa";
+import { fetchGet } from "@/api"; // Assuming you have a fetch utility
+import { toast } from "react-hot-toast";
 import "react-tabs/style/react-tabs.css";
-import AccessLog from "../pages/AccessLog";
 
 const tabStyle = {
   display: "flex",
@@ -15,14 +16,36 @@ const TabOptions = [
   { icon: <FaBoxOpen />, label: "Listings" },
   { icon: <FaFileInvoice />, label: "Orders" },
   { icon: <FaStar />, label: "Reviews" },
+  { icon: <FaUser />, label: "Access Log" },
 ];
 
 function ProfileTabs() {
   const [tabIndex, setTabIndex] = useState(0);
+  const [accessLogs, setAccessLogs] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleTabChange = (index) => {
     setTabIndex(index);
   };
+
+  useEffect(() => {
+    if (tabIndex === 3) {
+      // Fetch access logs when the "Access Log" tab is selected
+      const fetchAccessLogs = async () => {
+        setLoading(true);
+        try {
+          const response = await fetchGet("access-logs"); // Replace with your API endpoint
+          setAccessLogs(response.data);
+        } catch (error) {
+          toast.error("Failed to fetch access logs.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchAccessLogs();
+    }
+  }, [tabIndex]);
 
   return (
     <Tabs selectedIndex={tabIndex} onSelect={handleTabChange}>
@@ -59,7 +82,35 @@ function ProfileTabs() {
       </TabPanel>
 
       {/* Access Log Tab */}
-      <AccessLog />
+      <TabPanel>
+        <h1 className="access-log-title">Access Logs</h1>
+        {loading ? (
+          <p>Loading...</p>
+        ) : accessLogs.length > 0 ? (
+          <table className="access-log-table">
+            <thead>
+              <tr>
+                <th>Login Time</th>
+                <th>Logout Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {accessLogs.map((log) => (
+                <tr key={log.logid}>
+                  <td>{new Date(log.login_time).toLocaleString()}</td>
+                  <td>
+                    {log.logout_time
+                      ? new Date(log.logout_time).toLocaleString()
+                      : "Still Logged In"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="empty-msg">You don’t have any access logs yet.</p>
+        )}
+      </TabPanel>
     </Tabs>
   );
 }

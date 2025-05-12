@@ -60,7 +60,7 @@ export const login = catchAsync(async (req, res, next) => {
   }
 
   if (!user.activate) {
-    return next(new cusError("Please find us to activate your account", 401));
+    return next(new cusError("Please find us to re-activate your account", 401));
   }
 
   // if all correct, send token back to user
@@ -79,10 +79,14 @@ export const protect = catchAsync(async (req, res, next) => {
   const result = await jwt.verify(token, process.env.JWT_SECRET);
 
   const currentUser = findUserById(result.id);
+
   if (!currentUser) {
     return next(new cusError("The user no longer exist", 401));
   }
 
+  if (!user.activate) {
+    return next(new cusError("Please find us to re-activate your account", 401));
+  }
   // Grand Access to Protected Route
   req.user = currentUser;
   next();

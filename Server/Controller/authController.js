@@ -45,7 +45,7 @@ const createSendToken = (user, statusCode, res) => {
 
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email);
+  // console.log(email);
 
   if (!email || !password) {
     return next(new cusError("please provide email and password", 400));
@@ -57,6 +57,10 @@ export const login = catchAsync(async (req, res, next) => {
 
   if (!correct || !user) {
     return next(new cusError("incorrect email or password", 401));
+  }
+
+  if (!user.activate) {
+    return next(new cusError("Please find us to activate your account", 401));
   }
 
   // if all correct, send token back to user

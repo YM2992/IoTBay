@@ -23,6 +23,5 @@ userRoute.route("/checkEmail").post(userExists);
 
 userRoute.route("/me").get(protect, getMe);
 
-userRoute.route("/deactivate").delete(protect, deactivateUser);
-
+userRoute.route("/deactivate").patch(protect, deactivateUser);
 export default userRoute;

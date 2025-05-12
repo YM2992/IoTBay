@@ -65,6 +65,29 @@ const ViewProfile = () => {
     }
   };
 
+  const handleDeactivateAccount = async () => {
+    try {
+      console.log("Calling API to deactivate account...");
+      const response = await fetch("/api/user/deactivate", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token for authentication
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      console.log("API response:", response);
+      if (!response.ok) {
+        throw new Error("Failed to deactivate account");
+      }
+      toast.success("Account deactivated successfully!");
+      window.location.href = "/logout"; // Redirect after successful deactivation
+    } catch (error) {
+      console.error("Error during account deactivation:", error);
+      toast.error("Failed to deactivate account. Please try again.");
+    }
+  };
+
   const handleConfirmDelete = () => {
     setShowConfirmPopup(true);
   };
@@ -153,11 +176,13 @@ const ViewProfile = () => {
             Deleting your account is permanent and cannot be undone. Are you
             sure you want to proceed?
           </p>
+
           <button
-            className="delete-account-button"
+            className="deactivate-account-button"
             onClick={handleConfirmDelete}
+            // Updated function name
           >
-            Delete My Account
+            Deactivate My Account
           </button>
 
           {showConfirmPopup && (
@@ -169,9 +194,9 @@ const ViewProfile = () => {
               <div className="popup-buttons">
                 <button
                   className="confirm-button"
-                  onClick={handleDeleteAccount}
+                  onClick={handleDeactivateAccount} // Updated function name
                 >
-                  Yes, Delete
+                  Yes, Deactivate
                 </button>
                 <button className="cancel-button" onClick={handleCancelDelete}>
                   Cancel

@@ -76,7 +76,7 @@
   color: #555;
 }
 
-.delete-account-button {
+.deactivate-account-button {
   display: block;
   margin: 0 auto;
   padding: 10px 20px;
@@ -89,7 +89,7 @@
   cursor: pointer;
 }
 
-.delete-account-button:hover {
+.deactivate-account-button:hover {
   background-color: darkred;
 }
 

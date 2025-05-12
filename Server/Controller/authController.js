@@ -61,7 +61,7 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new cusError("incorrect email or password", 401));
   }
 
-  if (user.activate) {
+  if (!user.activate) {
     return next(
       new cusError("Please find us to re-activate your account", 401)
     );
@@ -89,7 +89,7 @@ export const protect = catchAsync(async (req, res, next) => {
     return next(new cusError("The user no longer exist", 401));
   }
 
-  if (user.activate) {
+  if (!user.activate) {
     return next(
       new cusError("Please find us to re-activate your account", 401)
     );

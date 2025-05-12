@@ -107,9 +107,11 @@ export const updateUser = catchAsync(async (req, res, next) => {
 });
 
 export const deactivateUser = catchAsync(async (req, res, next) => {
-  const userId = req.user.userid;
+  const userId = req.user.userid; // Ensure req.user.userid is populated
+  console.log("Deactivating user with ID:", userId); // Debugging log
 
-  await updateOne("user", userId, { activate: 0 });
+  // Update the "activate" column to 0
+  await updateOne("user", userId, { activate: 0 }, "userid");
 
   res.status(200).json({
     status: "success",

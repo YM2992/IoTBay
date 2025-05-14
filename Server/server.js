@@ -11,8 +11,14 @@ import productRoute from "./Route/productRoute.js";
 dotenv.config({ path: "./Server/config.env" });
 
 app.use(
+  // cors({
+  //   origin: "*",
+  // })
   cors({
-    origin: "*",
+    origin: "http://localhost:5173", // your Vite frontend
+    credentials: true, // allow cookies, auth headers, etc.
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 

@@ -67,8 +67,7 @@ const ViewProfile = () => {
 
   const handleDeactivateAccount = async () => {
     try {
-      console.log("Calling API to deactivate account...");
-      const response = await fetch("/api/user/deactivate", {
+      const response = await fetchPost("user/deactivate", {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`, // Include the token for authentication
@@ -77,9 +76,7 @@ const ViewProfile = () => {
         credentials: "include",
       });
       console.log("API response:", response);
-      if (!response.ok) {
-        throw new Error("Failed to deactivate account");
-      }
+
       toast.success("Account deactivated successfully!");
       window.location.href = "/logout"; // Redirect after successful deactivation
     } catch (error) {
@@ -101,7 +98,7 @@ const ViewProfile = () => {
       <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
         <TabList>
           <Tab>Profile</Tab>
-          <Tab>Delete Account</Tab>
+          <Tab>Deactivate Account</Tab>
         </TabList>
 
         {/* Profile Tab */}
@@ -171,9 +168,9 @@ const ViewProfile = () => {
 
         {/* Delete Account Tab */}
         <TabPanel>
-          <h1 className="delete-account-title">Delete Account</h1>
+          <h1 className="delete-account-title">Deactivate Account</h1>
           <p className="delete-account-warning">
-            Deleting your account is permanent and cannot be undone. Are you
+            Deactivating your account is permanent and cannot be undone. Are you
             sure you want to proceed?
           </p>
 

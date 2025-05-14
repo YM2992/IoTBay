@@ -81,7 +81,6 @@ export const protect = catchAsync(async (req, res, next) => {
     return next(
       new cusError("There is a token issue, please report it to us", 401)
     );
-
   const result = await jwt.verify(token, process.env.JWT_SECRET);
 
   const currentUser = findUserById(result.id);
@@ -89,14 +88,15 @@ export const protect = catchAsync(async (req, res, next) => {
     return next(new cusError("The user no longer exist", 401));
   }
 
-  if (!user.activate) {
-    return next(
-      new cusError("Please find us to re-activate your account", 401)
-    );
-  }
+  // if (!currentUser.activate) {
+  //   return next(
+  //     new cusError("Please find us to re-activate your account", 401)
+  //   );
+  // }
 
   // Grand Access to Protected Route
   req.user = currentUser;
+
   next();
 });
 

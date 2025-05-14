@@ -5,6 +5,9 @@ import { Table, Input, Space, Button } from "antd";
 import { fetchPost, optionMaker } from "@/api";
 import { AppContext } from "@/context/AppContext";
 import toast from "react-hot-toast";
+import { useSearchParams } from "react-router-dom";
+import './NewEditUser.css';
+
 
 const { Column } = Table;
 
@@ -12,90 +15,104 @@ export const NewEditUser = ({ data, refetch }) => {
   const { token } = useContext(AppContext);
   
   const [editedNames, setEditedNames] = useState({});
-  const [fullNameInput, setFullNameInput] = useState("");
-  const [phoneInput, setPhoneInput] = useState("");
   const [isEditing, setIsEditing] = useState({});
   const [editedPhones, setEditedPhones] = useState({});
+  const [searchParams,setSearchParams] = useSearchParams();
+  
+  const fullNameInput = searchParams.get("name") || "";
+  const phoneInput = searchParams.get("phone")||"";
+  
+  
+  const [nameSearch,setNameSearch] = useState(fullNameInput);
+  const [phoneSearch,setPhoneSearch ]=useState(phoneInput);
 
+  
 
-  const handleToggleActivation = async (userid) => {
-    try {
-      await fetchPost("user/toggleActivation", optionMaker({ userid }, "PATCH", token));
-      
-      toast.success("User activation status changed");
-      refetch();
-    } catch (error) {
-      toast.error(error.message || "Error toggling activation");
-    }
-  };
-
-
-  const handleDelete = async (userid) => {
+  const handleToggle = async (userid) =>{  
+      await handleSubmit("user/toggleActivation",{userid},"PATCH","User Status successfully changed");
     
-    try {
-      
-      await fetchPost("user/delete", optionMaker({ userid }, "DELETE", token));
-      toast.success("User deleted successfully");
-      refetch();
-    } catch (error) {
-      toast.error(error.message || "Error deleting user");
-    }
   };
 
-  const handleSubmit = async (data, method, message) => {
+
+  // const handleToggleActivation = async (userid) => {
+  //   try {
+  //     await fetchPost("user/toggleActivation", optionMaker({ userid }, "PATCH", token));
+      
+  //     toast.success("User activation status changed");
+  //     refetch();
+  //   } catch (error) {
+  //     toast.error(error.message || "Error toggling activation");
+  //   }
+  // };
+  const handleDelete = async (userid)=>{
+    await handleSubmit("user/delete", {userid},"DELETE", "User has been deleted");
+  }
+
+  // const handleDelete = async (userid) => {
+    
+  //   try {
+      
+  //     await fetchPost("user/delete", optionMaker({ userid }, "DELETE", token));
+  //     toast.success("User deleted successfully");
+  //     refetch();
+  //   } catch (error) {
+  //     toast.error(error.message || "Error deleting user");
+  //   }
+  // };
+
+  const handleSubmit = async (url, data, method, message) => {
       try {
-        
-        await fetchPost("user/usermanage", optionMaker(data, method, token));
+        await fetchPost(url, optionMaker(data, method, token));
         toast.success(message);
       } catch (error) {
         toast.error(error.message || "An error occurred");
       } finally {
-        
-        
-        
+        refetch();
       }
     };
   
   const handleEdit = (userid,name,phone) => {
   
-  setIsEditing((prev) => ({ ...prev, [userid]: true }));
-  setEditedNames((prev) => ({ ...prev, [userid]: name }));
-  setEditedPhones((prev) => ({ ...prev, [userid]: phone }));
-};
+    setIsEditing((prev) => ({ ...prev, [userid]: true }));
+    setEditedNames((prev) => ({ ...prev, [userid]: name }));
+    setEditedPhones((prev) => ({ ...prev, [userid]: phone }));
+  };
 
-const handleSave = async (userid, newName,newPhone) => {
-  await handleSubmit({ userid, name: newName, phone: newPhone }, "PATCH", "Successfully updated user");
-  setIsEditing((prev) => ({ ...prev, [userid]: false })); 
-  refetch();
-};
+  const handleSave = async (userid, newName,newPhone) => {
+    await handleSubmit("user/usermanage",{ userid, name: newName, phone: newPhone }, "PATCH", "Successfully updated user");
+    setIsEditing((prev) => ({ ...prev, [userid]: false })); 
+    
+  };
   
-  const [appliedFilters, setAppliedFilters] = useState({
-    fullName: "",
-    phone: "",
-  });
+  // const [appliedFilters, setAppliedFilters] = useState({
+  //   fullName: "",
+  //   phone: "",
+  // });
 
   
   const handleSearch = () => {
-    setAppliedFilters({
-      fullName: fullNameInput,
-      phone: phoneInput,
-    });
+
+    setSearchParams({name:nameSearch.trim(),phone:phoneSearch.trim()});
+    // setAppliedFilters({
+    //   fullName: fullNameInput,
+    //   phone: phoneInput,
+    // });
   };
 
   
   const filteredData = data.filter(item => {
     
     const nameMatch =
-      appliedFilters.fullName === "" ||
+      fullNameInput === "" ||
       (item.name &&
-        item.name.toLowerCase().includes(appliedFilters.fullName.toLowerCase()));
+        item.name.toLowerCase().includes(fullNameInput.toLowerCase()));
 
     
-    const phoneStr = item.phone ? item.phone.toString().padStart(10, "0") : "";
+    const phoneStr = item.phone ? item.phone.toString() : "";
     
     const phoneMatch =
-      appliedFilters.phone === "" ||
-      phoneStr.includes(appliedFilters.phone);
+      phoneInput === "" ||
+      phoneStr.includes(phoneInput );
 
     return nameMatch && phoneMatch;
   });
@@ -103,67 +120,69 @@ const handleSave = async (userid, newName,newPhone) => {
   return (
     
     <>
-      <Space style={{ marginBottom: 16 }}>
+      <Space size ={24} style={{ marginBottom: 16 }}>
         <Input
           placeholder="Full Name"
-          value={fullNameInput}
-          onChange={(e) => setFullNameInput(e.target.value)}
+          value={nameSearch}
+          onChange={(e) => setNameSearch(e.target.value)}
           style={{ width: 200 }}
         />
         <Input
           placeholder="Phone Number"
-          value={phoneInput}
-          onChange={(e) => setPhoneInput(e.target.value)}
+          value={phoneSearch}
+          onChange={(e) => setPhoneSearch(e.target.value)}
           style={{ width: 200 }}
         />
         <Button onClick={handleSearch} type="primary">
           Search
         </Button>
+        <Button onClick={()=>{
+          setNameSearch("");
+          setPhoneSearch("");
+          setSearchParams({name:"", phone: "" });
+          refetch();
+        }}>Reset</Button>
       </Space>
-      <Table dataSource={filteredData} rowKey="userid">
+
+
+
+
+
+      <Table className="myTable" dataSource={filteredData} rowKey="userid">
         <Column title="Email" dataIndex="email" key="email" />
-        <Column
-  title="Full Name"
-  dataIndex="name"
-  key="name"
-  render={(text, record) => 
-    isEditing[record.userid] ? (
-    <Input
-      value={editedNames[record.userid??record.name] }
-      onChange={(e) => setEditedNames({ ...editedNames, [record.userid]: e.target.value })}  
-      />
-      ) : (
-      <span>{record.name}</span>
-    )
-  }
+        <Column title="Full Name" dataIndex="name" key="name"
+        render={(text, record) =>  isEditing[record.userid] ? (
+        <Input
+         value={editedNames[record.userid??record.name] } onChange={(e) => setEditedNames({ ...editedNames, [record.userid]: e.target.value })}  
+        />
+         ) : (
+        <span>{record.name}</span>
+         )}
   />
 
           <Column
-          title="Phone Number"
-          dataIndex="phone"
-          key="phone"
+          title="Phone Number" dataIndex="phone" key="phone"
           render={(text, record) => 
             isEditing[record.userid] ? (
               <Input
-                value={editedPhones[record.userid]}
-                onChange={(e) => setEditedPhones({ ...editedPhones, [record.userid]: e.target.value })}
+                value={editedPhones[record.userid]} onChange={(e) => setEditedPhones({ ...editedPhones, [record.userid]: e.target.value })}
               />
             ) : (
               <span>{record.phone}</span>
             )
           }
-        />
-        <Column
-          title="Status"
-          key="status"
-          render={(text, record) => (
-            <span style={{ color: record.activate ? 'green' : 'red', fontWeight: 'bold' }}>
-              {record.activate ? 'Active' : 'Inactive'}
-            </span>
-          )}
-        />
+          />
+          <Column
+            title="Status"
+            key="status"
+            render={(text, record) => (
+              <span style={{ color: record.activate ? 'green' : 'red', fontWeight: 'bold' }}>
+                {record.activate ? 'Active' : 'Inactive'}
+              </span>
+            )}
+          />
 
-        <Column title="Role" dataIndex="role" key="role" />
+          <Column title="Role" dataIndex="role" key="role" />
 
   
   
@@ -178,20 +197,20 @@ const handleSave = async (userid, newName,newPhone) => {
                Save
              </Button>
              <Button
-                onClick={() => handleToggleActivation(record.userid)}
+                onClick={() => handleToggle(record.userid)}
                 type="default"
               >
                 Activate/Deactivate
               </Button>
-             <Button onClick={() => handleDelete(record.userid)}>
-            Delete
-          </Button>
-          </Space>
-            ) : (
-      <Button onClick={() => handleEdit(record.userid,record.name,record.phone)}>Edit</Button>
+              <Button onClick={() => handleDelete(record.userid)}>
+                 Delete
+             </Button>
+             </Space>
+               ) : (
+              <Button onClick={() => handleEdit(record.userid,record.name,record.phone)}>Edit</Button>
 
-    )
-          )}
+                 )
+              )}
 
           
         />

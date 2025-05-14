@@ -73,34 +73,57 @@ export const createUser = catchAsync(async (req, res, next) => {
   }
 });
 
-export const updateUserById = catchAsync(async (req, res, next) => {
-  const { name,phone, userid } = req.body;
+export const updateUserById = catchAsync(async(req,res,next)=> {
+    const{name,phone,userid} = req.body;
+    if (!name) {
+      return next (new cusError("Please enter new name",400));
+    }
 
-  if (!name ) return next(new cusError("Please provide a new name", 400));
+    try {
+      console.log("user id ", userid);
+      console.log("Name: ", name);
 
-  try {
+      await updateOne ("user",userid,{name,phone});
 
-    console.log("user id received:", userid);  // Debug log
-    console.log("Name received:", name); 
-    console.log("Phone received:", phone);
-    // Use the helper function to find the user
-   
-    // Update the user's name
-    const updateResult = await updateOne("user", userid,{name,phone});
-
-    console.log("Update result:", updateResult); 
-
-
-    res.status(200).json({
-      status: "success",
-      data: { userid, name ,phone},
-    });
-  } catch (error) {
-    console.error("Update error:", error);
-    return next(new cusError("Error updating user", 500));
-  }
+      res.status(200).json({
+        status: "success",
+        data : {userid,name,phone},
+      });
+    }
+    catch(error){
+      return next(new cusError("Error updating user", 500));
+    }
 
 });
+
+// export const updateUserById = catchAsync(async (req, res, next) => {
+//   const { name,phone, userid } = req.body;
+
+//   if (!name ) return next(new cusError("Please provide a new name", 400));
+
+//   try {
+
+//     console.log("user id received:", userid);  // Debug log
+//     console.log("Name received:", name); 
+//     console.log("Phone received:", phone);
+//     // Use the helper function to find the user
+   
+//     // Update the user's name
+//     const updateResult = await updateOne("user", userid,{name,phone});
+
+//     console.log("Update result:", updateResult); 
+
+
+//     res.status(200).json({
+//       status: "success",
+//       data: { userid, name ,phone},
+//     });
+//   } catch (error) {
+//     console.error("Update error:", error);
+//     return next(new cusError("Error updating user", 500));
+//   }
+
+// });
 
 export const deleteUserById = catchAsync(async (req, res, next) => {
   const { userid } = req.body;

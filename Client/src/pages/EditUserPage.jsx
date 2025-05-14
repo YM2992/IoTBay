@@ -85,9 +85,6 @@ const EditUserPage = () => {
     }
   }, [data, loading, error]);
 
-  if (loading) {
-    return <Spin tip="Loading users..." />;
-  }
 
   if (error) {
     return <div>Error fetching users: {error.message}</div>;
@@ -119,7 +116,7 @@ const EditUserPage = () => {
   
 
   return (
-    <div className="edit-user-page">
+    <div >
       <h1>Edit User</h1>
       <EditUser data={users} refetch={refetch} />
     </div>

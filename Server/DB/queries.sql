@@ -58,7 +58,7 @@ CREATE TABLE order_product (
     FOREIGN KEY (productid) REFERENCES product(productid)
 );
 
-
+UPDATE user SET activate = 1; 
 INSERT INTO user (name, phone, email, password, role) VALUES
 ('Yasir Test', 0420555666, 'yasir@test.com', '$2b$12$AQDnbnawQkAeeQmKFhjNpe.eoDuoVLyDRhJEvRRwYF4j9wEzbk6wW', 'manager'),
 ('Jeff Test', 0420222333, 'jeff@test.com', '$2b$12$yTgqJX5rr9KafAU2aDDJQuTpuqW0RN.ubNNroElpXaOLYjf.y00Ze', 'manager'),

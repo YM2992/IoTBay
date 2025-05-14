@@ -50,38 +50,16 @@ const ViewProfile = () => {
     setIsEditing(!isEditing);
   };
 
-  const handleDeleteAccount = async () => {
-    try {
-      // Call the API to delete the account
-      await fetch("/api/user/delete", {
-        method: "DELETE",
-        credentials: "include",
-      });
-      toast.success("Account deleted successfully!");
-      // Redirect or log out the user after account deletion
-      window.location.href = "/logout";
-    } catch (error) {
-      toast.error("Failed to delete account. Please try again.");
-    }
-  };
-
   const handleDeactivateAccount = async () => {
     try {
-      const response = await fetchPost("user/deactivate", {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`, // Include the token for authentication
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-      console.log("API response:", response);
-
+      await fetchPost(
+        "user/deactivate",
+        optionMaker({ activate: 0 }, "PATCH", token)
+      );
       toast.success("Account deactivated successfully!");
-      window.location.href = "/logout"; // Redirect after successful deactivation
+      window.location.href = "/logout";
     } catch (error) {
-      console.error("Error during account deactivation:", error);
-      toast.error("Failed to deactivate account. Please try again.");
+      toast.error(error.message || "Failed to deactivate account.");
     }
   };
 

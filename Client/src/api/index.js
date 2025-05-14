@@ -1,6 +1,28 @@
 export const API_URL = "http://localhost:8000/api/";
 const successCodes = [200, 201, 204];
 
+export const API_ROUTES = {
+  user: {
+    login: "user/login",
+    register: "user/register",
+    checkEmail: "user/checkEmail",
+    getUser: "user/getUser",
+    updateUser: "user/updateUser",
+  },
+  product: {
+    getProducts: "product/getProducts",
+    getProductById: "product/getProductById",
+  },
+  payment: {
+    getPaymentCards: "payment/card/",
+    updatePaymentCard: "payment/card/",
+    removePaymentCard: "payment/card/",
+
+    getPaymentHistory: "payment/history/",
+    addPayment: "payment/addPayment"
+  },
+};
+
 export const urlMaker = (endpoint) => {
   return `${API_URL}${endpoint}`;
 };
@@ -16,6 +38,23 @@ export const optionMaker = (data, method = "POST", token = null) => {
   };
 };
 
+export const fetchDelete = async (endpoint, options={}) => {
+  const response = await fetch(urlMaker(endpoint), {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+    body: JSON.stringify(options.body)
+  });
+  const resData = await response.json();
+
+  if (response.status != 200 || !response.ok) {
+    throw new Error(response.message);
+  }
+  return resData;
+};
+
 export const fetchPost = async (endpoint, options) => {
   const response = await fetch(urlMaker(endpoint), options);
   const resData = await response.json();
@@ -26,8 +65,8 @@ export const fetchPost = async (endpoint, options) => {
   return resData;
 };
 
-export const fetchGet = async (endpoint) => {
-  const response = await fetch(urlMaker(endpoint));
+export const fetchGet = async (endpoint, options) => {
+  const response = await fetch(urlMaker(endpoint), options);
   const resData = await response.json();
 
   if (!successCodes.includes(response.status) || !response.ok) {

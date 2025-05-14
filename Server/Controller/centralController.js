@@ -8,6 +8,13 @@ export const getAll = (dbname) => {
   return db.prepare(sql).all();
 };
 
+export const getAllWithFilter = (dbname, filter) => {
+  const sql = `SELECT * FROM ${dbname} WHERE ${Object.keys(filter)
+    .map((key) => `${key} = ?`)
+    .join(" AND ")}`;
+  return db.prepare(sql).all(...Object.values(filter));
+};
+
 export const getOne = (dbname, field, value) => {
   const sql = `SELECT * FROM ${dbname} WHERE ${field} = ?`;
   return db.prepare(sql).get(value);
@@ -38,6 +45,24 @@ export const updateOne = (dbname, id, data) => {
 
   const sql = `UPDATE ${dbname} SET ${setClause} WHERE ${dbname}id = ?`;
   return db.prepare(sql).run(...values, id);
+};
+
+export const updateOneWithFilter = (dbname, filter, data) => {
+  const keys = Object.keys(data);
+  const setClause = keys.map((key) => `${key} = ?`).join(", ");
+  const values = Object.values(data);
+
+  const sql = `UPDATE ${dbname} SET ${setClause} WHERE ${Object.keys(filter)
+    .map((key) => `${key} = ?`)
+    .join(" AND ")}`;
+  return db.prepare(sql).run(...values, ...Object.values(filter));
+};
+
+export const deleteOneByFilter = (dbname, filter) => {
+  const sql = `DELETE FROM ${dbname} WHERE ${Object.keys(filter)
+    .map((key) => `${key} = ?`)
+    .join(" AND ")}`;
+  return db.prepare(sql).run(...Object.values(filter));
 };
 
 export const deleteOne = (dbname, id) => {

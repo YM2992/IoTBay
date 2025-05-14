@@ -1,84 +1,194 @@
-/* Main Profile Container - Aligned to the Left */
-
-.profile-container {
-  width: 90%;
-  min-height: 90vh;
-  padding: 40px 80px;
-  font-family: Arial, sans-serif;
-  background-color: #ffffff;
-  margin: auto;
-  background: rgba(241, 236, 236, 0.7);
+/* General Reset */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background-size: cover;
+  color: #000;
 }
 
-/* Profile Header - Positions the profile elements */
+/* Page Wrapper */
+.profile-page {
+  background-color: #fff;
+  width: 100%;
+  min-height: 100vh;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Profile Header Section */
 .profile-header {
   display: flex;
-  justify-content: space-between; /* Pushes profile info left, button right */
-  align-items: center;
-  width: 100%;
-  padding-bottom: 15px;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
 }
 
-/* Profile Left - Aligns Profile Picture & Info */
+/* Left side: Avatar + Info */
 .profile-left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 1.5rem;
 }
 
-/* Profile Image - Circular */
-.profile-image {
-  width: 60px;
-  height: 60px;
+.profile-image img,
+.profile-avatar {
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
-  background-color: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
+  background: #ccc;
 }
 
-/* Profile Info */
-.profile-info {
-  text-align: left;
-}
-
-.profile-info h1 {
-  font-size: 20px;
+.profile-info h2 {
   margin: 0;
+  font-size: 1.4rem;
 }
 
 .profile-info p {
-  font-size: 14px;
-  color: #777;
-  margin: 2px 0;
+  margin: 0.25rem 0;
+  color: #555;
 }
 
-/* Global Button */
-.global-btn {
-  background: rgb(0, 0, 0);
-  color: #fffefe;
-  border: 1px solid black;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: 0.3s;
-}
-
-.global-btn:hover {
-  background: rgb(255, 255, 255);
-  color: rgb(0, 0, 0);
-}
-
-/* Profile Nav Bar */
-.profile-tabs {
+/* Right side: Buttons */
+.profile-actions {
   display: flex;
-  border-bottom: 2px solid #000;
-  margin-top: 15px;
+  gap: 0.5rem;
 }
 
-.profile-tabs .active-tab {
-  border-bottom: 2px solid black;
+.edit-btn,
+.share-btn {
+  background: black;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.edit-btn:hover,
+.share-btn:hover {
+  background: #333;
+  transform: scale(1.02);
+}
+
+/* Main Layout */
+.profile-main {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Right Content Area */
+.profile-content {
+  width: 100%;
+}
+
+/* Listing Controls */
+.listing-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-top: 1rem; /* more top space added */
+}
+
+.create-listing-btn {
+  background: black;
+  color: white;
+  padding: 0.7rem 1.4rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.create-listing-btn:hover {
+  background: #222;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Sort Dropdown */
+.sort-dropdown {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border 0.2s ease;
+}
+
+.sort-dropdown:hover {
+  border-color: #999;
+}
+
+.empty-msg {
+  font-style: italic;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+/* Tab container */
+.react-tabs__tab-list {
+  display: flex;
+  gap: 2rem;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1.5rem;
+  padding: 0;
+  list-style: none;
+  position: relative;
+}
+
+/* Individual tab */
+.custom-tab {
+  position: relative;
+  border: none;
+  background: none;
+  padding: 0.5rem 0;
+  min-height: 40px;
+  color: #000;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-content {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Selected tab */
+.react-tabs__tab--selected.custom-tab {
+  font-weight: 700;
+}
+
+/* Underline for selected */
+.react-tabs__tab--selected.custom-tab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: black;
+  transition: all 0.2s ease;
+}
+
+/* Light hover underline */
+.custom-tab:not(.react-tabs__tab--selected):hover::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #ccc;
+  transition: all 0.2s ease;
+}
+
+/* Focus cleanup */
+.custom-tab:focus {
+  outline: none;
+  box-shadow: none;
 }

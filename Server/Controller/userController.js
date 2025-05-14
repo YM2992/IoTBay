@@ -44,7 +44,7 @@ export const getAllUser = catchAsync(async (req, res, next) => {
 });
 
 export const createUser = catchAsync(async (req, res, next) => {
-  const { name, email, password, phone } = req.body;
+  const { name, email, password, phone,role="customer" } = req.body;
 
   if (!name || !email || !password || !phone)
     return next(new cusError("Please provide all needed information", 400));
@@ -53,7 +53,7 @@ export const createUser = catchAsync(async (req, res, next) => {
     name,
     email,
     password: await hashPassword(password),
-    role: "customer",
+    role,
     phone: phone,
   };
 

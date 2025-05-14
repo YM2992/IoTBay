@@ -10,7 +10,7 @@ const { Column } = Table;
 
 export const NewEditUser = ({ data, refetch }) => {
   const { token } = useContext(AppContext);
-  console.log("User table data:", data);
+  
   const [editedNames, setEditedNames] = useState({});
   const [fullNameInput, setFullNameInput] = useState("");
   const [phoneInput, setPhoneInput] = useState("");

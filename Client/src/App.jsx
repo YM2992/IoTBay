@@ -43,7 +43,7 @@ function App() {
             {loggedIn && <Route path="/welcome" element={<Welcome />} />}
             {loggedIn && <Route path="/logout" element={<Logout />} />}
             {loggedIn && <Route path="/profile" element={<Profile />} />} 
-            {loggedIn && <Route path="/edit-user" element={<EditUserPage />} />}
+            {loggedIn && user.role == "admin" && <Route path="/edit-user" element={<EditUserPage />} />}
             {loggedIn && user.role == "admin" && <Route path="/create-user" element={<CreateUserPages />} />}
             {loggedIn && managers.includes(user.role) && (
               <Route path="/manage" element={<Manage />} />

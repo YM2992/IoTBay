@@ -1,19 +1,25 @@
 import express from "express";
+import { protect, restrictTo } from "../Controller/authController.js";
 import {
   addToCart,
   getCartItems,
   updateCartQuantity,
-  removeCartItem,
+  removeCartItem, 
+  buyNow
 } from "../Controller/cartController.js";
-import { protect } from "../Controller/authController.js";
 
-const router = express.Router();
+const cartRoute = express.Router();
 
-router.use(protect); 
+cartRoute.post("/add", protect, addToCart);
 
-router.post("/add", addToCart);
-router.get("/", getCartItems);
-router.post("/update-quantity", updateCartQuantity);
-router.delete("/remove", removeCartItem);
+cartRoute.post("/buy-now", protect, buyNow);
 
-export default router;
+cartRoute.get("/", protect, getCartItems);
+
+cartRoute.post("/update-quantity", protect, updateCartQuantity);
+
+cartRoute.delete("/remove", protect, removeCartItem);
+
+cartRoute.get("/all", protect, restrictTo("manager", "staff", "owner"), getCartItems);
+
+export default cartRoute;

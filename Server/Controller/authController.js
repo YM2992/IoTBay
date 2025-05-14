@@ -74,7 +74,6 @@ export const protect = async (req, res, next) => {
   try {
     let token;
 
-    // Get token from Authorization header
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer")
@@ -83,27 +82,26 @@ export const protect = async (req, res, next) => {
     }
 
     if (!token) {
-      return next(new cusError("You are not logged in!", 401));
+      return next(new cusError("You are not logged in!", 401)); // ✅ return here too
     }
 
-    // Verify token
     const decoded = await promisify(jwt.verify)(
       token,
-      process.env.JWT_SECRET || "secret" // update as needed
+      process.env.JWT_SECRET || "secret"
     );
 
-    // Log decoded for debug
-    console.log("Decoded JWT:", decoded);
+    console.log("✅ Decoded JWT:", decoded);
 
-    // Attach to request
-    req.user = { id: decoded.id };
+    req.user = { id: decoded.id }; // ✅ attaches user
+    console.log("✅ req.user set as:", req.user); // <=== ADD THIS
 
-    next();
+    return next(); // ✅ don't forget this
   } catch (err) {
     console.log("❌ Invalid token:", err.message);
-    next(new cusError("Invalid token", 401));
+    return next(new cusError("Invalid token", 401)); // ✅ must return
   }
 };
+
 
 // Role-Based Restriction
 export const restrictTo = (...roles) => {

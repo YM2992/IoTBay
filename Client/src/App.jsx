@@ -18,6 +18,7 @@ import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import ProductDetails from "./pages/ProductPage";
 import Manage from "./pages/Manage";
+import Checkout from "./pages/Checkout";
 // import Test from "./pages/Test";
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
             <Route path="/products/:productid" element={<ProductDetails />} />
             <Route path="/products" element={<ProductPage />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
 
             {!loggedIn && <Route path="/login" element={<Login />} />}
             {!loggedIn && <Route path="/register" element={<Registration />} />}

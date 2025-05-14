@@ -4,8 +4,9 @@ import {
   addToCart as addToCartAPI,
   removeCartItem as removeCartItemAPI,
   updateCartQuantity as updateCartQuantityAPI,
+  buyNow as buyNowAPI,
+
 } from "@/api/cartAPI";
-import axios from "axios";
 
 export const AppContext = createContext();
 
@@ -17,6 +18,8 @@ export const AppProvider = ({ children }) => {
   );
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
+  const [buyNowItem, setBuyNowItem] = useState(null); // for quick checkout
+
 
   const login = (token, userData) => {
     localStorage.setItem("jwt", token);
@@ -41,12 +44,23 @@ export const AppProvider = ({ children }) => {
     console.log("🛒 Fetching cart...");
     try {
       const cartData = await fetchCartAPI();
-      console.log("✅ Cart fetched from API:", cartData);
-      setCart(cartData);
+        const mergedCart = cartData.reduce((acc, item) => {
+        const existing = acc.find((i) => i.productid === item.productid);
+        if (existing) {
+          existing.quantity += item.quantity;
+        } else {
+          acc.push({ ...item });
+        }
+        return acc;
+      }, []);
+  
+      console.log("✅ Cart fetched and merged:", mergedCart);
+      setCart(mergedCart);
     } catch (err) {
       console.error("❌ Failed to fetch cart in context:", err);
     }
   };
+  
 
   const addToCart = async (productid, quantity) => {
     return await addToCartAPI(productid, quantity);
@@ -62,6 +76,11 @@ export const AppProvider = ({ children }) => {
     await fetchCart(); // Refresh cart
   };
 
+  const buyNow = async (productid, quantity) => {
+    const orderData = await buyNowAPI(productid, quantity);
+    setBuyNowItem({ productid, quantity, ...orderData });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -70,6 +89,7 @@ export const AppProvider = ({ children }) => {
         token,
         products,
         cart,
+        buyNowItem,
         login,
         logout,
         updateProducts,
@@ -77,6 +97,7 @@ export const AppProvider = ({ children }) => {
         addToCart,
         removeItemFromCart,
         updateCartQuantity,
+        buyNow
       }}
     >
       {children}

@@ -36,6 +36,17 @@ function Cart() {
     }
   };
 
+  // Optional: Detect duplicate keys (debug only)
+  const seenKeys = new Set();
+  cart?.forEach((item) => {
+    const key = `${item.productid}`;
+    if (seenKeys.has(key)) {
+      console.warn("⚠️ Duplicate productid in cart:", key);
+    } else {
+      seenKeys.add(key);
+    }
+  });
+
   return (
     <div className="cart-wrapper">
       <div className="cart-left">
@@ -47,7 +58,7 @@ function Cart() {
           cart.map((item) => (
             <CartItem
               item={item}
-              key={item.productid}
+              key={`product-${item.productid}`} // ✅ safer key
               onDelete={() => removeItemFromCart(item.productid)}
               onQtyChange={handleQtyChange}
             />

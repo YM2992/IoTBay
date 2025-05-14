@@ -11,6 +11,7 @@ function ProductDetails({ product }) {
   }, [product]);
 
   if (!product) return <p>Loading...</p>;
+  
 
   return (
     <>

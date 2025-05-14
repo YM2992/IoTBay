@@ -3,7 +3,7 @@ import {
   addItemToCart,
   updateItemQuantity,
   removeItemFromCart,
-  fetchUserCart,
+  fetchUserCart, buyNowItem
 } from "../Services/cartService.js";
 
 // Add product to cart
@@ -54,6 +54,23 @@ export const removeCartItem = catchAsync(async (req, res, next) => {
     status: "success",
     message: "Item removed from cart",
     data: updatedCart,
+  });
+});
+
+export const buyNow = catchAsync(async (req, res, next) => {
+  const { id: userid } = req.user;
+  const { productid, quantity } = req.body;
+
+  if (!productid || !quantity) {
+    return next(new cusError("Missing product or quantity", 400));
+  }
+
+  const orderId = await buyNowItem(userid, productid, quantity);
+
+  res.status(201).json({
+    status: "success",
+    message: "Item purchased successfully",
+    data: { orderId },
   });
 });
 

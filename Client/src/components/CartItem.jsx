@@ -35,7 +35,7 @@ function CartItem({ item, onDelete, onQtyChange }) {
 
           <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginTop: "auto", gap: 16 }}>
             <Select
-              defaultValue={item.quantity}
+              value={item.quantity}
               style={{ width: 80 }}
               onChange={(value) => onQtyChange?.(item, value)}
             >

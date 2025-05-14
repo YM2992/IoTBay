@@ -7,9 +7,9 @@ const axiosInstance = axios.create({
   },
 });
 
-//  Attach JWT token from localStorage on each request
+
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("jwt");
+  const token = localStorage.getItem("jwt"); 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
     console.log("📤 Token attached to request:", token);
@@ -40,8 +40,15 @@ export const updateCartQuantity = async (productid, quantity) => {
   return res.data.data;
 };
 
+// Buy now
+export const buyNow = async (productid, quantity) => {
+  const res = await axiosInstance.post("/cart/buy-now", { productid, quantity });
+  return res.data.data;
+};
+
 // Fetch cart
 export const fetchCart = async () => {
   const res = await axiosInstance.get("/cart");
   return res.data.data;
 };
+

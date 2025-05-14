@@ -58,6 +58,9 @@ export const login = catchAsync(async (req, res, next) => {
   if (!correct || !user) {
     return next(new cusError("incorrect email or password", 401));
   }
+  if(!user.activate){
+    return next(new cusError("please find us to re-activate your account",401));
+  }
 
   // if all correct, send token back to user
   createSendToken(user, 200, res);
@@ -74,6 +77,9 @@ export const protect = catchAsync(async (req, res, next) => {
   const currentUser = findUserById(result.id);
   if (!currentUser) {
     return next(new cusError("The user no longer exist", 401));
+  }
+  if(!currentUser.activate){
+    return next(new cusError("please find us to re-activate your account",401));
   }
 
   // Grand Access to Protected Route

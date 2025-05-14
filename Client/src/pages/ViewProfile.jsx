@@ -4,7 +4,7 @@ import { fetchPost, optionMaker } from "@/api";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { toast } from "react-hot-toast";
 import "react-tabs/style/react-tabs.css";
-import "./ViewProfile.css"; // Assuming you have a CSS file for styling
+import "./ViewProfile.css";
 
 const ViewProfile = () => {
   const { user, token } = useContext(AppContext);

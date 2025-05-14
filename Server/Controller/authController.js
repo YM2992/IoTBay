@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
 import { findUserByEmail, findUserById } from "./userController.js";
+import { createOne } from "./centralController.js"; // Import the createOne function
 
 export const hashPassword = async function (password) {
   return await bcrypt.hash(password, 12);
@@ -47,27 +48,37 @@ const createSendToken = (user, statusCode, res) => {
 
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email);
 
   if (!email || !password) {
-    return next(new cusError("please provide email and password", 400));
+    return next(new cusError("Please provide email and password", 400));
   }
 
-  // check if user exists && password is correct
+  // Check if user exists && password is correct
   const user = findUserByEmail(email);
   const correct = await correctPassword(password, user?.password);
 
   if (!correct || !user) {
-    return next(new cusError("incorrect email or password", 401));
+    return next(new cusError("Incorrect email or password", 401));
   }
 
   if (!user.activate) {
     return next(
-      new cusError("Please find us to re-activate your account", 401)
+      new cusError("Please contact support to re-activate your account", 401)
     );
   }
 
-  // if all correct, send token back to user
+  // Use createOne to insert into access_logs
+  try {
+    await createOne("access_logs", {
+      userid: user.userid,
+      login_time: new Date().toISOString(), // Use ISO format for the timestamp
+    });
+  } catch (err) {
+    console.error("Failed to insert access log:", err.message);
+    return next(new cusError("Internal DB error during login", 500));
+  }
+
+  // If all correct, send token back to user
   createSendToken(user, 200, res);
 });
 

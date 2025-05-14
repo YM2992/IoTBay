@@ -30,11 +30,10 @@ function ProfileTabs() {
 
   useEffect(() => {
     if (tabIndex === 3) {
-      // Fetch access logs when the "Access Log" tab is selected
       const fetchAccessLogs = async () => {
         setLoading(true);
         try {
-          const response = await fetchGet("access-logs"); // Replace with your API endpoint
+          const response = await fetchGet("access-log");
           setAccessLogs(response.data);
         } catch (error) {
           toast.error("Failed to fetch access logs.");

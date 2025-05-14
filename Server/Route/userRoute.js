@@ -7,6 +7,7 @@ import {
   userExists,
   updateUser,
   deactivateUser,
+  accessLog,
 } from "../Controller/userController.js";
 
 const userRoute = express.Router();
@@ -24,5 +25,7 @@ userRoute.route("/checkEmail").post(userExists);
 userRoute.route("/me").get(protect, getMe);
 
 userRoute.route("/deactivate").patch(protect, deactivateUser);
+
+userRoute.route("/access-log").get(protect, accessLog);
 
 export default userRoute;

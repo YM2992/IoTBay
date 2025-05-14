@@ -11,12 +11,12 @@ export function filterStr(array, paramKey, filterArea) {
 
 export function filterIncludes(array, paramKey, filterArea) {
   let temp = array;
-  console.log(paramKey.trim());
+  // console.log(paramKey.trim());
 
   if (paramKey.trim() === "all") return temp;
   const trimmedKeyword = paramKey.trim().toLowerCase();
 
-  console.log(array);
+  // console.log(array);
 
   return temp.filter((item) => item[filterArea].toLowerCase().includes(trimmedKeyword));
 }

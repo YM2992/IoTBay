@@ -77,6 +77,12 @@ CREATE TABLE order_payment (
     -- Removed FOREIGN KEY (cardNumber) REFERENCES payment_card(cardNumber)
 );
 
+CREATE TABLE address_book (
+    addressid INTEGER PRIMARY KEY,
+    userid INTEGER,
+    address VARCHAR(255) NOT NULL,
+    FOREIGN KEY (userid) REFERENCES user(userid)
+);
 
 INSERT INTO user (name, phone, email, password, role) VALUES
 ('Yasir Test', 0420555666, 'yasir@test.com', '$2b$12$AQDnbnawQkAeeQmKFhjNpe.eoDuoVLyDRhJEvRRwYF4j9wEzbk6wW', 'manager'),

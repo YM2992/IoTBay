@@ -1,32 +1,29 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { promisify } from "util";
 
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
 import { findUserByEmail, findUserById } from "./userController.js";
 
-// Password Hashing
 export const hashPassword = async function (password) {
   return await bcrypt.hash(password, 12);
 };
 
-// Password Checker
 const correctPassword = async function (typedInPassword, dbSavedPassword) {
   if (!dbSavedPassword || !typedInPassword) return null;
   return await bcrypt.compare(typedInPassword, dbSavedPassword);
 };
 
-//  Sign JWT
+// sign new json web token
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
-// Send JWT in Cookie + Body
+// send token to user
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user.userid); 
+  const token = signToken(user.userid);
 
   user.password = undefined;
 
@@ -46,64 +43,55 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-// Login Controller
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
+  // console.log(email);
 
   if (!email || !password) {
-    return next(new cusError("Please provide email and password", 400));
+    return next(new cusError("please provide email and password", 400));
   }
 
-  const user = await findUserByEmail(email); 
+  // check if user exists && password is correct
+  const user = findUserByEmail(email);
+  const correct = await correctPassword(password, user?.password);
 
-  if (!user) {
-    return next(new cusError("Incorrect email or password", 401));
+  if (!correct || !user) {
+    return next(new cusError("incorrect email or password", 401));
   }
 
-  const correct = await correctPassword(password, user.password);
-
-  if (!correct) {
-    return next(new cusError("Incorrect email or password", 401));
+  if (!user.activate) {
+    return next(new cusError("Please find us to re-activate your account", 401));
   }
 
+  // if all correct, send token back to user
   createSendToken(user, 200, res);
 });
 
-// Protect Middleware
-export const protect = async (req, res, next) => {
-  try {
-    let token;
+export const protect = catchAsync(async (req, res, next) => {
+  let token = req.headers.authorization;
+  if (!token || !token.startsWith("Bearer"))
+    return next(new cusError("You are not logged in, please login first", 401));
 
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    }
+  token = token.split(" ")[1];
+  if (token.trim() == "null")
+    return next(new cusError("There is a token issue, please report it to us", 401));
 
-    if (!token) {
-      return next(new cusError("You are not logged in!", 401)); // ✅ return here too
-    }
+  const result = await jwt.verify(token, process.env.JWT_SECRET);
 
-    const decoded = await promisify(jwt.verify)(
-      token,
-      process.env.JWT_SECRET || "secret"
-    );
+  const currentUser = findUserById(result.id);
 
-    console.log("✅ Decoded JWT:", decoded);
-
-    req.user = { id: decoded.id }; // ✅ attaches user
-    console.log("✅ req.user set as:", req.user); // <=== ADD THIS
-
-    return next(); // ✅ don't forget this
-  } catch (err) {
-    console.log("❌ Invalid token:", err.message);
-    return next(new cusError("Invalid token", 401)); // ✅ must return
+  if (!currentUser) {
+    return next(new cusError("The user no longer exist", 401));
   }
-};
 
+  if (!currentUser.activate) {
+    return next(new cusError("Please find us to re-activate your account", 401));
+  }
+  // Grand Access to Protected Route
+  req.user = currentUser;
+  next();
+});
 
-// Role-Based Restriction
 export const restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { urlMaker } from "@/api";
 
 const defaultConfig = {
-  refreshInterval: 10000,
+  refreshInterval: 60000,
 };
 
 export function useFetchProduct(endpoint, options = {}, config = {}) {

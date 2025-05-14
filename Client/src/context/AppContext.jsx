@@ -13,9 +13,7 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("jwt"));
   const [token, setToken] = useState(localStorage.getItem("jwt"));
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
-  );
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [buyNowItem, setBuyNowItem] = useState(null); // for quick checkout
@@ -32,8 +30,14 @@ export const AppProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("user");
+    localStorage.removeItem("payment_cards");
     setLoggedIn(false);
     setUser(null);
+  };
+
+  const updatePaymentCards = (data) => {
+    localStorage.setItem("payment_cards", JSON.stringify(data));
+    setPaymentCards(data);
   };
 
   const updateProducts = (newProducts) => {
@@ -82,24 +86,7 @@ export const AppProvider = ({ children }) => {
   };
 
   return (
-    <AppContext.Provider
-      value={{
-        loggedIn,
-        user,
-        token,
-        products,
-        cart,
-        buyNowItem,
-        login,
-        logout,
-        updateProducts,
-        fetchCart,
-        addToCart,
-        removeItemFromCart,
-        updateCartQuantity,
-        buyNow
-      }}
-    >
+    <AppContext.Provider value={{ loggedIn, user, token, products, login, logout, updateProducts }}>
       {children}
     </AppContext.Provider>
   );

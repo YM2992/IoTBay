@@ -67,6 +67,8 @@ header nav a::after {
 header nav a:hover {
   background-color: rgba(0, 0, 0, 0);
 }
+
+header nav a.active::after,
 header nav a:hover::after {
   transform: scaleX(1);
 }
@@ -89,4 +91,16 @@ header nav a:hover::after {
   align-items: center;
 
   margin-top: auto;
+}
+
+.ant-card-actions {
+  background-color: #f1f1f1 !important;
+}
+
+.ant-slider-rail {
+  background-color: rgba(205, 205, 205, 0.9) !important;
+}
+
+.ant-input-number-group-addon {
+  background-color: #f1f1f1 !important;
 }

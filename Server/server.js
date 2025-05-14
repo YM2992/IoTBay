@@ -1,54 +1,47 @@
-// server.js
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+// const rateLimit = require("express-rate-limit");
 import errorController from "./Controller/errorController.js";
-
-// Routes
-import userRoute from "./Route/userRoute.js";
-import productRoute from "./Route/productRoute.js";
-import cartRoute from "./Route/cartRoute.js";
-
-// Load env vars
-dotenv.config({ path: "./Server/config.env" });
 
 const app = express();
 
-// CORS middleware
+import userRoute from "./Route/userRoute.js";
+import paymentRoute from "./Route/paymentRoute.js";
+import productRoute from "./Route/productRoute.js";
+dotenv.config({ path: "./Server/config.env" });
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    credentials: true,
+    origin: "*",
   })
 );
-app.options("*", cors());
-
-
-// Body parsers
 
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
-// Logger for debugging
-app.use((req, res, next) => {
-  console.log(`Hit ${req.method} ${req.originalUrl}`);
+app.use(function (req, res, next) {
   console.log("Query:", req.query);
   console.log("Params:", req.params);
   console.log("Body:", req.body);
   next();
 });
 
-// Routes
+dotenv.config({ path: "./Server/config.env" });
+
+// app.use("/api/order", orderRoute);
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
-app.use("/api/cart", cartRoute);
+app.use("/api/payment", paymentRoute);
 
-// Error handler
 app.use(errorController);
 
-// Start server
-const port = process.env.PORT || 8000;
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+// Server
+const port = 8000 || process.env.PORT;
+
+const server = app.listen(port, () => {
+  console.log(`app running on ${port}...`);
 });
+
+// locahost:8000/api/user/login
+// root

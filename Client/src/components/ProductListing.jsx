@@ -37,14 +37,21 @@ function ProductListing({ data }) {
   return (
     <>
       <Card
-        style={{ width: 300 }}
-        cover={<img className="product-image" src={`/assets/products/${image}.jpg`} />}
+        style={{ width: 400, backgroundColor: "#F1F1F1" }}
+        cover={
+          <img
+            className="product-image"
+            style={{ border: "1px solid #F1F1F1", borderRadius: "5px" }}
+            src={`/assets/products/${image}.jpg`}
+          />
+        }
         actions={[
           <ConfigProvider
-            key={"test"}
+            key="Detail"
             button={{
               className: styles.linearGradientButton,
             }}
+            style={{ backgroundColor: "#F1F1F1" }}
           >
             <Link to={`/products/${productid}`}>
               <Button type="primary" size="large">

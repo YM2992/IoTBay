@@ -127,13 +127,7 @@ export const removePaymentCard = catchAsync(async (req, res, next) => {
     if (paymentCardEntry.cardNumber !== cardNumber) {
         return next(new cusError("Card number does not match the provided card ID.", 400));
     }
-
-    // Delete associated records in order_payment table first to satisfy foreign key constraints
-    // This assumes cardid in order_payment references payment_card.cardid
-    await deleteOneByFilter("order_payment", { cardid: cardid });
-    console.log(`Associated payment history for cardid ${cardid} removed from order_payment.`);
-
-    // Now, delete the payment card itself
+    
     const dataFilter = {
       userid,
       cardid,

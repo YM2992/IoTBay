@@ -124,50 +124,91 @@ export const updateUserById = catchAsync(async(req,res,next)=> {
 //   }
 
 // });
+export const deleteUserById = catchAsync(async(req,res,next)=>{
+  const{userid} = req.body;
+  if(!userid) {
+    return next(new cusError("user id missing",400));
+  }
+    const deleteUser = await deleteOne("user",userid);
 
-export const deleteUserById = catchAsync(async (req, res, next) => {
-  const { userid } = req.body;
-  if (!userid) throw new cusError("User id is required to delete a user", 400);
-
-  const deletedUser = await deleteOne("user", userid);
-
-  res.status(200).json({
-    status: "success",
-    data: deletedUser,
+    res.status(200).json({
+      status: " success",
+      data: deleteUser,
+    });
   });
-});
 
 
-export const toggleUserActivation = catchAsync(async (req, res, next) => {
-  const { userid } = req.body;
-  
-  if (!userid) {
-    return next(new cusError("User id is required", 400));
+// export const deleteUserById = catchAsync(async (req, res, next) => {
+//   const { userid } = req.body;
+//   if (!userid) throw new cusError("User id is required to delete a user", 400);
+
+//   const deletedUser = await deleteOne("user", userid);
+
+//   res.status(200).json({
+//     status: "success",
+//     data: deletedUser,
+//   });
+// });
+
+export const toggleUserActivation = catchAsync (async(req,res,next)=>{
+  const{userid} = req.body;
+  if(!userid) {
+    return next(new cusError("user id missing",400));
   }
-  
-  // Retrieve the current user data
+
   const user = await findUserById(userid);
-  
-  if (!user) {
-    return next(new cusError("User not found", 404));
-  }
-  
-  // Toggle the activation status
-  const newActivationStatus = !user.activate;
-  const newActivationStatusNum = newActivationStatus ? 1 : 0;
 
-  
-  try {
-    const updateResult = await updateOne("user", userid, { activate: newActivationStatusNum });
-    console.log("Toggle activation result:", updateResult);
-    
+  if(!user){
+    return next(new cusError("User not founded",404));
+  }
+
+  const activateStatus = !user.activate;
+  const activateTrueFalse = activateStatus ?1:0;
+
+  try{
+    const changedStatus = await updateOne("user",userid,{activate:activateTrueFalse});
+
     res.status(200).json({
       status: "success",
-      data: { userid, activate: newActivationStatus },
+      data: changedStatus,
     });
-  } catch (error) {
-    console.error("Toggle activation error:", error);
-    return next(new cusError("Error updating user activation", 500));
+  }catch(error){
+    console.error(error);
+    return next(new cusError("Error updating activation",500));
   }
+
 });
+
+// export const toggleUserActivation = catchAsync(async (req, res, next) => {
+//   const { userid } = req.body;
+  
+//   if (!userid) {
+//     return next(new cusError("User id is required", 400));
+//   }
+  
+//   // Retrieve the current user data
+//   const user = await findUserById(userid);
+  
+//   if (!user) {
+//     return next(new cusError("User not found", 404));
+//   }
+  
+//   // Toggle the activation status
+//   const newActivationStatus = !user.activate;
+//   const newActivationStatusNum = newActivationStatus ? 1 : 0;
+
+  
+//   try {
+//     const updateResult = await updateOne("user", userid, { activate: newActivationStatusNum });
+//     console.log("Toggle activation result:", updateResult);
+    
+//     res.status(200).json({
+//       status: "success",
+//       data: { userid, activate: newActivationStatus },
+//     });
+//   } catch (error) {
+//     console.error("Toggle activation error:", error);
+//     return next(new cusError("Error updating user activation", 500));
+//   }
+// });
 

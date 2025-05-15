@@ -1,16 +1,13 @@
 //jin
 import { useState } from "react";
 import Input from "../components/Input";
-import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { strictEmailRegex, numberRegex } from "../utils/helper";
 import { fetchPost, checkEmail, optionMaker } from "../api";
 
-
 import "./Login.css";
 
-function CreateUserPages() {
-  const navigate = useNavigate();
+function CreateUserPages({ refetch }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -48,6 +45,15 @@ function CreateUserPages() {
     },
   ];
 
+  const clear = () => {
+    setEmail("");
+    setName("");
+    setPassword("");
+    setPasswordConfirm("");
+    setPhone("123456789");
+    setRole("customer");
+  };
+
   const handleSubmit = async () => {
     // Field guards
     if (!email.trim() || !password.trim() || !name.trim() || !phone.trim()) {
@@ -72,8 +78,10 @@ function CreateUserPages() {
     };
 
     try {
-      const resData = await fetchPost("user/", optionMaker(data));
-      navigate("/edit-user");
+      await fetchPost("user/", optionMaker(data));
+      toast.success("Successfully created new user!");
+      clear();
+      refetch();
     } catch (error) {
       console.log(error);
       return toast.error("Failed to register, please try again later");
@@ -88,7 +96,6 @@ function CreateUserPages() {
             <img src="/assets/IoTBay_Logo.png" alt="IoTBay" />
           </div>
           <h2 className="welcome-text">Admin Create User</h2>
-          
         </div>
 
         <div className="input-container">
@@ -113,7 +120,6 @@ function CreateUserPages() {
             Create Account
           </button>
         </div>
-
       </div>
     </div>
   );

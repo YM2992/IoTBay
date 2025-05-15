@@ -18,6 +18,8 @@ import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import ProductDetails from "./components/ProductDetails";
 import Manage from "./pages/Manage";
+import EditUserPage from "./pages/EditUserPage";
+import CreateUserPages from "./pages/CreateUserPage";
 // import Test from "./pages/Test";
 
 function App() {
@@ -40,10 +42,13 @@ function App() {
 
             {loggedIn && <Route path="/welcome" element={<Welcome />} />}
             {loggedIn && <Route path="/logout" element={<Logout />} />}
-            {loggedIn && <Route path="/profile" element={<Profile />} />}
+            {loggedIn && <Route path="/profile" element={<Profile />} />} 
+            {loggedIn && user.role == "admin" && <Route path="/edit-user" element={<EditUserPage />} />}
+            {loggedIn && user.role == "admin" && <Route path="/create-user" element={<CreateUserPages />} />}
             {loggedIn && managers.includes(user.role) && (
               <Route path="/manage" element={<Manage />} />
-            )}
+
+)}
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

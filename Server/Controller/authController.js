@@ -15,15 +15,15 @@ const correctPassword = async function (typedInPassword, dbSavedPassword) {
 };
 
 // sign new json web token
-const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const signToken = (user) => {
+  return jwt.sign({ id: user.userid, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
 // send token to user
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user.userid);
+  const token = signToken(user);
 
   user.password = undefined;
 
@@ -58,6 +58,9 @@ export const login = catchAsync(async (req, res, next) => {
   if (!correct || !user) {
     return next(new cusError("incorrect email or password", 401));
   }
+  if(!user.activate){
+    return next(new cusError("please find us to re-activate your account",401));
+  }
 
   if (!user.activate) {
     return next(new cusError("Please find us to re-activate your account", 401));
@@ -82,6 +85,9 @@ export const protect = catchAsync(async (req, res, next) => {
 
   if (!currentUser) {
     return next(new cusError("The user no longer exist", 401));
+  }
+  if(!currentUser.activate){
+    return next(new cusError("please find us to re-activate your account",401));
   }
 
   if (!currentUser.activate) {

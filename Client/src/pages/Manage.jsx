@@ -2,12 +2,17 @@ import { useFetchProduct } from "@/hook/useFetchProduct";
 import { useContext, useEffect, useState } from "react";
 import { Tabs } from "antd";
 
+import EditUserPage from "./EditUserPage";
+import CreateUserPages from "./CreateUserPage";
+
 import ManageProduct from "@/components/ManageProduct";
 import { AppContext } from "@/context/AppContext";
+import EmptyCard from "@/components/EmptyCard";
 
 function Manage() {
   const [products, setProducts] = useState(null);
-  const { token } = useContext(AppContext);
+  const { token, user } = useContext(AppContext);
+
   const { data, error, loading, refetch } = useFetchProduct("product/all/", {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -26,18 +31,41 @@ function Manage() {
     },
     {
       key: "2",
-      label: "Tab 2",
-      children: "Content of Tab Pane 2",
+      label: "Edit User",
+      children: (
+        <>
+          {user.role === "admin" ? (
+            <EditUserPage />
+          ) : (
+            <EmptyCard description={"This tab is for admin only"} showBtn={false} />
+          )}
+        </>
+      ),
     },
     {
       key: "3",
-      label: "Tab 3",
-      children: "Content of Tab Pane 3",
+      label: "Create User",
+      children: (
+        <>
+          {user.role === "admin" ? (
+            <CreateUserPages />
+          ) : (
+            <EmptyCard description={"This tab is for admin only"} showBtn={false} />
+          )}
+        </>
+      ),
     },
   ];
 
   return (
-    <div className="profile-container">
+    <div
+      style={{
+        padding: "0 1rem",
+        margin: "2rem auto",
+        backgroundColor: "rgba(255,255,255,0.2)",
+        minWidth: "80vw",
+      }}
+    >
       <h1>Manage</h1>
       <Tabs type="card" defaultActiveKey="1" items={items} size="large" centered />
     </div>

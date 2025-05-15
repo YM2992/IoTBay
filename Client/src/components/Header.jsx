@@ -69,10 +69,9 @@ function Header() {
           </NavLink>
 
           {loggedIn && managers.includes(user.role) && <NavLink to="/manage">Manage</NavLink>}
-          {loggedIn && user.role === "admin" &&<NavLink to="/edit-user">Edit User</NavLink>}
-          {loggedIn && user.role === "admin" &&<NavLink to="/create-user">Create User</NavLink>}
+
           {loggedIn && <SubMenu active={isProfileActive} />}
-          
+
           {!loggedIn && <NavLink to="/login">Login</NavLink>}
           {!loggedIn && <NavLink to="/register">Register</NavLink>}
         </nav>

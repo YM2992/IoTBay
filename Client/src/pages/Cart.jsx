@@ -1,4 +1,4 @@
-import EmptyCartCard from "../components/EmptyCartCard";
+import EmptyCard from "../components/EmptyCard";
 
 function Cart() {
   return (
@@ -12,7 +12,7 @@ function Cart() {
       <h1>Cart</h1>
 
       {/* For later use */}
-      <EmptyCartCard />
+      <EmptyCard description={"Your cart is Empty"} btnLink="/products" btnText="Go to Shop" />
     </div>
   );
 }

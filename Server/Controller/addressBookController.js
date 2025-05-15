@@ -1,8 +1,8 @@
-import { createOne, getAll, updateOne, deleteOne } from "./centralController.js";
+import { createOne, getAll, deleteOneByFilter, updateOneWithFilter } from "./centralController.js";
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
 
-export const getAllAddressBook = catchAsync(async (req, res, next) => {
+export const getUserAddressBook = catchAsync(async (req, res, next) => {
   const addressBook = getAll("address_book");
   const { userid } = req.user;
 
@@ -14,13 +14,20 @@ export const getAllAddressBook = catchAsync(async (req, res, next) => {
   });
 });
 
-export const createProduct = catchAsync(async (req, res, next) => {
-  const { address, userid } = req.body;
+export const createAddress = catchAsync(async (req, res, next) => {
+  const { address, recipient, phone, is_default } = req.body;
+  const { userid } = req.user;
+
+  console.log(address);
+
   if (!address || !userid) return next(new cusError("Please provide all needed fields", 400));
 
   const dataFilter = {
     address,
     userid,
+    recipient,
+    phone,
+    is_default,
   };
 
   try {
@@ -37,11 +44,12 @@ export const createProduct = catchAsync(async (req, res, next) => {
 
 export const deleteOneAddressBook = catchAsync(async (req, res, next) => {
   const { addressid } = req.body;
+  const { userid } = req.user;
 
   if (!addressid)
     return next(new cusError("You have to provide address id you wish to delete", 401));
 
-  const addressBook = deleteOne("addressBook", addressid);
+  const addressBook = deleteOneByFilter("address_book", { addressid, userid });
 
   res.status(200).json({
     status: "success",
@@ -51,11 +59,13 @@ export const deleteOneAddressBook = catchAsync(async (req, res, next) => {
 
 export const updateOneAddressBook = catchAsync(async (req, res, next) => {
   const { data, addressid } = req.body;
+  const { userid } = req.user;
 
-  const { address } = data;
+  if (!addressid)
+    return next(new cusError("You have to provide address id you wish to update", 401));
 
   try {
-    updateOne("address_book", addressid, { address });
+    updateOneWithFilter("address_book", { addressid, userid }, data);
 
     res.status(200).json({
       status: "success",

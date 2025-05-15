@@ -37,7 +37,9 @@ function Manage() {
   ];
 
   return (
-    <div className="profile-container">
+    <div
+      style={{ padding: "0 1rem", margin: "2rem auto", backgroundColor: "rgba(255,255,255,0.2)" }}
+    >
       <h1>Manage</h1>
       <Tabs type="card" defaultActiveKey="1" items={items} size="large" centered />
     </div>

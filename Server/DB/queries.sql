@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_product;
 DROP TABLE IF EXISTS order_payment;
-
+DROP TABLE IF EXISTS address_book;
 
 CREATE TABLE user (
     userid INTEGER PRIMARY KEY,
@@ -80,7 +80,10 @@ CREATE TABLE order_payment (
 CREATE TABLE address_book (
     addressid INTEGER PRIMARY KEY,
     userid INTEGER,
+    recipient VARCHAR(100) NOT NULL,
     address VARCHAR(255) NOT NULL,
+    phone int NOT NULL DEFAULT 123456789,
+    is_default boolean NOT NULL DEFAULT false,
     FOREIGN KEY (userid) REFERENCES user(userid)
 );
 
@@ -143,7 +146,16 @@ INSERT INTO order_payment (paymentid, amount, userid, cardNumber, orderid) VALUE
 (6, 50.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), (SELECT cardNumber FROM payment_card WHERE cardHolderName = 'Jeff Test' AND expiryDate = '11/25'), (SELECT orderid FROM orders WHERE paymentID = 'PAY76543'));
 
 
+INSERT INTO address_book (userid, recipient, address, phone, is_default) VALUES
+  ((SELECT userid FROM user WHERE email = 'jeff@test.com'), 'Jeff R', '2B/123 King St, Sydney NSW 2000', 0412345678, true),
+  ((SELECT userid FROM user WHERE email = 'jeff@test.com'), 'Jeff R', '10 George St, Parramatta NSW 2150', 0412345678, false),
+  ((SELECT userid FROM user WHERE email = 'random@test.com'), 'Bob Customer', '88 Queen St, Melbourne VIC 3000', 0423456789, true),
+  ((SELECT userid FROM user WHERE email = 'random@test.com'), 'Charlie Lee', '5 High St, Brisbane VIC 4000', 0434567890, false),
+  ((SELECT userid FROM user WHERE email = 'yasir@test.com'), 'Yasir M', 'Unit 12, 20 Pacific Hwy, Hornsby NSW 2077', 0434567890, true);
+
+
 SELECT * FROM user;
 SELECT * FROM product;
 SELECT * FROM orders;
 SELECT * FROM order_product;
+SELECT * FROM address_book;

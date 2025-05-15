@@ -3,12 +3,14 @@ import { AppContext } from "@/context/AppContext";
 import { Typography } from "antd";
 import CartItem from "../components/CartItem";
 import { removeCartItem as removeCartItemAPI, updateCartQuantity } from "@/api/cartAPI";
+import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 
 const { Text } = Typography;
 
 function Cart() {
   const { cart, fetchCart } = useContext(AppContext);
+  const navigate = useNavigate(); // ✅ Hook inside component
 
   useEffect(() => {
     fetchCart();
@@ -36,17 +38,6 @@ function Cart() {
     }
   };
 
-  // Optional: Detect duplicate keys (debug only)
-  const seenKeys = new Set();
-  cart?.forEach((item) => {
-    const key = `${item.productid}`;
-    if (seenKeys.has(key)) {
-      console.warn("⚠️ Duplicate productid in cart:", key);
-    } else {
-      seenKeys.add(key);
-    }
-  });
-
   return (
     <div className="cart-wrapper">
       <div className="cart-left">
@@ -58,7 +49,7 @@ function Cart() {
           cart.map((item) => (
             <CartItem
               item={item}
-              key={`product-${item.productid}`} // ✅ safer key
+              key={`product-${item.productid}`}
               onDelete={() => removeItemFromCart(item.productid)}
               onQtyChange={handleQtyChange}
             />
@@ -75,7 +66,16 @@ function Cart() {
             <span className="order-total-label">Total:</span>
             <span className="order-total-amount">AU${totalPrice}</span>
           </div>
-          <button className="checkout-button">Checkout Now</button>
+          <button
+            className="checkout-button"
+            onClick={() => {
+              console.log("🔁 Navigating to checkout...");
+              navigate("/checkout");
+            }}
+            disabled={cart?.length === 0}
+          >
+            Checkout Now
+          </button>
           <div className="payment-methods">
             <img src="/assets/Visa.png" alt="Visa" />
             <img src="/assets/Mastercard.png" alt="MasterCard" />

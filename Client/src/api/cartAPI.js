@@ -1,3 +1,4 @@
+
 import axios from "axios";
 
 const axiosInstance = axios.create({
@@ -17,6 +18,8 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
+
+
 // Add item to cart
 export const addToCart = async (productid, quantity) => {
   const res = await axiosInstance.post("/cart/add", { productid, quantity });
@@ -33,12 +36,13 @@ export const removeCartItem = async (productid) => {
 
 // Update quantity
 export const updateCartQuantity = async (productid, quantity) => {
-  const res = await axiosInstance.post("/cart/update-quantity", {
+  const res = await axiosInstance.patch("/cart/update-quantity", {
     productid,
     quantity,
   });
   return res.data.data;
 };
+
 
 // Buy now
 export const buyNow = async (productid, quantity) => {
@@ -51,4 +55,5 @@ export const fetchCart = async () => {
   const res = await axiosInstance.get("/cart");
   return res.data.data;
 };
+
 

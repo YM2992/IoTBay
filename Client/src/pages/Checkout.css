@@ -1,130 +1,28 @@
-.checkout-page {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.954);
-  padding: 2rem 0;
-  gap: 30px;
-  font-family: Arial, sans-serif;
-}
-
-.checkout-left {
-  width: 60%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.checkout-right {
-  width: 300px;
-  background: #fff;
-  padding: 20px;
-  border: 1px solid #ddd;
-}
-
-.order-summary .summary-row {
-  display: flex;
-  justify-content: space-between;
-  margin: 10px 0;
-}
-
-.total {
-  font-weight: bold;
-  color: #e60023;
-}
-
-.checkout-button {
-  background: black;
-  color: white;
-  padding: 10px;
-  width: 100%;
-  border: none;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.address-card,
-.order-details-card,
-.shipping-options {
-  background: #fff;
-  padding: 20px;
-  border: 1px solid #ddd;
-}
-
-.product-row {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-.product-row img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-}
-
-.default-tag {
-  color: green;
-  margin-left: 10px;
-}
-
-.edit-btn {
-  margin-top: 10px;
-  padding: 5px 10px;
-  border: 1px solid white;
-  background: black;
-  cursor: pointer;
-}
-
-.address-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.change-btn {
-  border: none;
-  background: none;
-  color: #0070f3;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 14px;
-  padding: 0;
-}
-
-.payment-method {
-  padding: 1.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-top: 2rem;
-  background-color: white;
-}
-
-.payment-method label {
-  display: block;
-  margin-bottom: 1rem;
-  font-size: 15px;
-}
-
-.payment-method input[type="radio"] {
-  margin-right: 8px;
-}
-
-.card-logos {
-  margin-top: 8px;
-  display: flex;
-  gap: 8px;
-}
-
-.card-logos img {
-  height: 20px;
-}
-
-.payment-note {
-  display: block;
-  font-size: 13px;
-  color: gray;
-  margin-left: 24px;
-}
+.checkout-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.954);
+    padding: 2rem 0; 
+    gap: 30px;
+  }
+  
+  .checkout-left {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .checkout-right {
+    flex: 1;
+    background: white;
+    padding: 30px;
+    border-radius: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-width: 450px;
+    margin-right: 15px;
+  }
+  

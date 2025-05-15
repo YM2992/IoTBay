@@ -5,7 +5,6 @@ import {
   removeCartItem as removeCartItemAPI,
   updateCartQuantity as updateCartQuantityAPI,
   buyNow as buyNowAPI,
-
 } from "@/api/cartAPI";
 
 export const AppContext = createContext();
@@ -16,8 +15,7 @@ export const AppProvider = ({ children }) => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
-  const [buyNowItem, setBuyNowItem] = useState(null); // for quick checkout
-
+  const [buyNowItem, setBuyNowItem] = useState(null);
 
   const login = (token, userData) => {
     localStorage.setItem("jwt", token);
@@ -48,7 +46,7 @@ export const AppProvider = ({ children }) => {
     console.log("🛒 Fetching cart...");
     try {
       const cartData = await fetchCartAPI();
-        const mergedCart = cartData.reduce((acc, item) => {
+      const mergedCart = cartData.reduce((acc, item) => {
         const existing = acc.find((i) => i.productid === item.productid);
         if (existing) {
           existing.quantity += item.quantity;
@@ -57,14 +55,12 @@ export const AppProvider = ({ children }) => {
         }
         return acc;
       }, []);
-  
       console.log("✅ Cart fetched and merged:", mergedCart);
       setCart(mergedCart);
     } catch (err) {
       console.error("❌ Failed to fetch cart in context:", err);
     }
   };
-  
 
   const addToCart = async (productid, quantity) => {
     return await addToCartAPI(productid, quantity);
@@ -72,12 +68,12 @@ export const AppProvider = ({ children }) => {
 
   const removeItemFromCart = async (productid) => {
     await removeCartItemAPI(productid);
-    await fetchCart(); // Refresh cart
+    await fetchCart();
   };
 
   const updateCartQuantity = async (productid, quantity) => {
     await updateCartQuantityAPI(productid, quantity);
-    await fetchCart(); // Refresh cart
+    await fetchCart();
   };
 
   const buyNow = async (productid, quantity) => {
@@ -86,7 +82,25 @@ export const AppProvider = ({ children }) => {
   };
 
   return (
-    <AppContext.Provider value={{ loggedIn, user, token, products, login, logout, updateProducts }}>
+    <AppContext.Provider
+      value={{
+        loggedIn,
+        token,
+        user,
+        products,
+        cart,
+        buyNowItem,
+        login,
+        logout,
+        updateProducts,
+        updatePaymentCards,
+        fetchCart,
+        addToCart,
+        removeItemFromCart,
+        updateCartQuantity,
+        buyNow,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

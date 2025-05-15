@@ -11,7 +11,7 @@ function ProductPage() {
   const { productid } = useParams();
   const [data, setData] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const { addToCart, fetchCart, products, loggedIn, buyNow } = useContext(AppContext);
+  const { addToCart, fetchCart, products, loggedIn} = useContext(AppContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,24 +28,19 @@ function ProductPage() {
   const handleAddToCart = async () => {
     try {
       if (!loggedIn) {
-        toast.error("You must be logged in to add to cart");
-        return;
+        toast("🛒 Adding to cart as guest...", { icon: "👤" });
       }
-
-      const userData = JSON.parse(localStorage.getItem("user"));
-      const payload = {
-        userid: userData.userid,
+  
+      console.log("🛒 Adding to cart:", {
         productid: data.productid,
         quantity,
-      };
-
-      console.log("🛒 Adding to cart:", payload);
-
+      });
+  
       const response = await addToCart(data.productid, quantity);
-
+  
       if (Array.isArray(response)) {
-        await fetchCart(payload.userid);
-
+        await fetchCart(); // no userid needed
+  
         toast.custom((t) => (
           <Card
             className="cart-toast-popup"
@@ -82,21 +77,7 @@ function ProductPage() {
       toast.error("Something went wrong adding to cart");
     }
   };
-
-  const handleBuyNow = async () => {
-    try {
-      if (!loggedIn) {
-        toast.error("You must be logged in to buy now");
-        return;
-      }
   
-      await buyNow(data.productid, quantity);
-      navigate("/checkout"); // ✅ GO TO CHECKOUT PAGE
-    } catch (err) {
-      console.error("❌ Buy Now failed:", err);
-      toast.error("Something went wrong with Buy Now");
-    }
-  };
   
 
   return (
@@ -139,31 +120,19 @@ function ProductPage() {
           </div>
 
           <div className="product-actions">
-            <Button
-            type="primary"
-            size="large"
-            disabled={data.quantity === 0}
-            onClick={handleBuyNow}
-            >
-              Buy Now
-            </Button>
 
-            <Button
-              type="default"
-              size="large"
-              disabled={data.quantity === 0}
-              onClick={handleAddToCart}
-            >
-              Add to Cart
-            </Button>
+          <div className="product-actions">
+  <Button
+    className="add-to-cart-button"
+    size="large"
+    disabled={data.quantity === 0}
+    onClick={handleAddToCart}
+  >
+    Add to Cart
+  </Button>
+</div>
 
-            <Button
-              type="default"
-              size="large"
-              onClick={() => console.log("Add to Wishlist")}
-            >
-              Add to Wishlist
-            </Button>
+
           </div>
 
           <Divider />

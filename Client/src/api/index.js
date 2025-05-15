@@ -21,6 +21,10 @@ export const API_ROUTES = {
     getPaymentHistory: "payment/history/",
     addPayment: "payment/addPayment"
   },
+  order: {
+    getOrderHistory: "order/history",
+  },
+  
 };
 
 export const urlMaker = (endpoint) => {
@@ -86,3 +90,5 @@ export const checkEmail = async (email) => {
 
   return resData;
 };
+
+

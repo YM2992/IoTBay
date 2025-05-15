@@ -1,0 +1,47 @@
+.order-summary {
+    flex: 1;
+    background: white;
+    padding: 2rem;
+    border-radius: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-width: 450px;
+  }
+  
+  .order-summary h4 {
+    font-size: 24px;
+    margin-bottom: 1rem;
+    color: #000;
+  }
+  
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #000;
+  }
+  
+  .summary-row.total {
+    font-weight: bold;
+    font-size: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+  }
+  
+  .checkout-button {
+    background: black;
+    color: white;
+    padding: 16px;
+    font-size: 17px;
+    width: 100%;
+    border-radius: 0px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .checkout-button:hover {
+    background: #222;
+  }
+  

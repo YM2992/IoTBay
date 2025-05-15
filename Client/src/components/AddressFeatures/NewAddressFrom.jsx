@@ -33,7 +33,7 @@ function NewAddressFrom({ refetch }) {
       refetch();
     } catch (error) {
       console.log(error);
-      toast.error("Failed to add new address");
+      toast.error(error.message || "Failed to add new address");
     }
   };
 

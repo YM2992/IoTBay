@@ -7,6 +7,7 @@ import {
 } from "./centralController.js";
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
+import { isNineDigitNumber } from "../Utils/helper.js";
 
 export const getUserAddressBook = catchAsync(async (req, res, next) => {
   const addressBook = getAll("address_book");
@@ -34,6 +35,8 @@ export const createAddress = catchAsync(async (req, res, next) => {
     recipient,
     phone,
   };
+
+  if (!isNineDigitNumber(phone)) return next(new cusError("Phone number has to be 9 digits", 401));
 
   const addressBook = getAllWithFilter("address_book", { userid });
   if (addressBook.length < 1) {
@@ -80,6 +83,9 @@ export const updateOneAddressBook = catchAsync(async (req, res, next) => {
     };
     updateOneWithFilter("address_book", { userid }, data);
   }
+
+  if (data.phone && !isNineDigitNumber(data.phone))
+    return next(new cusError("Phone number has to be 9 digits", 401));
 
   try {
     updateOneWithFilter("address_book", { addressid, userid }, data);

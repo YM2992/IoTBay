@@ -11,31 +11,53 @@ import EmptyCard from "@/components/EmptyCard";
 
 function Manage() {
   const [products, setProducts] = useState(null);
+  const [users, setUsers] = useState(null);
   const { token, user } = useContext(AppContext);
 
-  const { data, error, loading, refetch } = useFetch("product/all/", {
+  const {
+    data: productData,
+    error: productError,
+    loading: productLoading,
+    refetch: refetchProduct,
+  } = useFetch("product/all/", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 
+  const {
+    data: userData,
+    error: userError,
+    loading: userLoading,
+    refetch: userRefetch,
+  } = useFetch("user", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
   useEffect(() => {
-    if (!loading || !error) setProducts(data);
-  }, [data, loading, error]);
+    if (!productLoading || !productError) setProducts(productData);
+  }, [productData, productLoading, productError]);
+
+  useEffect(() => {
+    if (!userLoading || !userError) setUsers(userData);
+  }, [userData, userLoading, userError]);
 
   const items = [
     {
       key: "1",
       label: "Product",
-      children: <ManageProduct data={products} refetch={refetch}></ManageProduct>,
+      children: <ManageProduct data={products} refetch={refetchProduct}></ManageProduct>,
     },
     {
       key: "2",
       label: "Edit User",
       children: (
         <>
-          {user.role === "admin" ? (
-            <EditUserPage />
+          {user.role === "admin" && users ? (
+            <EditUserPage users={users} refetch={userRefetch} />
           ) : (
             <EmptyCard description={"This tab is for admin only"} showBtn={false} />
           )}
@@ -48,7 +70,7 @@ function Manage() {
       children: (
         <>
           {user.role === "admin" ? (
-            <CreateUserPages />
+            <CreateUserPages refetch={userRefetch} />
           ) : (
             <EmptyCard description={"This tab is for admin only"} showBtn={false} />
           )}

@@ -2,40 +2,39 @@ import React, { useEffect, useState, useContext } from "react";
 import { Spin } from "antd";
 import { NewEditUser as EditUser } from "@/components/NewEditUser"; // Named import from your component
 import { AppContext } from "@/context/AppContext";
-import { urlMaker ,fetchPost, optionMaker} from "../api";
-import { useFetchProduct } from "@/hook/useFetchProduct";
+import { urlMaker, fetchPost, optionMaker } from "../api";
+import { useFetch } from "@/hook/useFetch";
 // import { fetchPost } from "../api";
 
 const EditUserPage = () => {
   const [users, setUsers] = useState([]);
-  
+
   const { token } = useContext(AppContext);
-  const { data, error, loading, refetch } = useFetchProduct("user", {
+  const { data, error, loading, refetch } = useFetch("user", {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
 
-//   const handleUpdate = async (userid, newName) => {
-//   try {
-//     const options = optionMaker({ userid, name: newName }, "PATCH", token);
-//     const resData = await fetchPost("user/usermanage", options);
+  //   const handleUpdate = async (userid, newName) => {
+  //   try {
+  //     const options = optionMaker({ userid, name: newName }, "PATCH", token);
+  //     const resData = await fetchPost("user/usermanage", options);
 
-//     if (resData.status === "success") {
-//       setUsers(prevUsers =>
-//         prevUsers.map(user =>
-//           user.userid === userid ? { ...user, name: newName } : user
-//         )
-//       );
-//     } else {
-//       console.error("Update failed:", resData.message);
-//     }
-//   } catch (error) {
-//     console.error("Error updating user:", error);
-//   }
-// };
-
+  //     if (resData.status === "success") {
+  //       setUsers(prevUsers =>
+  //         prevUsers.map(user =>
+  //           user.userid === userid ? { ...user, name: newName } : user
+  //         )
+  //       );
+  //     } else {
+  //       console.error("Update failed:", resData.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating user:", error);
+  //   }
+  // };
 
   // const handleUpdate = async ()=>{
 
@@ -46,7 +45,7 @@ const EditUserPage = () => {
   // }
 
   // useEffect(() => {
-    
+
   //   console.log("Decoded Token:", atob(token.split('.')[1]));
   //   console.log("Stored Token:", token);
 
@@ -57,7 +56,7 @@ const EditUserPage = () => {
   //     },
   //   })
   //     .then((res) => {
-  //       if (!res.ok) { 
+  //       if (!res.ok) {
   //         throw new Error(`HTTP error! status: ${res.status}`);
   //       }
   //       return res.json();
@@ -84,7 +83,6 @@ const EditUserPage = () => {
       setUsers(data);
     }
   }, [data, loading, error]);
-
 
   if (error) {
     return <div>Error fetching users: {error.message}</div>;
@@ -113,16 +111,13 @@ const EditUserPage = () => {
   //     })
   //     .catch(error => console.error("Error updating user:", error));
   // };
-  
 
   return (
-    <div >
+    <div>
       <h1>Edit User</h1>
       <EditUser data={users} refetch={refetch} />
     </div>
   );
 };
-
-
 
 export default EditUserPage;

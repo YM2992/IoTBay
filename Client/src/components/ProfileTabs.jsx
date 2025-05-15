@@ -12,7 +12,7 @@ import "react-tabs/style/react-tabs.css";
 
 import PaymentHistory from "./PaymentHistory";
 import PaymentCardsTab from "./PaymentCardsTab"; // Import the new component
-import AddressBook from "./AddressBook";
+import AddressBooks from "./AddressBooks";
 
 const tabStyle = {
   display: "flex",
@@ -89,7 +89,7 @@ function ProfileTabs() {
       </TabPanel>
 
       <TabPanel>
-        <AddressBook />
+        <AddressBooks />
       </TabPanel>
     </Tabs>
   );

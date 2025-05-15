@@ -1,4 +1,10 @@
-import { createOne, getAll, deleteOneByFilter, updateOneWithFilter } from "./centralController.js";
+import {
+  createOne,
+  getAll,
+  deleteOneByFilter,
+  updateOneWithFilter,
+  getAllWithFilter,
+} from "./centralController.js";
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
 
@@ -6,7 +12,9 @@ export const getUserAddressBook = catchAsync(async (req, res, next) => {
   const addressBook = getAll("address_book");
   const { userid } = req.user;
 
-  const filteredAddressBook = addressBook.filter((address) => address.userid === userid);
+  const filteredAddressBook = addressBook
+    .filter((address) => address.userid === userid)
+    .sort((a, b) => b.is_default - a.is_default);
 
   res.status(200).json({
     status: "success",
@@ -15,10 +23,8 @@ export const getUserAddressBook = catchAsync(async (req, res, next) => {
 });
 
 export const createAddress = catchAsync(async (req, res, next) => {
-  const { address, recipient, phone, is_default } = req.body;
+  const { address, recipient, phone } = req.body;
   const { userid } = req.user;
-
-  console.log(address);
 
   if (!address || !userid) return next(new cusError("Please provide all needed fields", 400));
 
@@ -27,8 +33,12 @@ export const createAddress = catchAsync(async (req, res, next) => {
     userid,
     recipient,
     phone,
-    is_default,
   };
+
+  const addressBook = getAllWithFilter("address_book", { userid });
+  if (addressBook.length < 1) {
+    dataFilter.is_default = true;
+  }
 
   try {
     createOne("address_book", dataFilter);
@@ -63,6 +73,13 @@ export const updateOneAddressBook = catchAsync(async (req, res, next) => {
 
   if (!addressid)
     return next(new cusError("You have to provide address id you wish to update", 401));
+
+  if (data.is_default) {
+    const data = {
+      is_default: 0,
+    };
+    updateOneWithFilter("address_book", { userid }, data);
+  }
 
   try {
     updateOneWithFilter("address_book", { addressid, userid }, data);

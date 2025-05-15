@@ -1,4 +1,4 @@
-import { useFetchProduct } from "@/hook/useFetchProduct";
+import { useFetch } from "@/hook/useFetch";
 import { useContext, useEffect, useState } from "react";
 import { Tabs } from "antd";
 
@@ -13,7 +13,7 @@ function Manage() {
   const [products, setProducts] = useState(null);
   const { token, user } = useContext(AppContext);
 
-  const { data, error, loading, refetch } = useFetchProduct("product/all/", {
+  const { data, error, loading, refetch } = useFetch("product/all/", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

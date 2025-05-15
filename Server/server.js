@@ -9,6 +9,8 @@ const app = express();
 import userRoute from "./Route/userRoute.js";
 import paymentRoute from "./Route/paymentRoute.js";
 import productRoute from "./Route/productRoute.js";
+import addressRoute from "./Route/addressRoute.js";
+
 dotenv.config({ path: "./Server/config.env" });
 
 app.use(
@@ -33,6 +35,7 @@ dotenv.config({ path: "./Server/config.env" });
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/payment", paymentRoute);
+app.use("/api/address", addressRoute);
 
 app.use(errorController);
 

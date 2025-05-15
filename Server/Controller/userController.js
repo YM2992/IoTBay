@@ -74,7 +74,7 @@ export const createUser = catchAsync(async (req, res, next) => {
 });
 
 export const updateUserById = catchAsync(async(req,res,next)=> {
-    const{name,phone,userid} = req.body;
+    const{name,phone,userid,email} = req.body;
     if (!name) {
       return next (new cusError("Please enter new name",400));
     }
@@ -83,7 +83,7 @@ export const updateUserById = catchAsync(async(req,res,next)=> {
       console.log("user id ", userid);
       console.log("Name: ", name);
 
-      await updateOne ("user",userid,{name,phone});
+      await updateOne ("user",userid,{name,phone,email});
 
       res.status(200).json({
         status: "success",

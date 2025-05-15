@@ -17,6 +17,7 @@ export const NewEditUser = ({ data, refetch }) => {
   const [editedNames, setEditedNames] = useState({});
   const [isEditing, setIsEditing] = useState({});
   const [editedPhones, setEditedPhones] = useState({});
+  const [editemail,seteditemail] = useState({});
   const [searchParams,setSearchParams] = useSearchParams();
   
   const fullNameInput = searchParams.get("name") || "";
@@ -34,31 +35,12 @@ export const NewEditUser = ({ data, refetch }) => {
   };
 
 
-  // const handleToggleActivation = async (userid) => {
-  //   try {
-  //     await fetchPost("user/toggleActivation", optionMaker({ userid }, "PATCH", token));
-      
-  //     toast.success("User activation status changed");
-  //     refetch();
-  //   } catch (error) {
-  //     toast.error(error.message || "Error toggling activation");
-  //   }
-  // };
+  
   const handleDelete = async (userid)=>{
     await handleSubmit("user/delete", {userid},"DELETE", "User has been deleted");
   }
 
-  // const handleDelete = async (userid) => {
-    
-  //   try {
-      
-  //     await fetchPost("user/delete", optionMaker({ userid }, "DELETE", token));
-  //     toast.success("User deleted successfully");
-  //     refetch();
-  //   } catch (error) {
-  //     toast.error(error.message || "Error deleting user");
-  //   }
-  // };
+  
 
   const handleSubmit = async (url, data, method, message) => {
       try {
@@ -71,32 +53,27 @@ export const NewEditUser = ({ data, refetch }) => {
       }
     };
   
-  const handleEdit = (userid,name,phone) => {
+  const handleEdit = (userid,name,phone,email) => {
   
     setIsEditing((prev) => ({ ...prev, [userid]: true }));
     setEditedNames((prev) => ({ ...prev, [userid]: name }));
     setEditedPhones((prev) => ({ ...prev, [userid]: phone }));
+    seteditemail((prev)=> ({...prev,[userid]:email}));
   };
 
-  const handleSave = async (userid, newName,newPhone) => {
-    await handleSubmit("user/usermanage",{ userid, name: newName, phone: newPhone }, "PATCH", "Successfully updated user");
+  const handleSave = async (userid, newName,newPhone,newEmail) => {
+    await handleSubmit("user/usermanage",{ userid, name: newName, phone: newPhone ,email:newEmail}, "PATCH", "Successfully updated user");
     setIsEditing((prev) => ({ ...prev, [userid]: false })); 
     
   };
   
-  // const [appliedFilters, setAppliedFilters] = useState({
-  //   fullName: "",
-  //   phone: "",
-  // });
+  
 
   
   const handleSearch = () => {
 
     setSearchParams({name:nameSearch.trim(),phone:phoneSearch.trim()});
-    // setAppliedFilters({
-    //   fullName: fullNameInput,
-    //   phone: phoneInput,
-    // });
+    
   };
 
   
@@ -149,7 +126,18 @@ export const NewEditUser = ({ data, refetch }) => {
 
 
       <Table className="myTable" dataSource={filteredData} rowKey="userid">
-        <Column title="Email" dataIndex="email" key="email" />
+        <Column title="Email" dataIndex="email" key="email"
+        render={(text,record)=> isEditing[record.userid]? (
+          <Input value={editemail[record.userid]} onChange={(e)=> seteditemail({...editemail,[record.userid]:e.target.value})}
+          
+          />
+        ):(
+          <span>{record.email}</span>
+        )
+
+        }
+
+         />
         <Column title="Full Name" dataIndex="name" key="name"
         render={(text, record) =>  isEditing[record.userid] ? (
         <Input
@@ -193,7 +181,7 @@ export const NewEditUser = ({ data, refetch }) => {
           render={(text, record) => (
             isEditing[record.userid] ?(
               <Space>
-             <Button onClick={() => handleSave(record.userid, editedNames[record.userid] || record.name, editedPhones[record.userid] || record.phone)}>
+             <Button onClick={() => handleSave(record.userid, editedNames[record.userid] || record.name, editedPhones[record.userid] || record.phone,editemail[record.userid]|| record.email)}>
                Save
              </Button>
              <Button
@@ -207,7 +195,7 @@ export const NewEditUser = ({ data, refetch }) => {
              </Button>
              </Space>
                ) : (
-              <Button onClick={() => handleEdit(record.userid,record.name,record.phone)}>Edit</Button>
+              <Button onClick={() => handleEdit(record.userid,record.name,record.phone,record.email)}>Edit</Button>
 
                  )
               )}

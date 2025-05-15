@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import { FaBoxOpen, FaFileInvoice, FaStar } from "react-icons/fa";
+import { FaBoxOpen, FaCreditCard, FaFileInvoice, FaStar, FaHistory } from "react-icons/fa";
 import "react-tabs/style/react-tabs.css";
+
+import PaymentHistory from "./PaymentHistory";
+import PaymentCardsTab from "./PaymentCardsTab"; // Import the new component
 
 const tabStyle = {
   display: "flex",
@@ -14,6 +17,14 @@ const TabOptions = [
   { icon: <FaBoxOpen />, label: "Listings" },
   { icon: <FaFileInvoice />, label: "Orders" },
   { icon: <FaStar />, label: "Reviews" },
+  {
+    icon: <FaCreditCard />,
+    label: "Payment",
+  },
+  {
+    icon: <FaHistory />,
+    label: "Payment History",
+  }
 ];
 
 function ProfileTabs() {
@@ -55,6 +66,14 @@ function ProfileTabs() {
       {/* Reviews Tab */}
       <TabPanel>
         <p className="empty-msg">You don’t have any reviews yet.</p>
+      </TabPanel>
+
+      <TabPanel>
+        <PaymentCardsTab />
+      </TabPanel>
+
+      <TabPanel>
+        <PaymentHistory />
       </TabPanel>
     </Tabs>
   );

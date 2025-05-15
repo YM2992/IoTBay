@@ -7,6 +7,7 @@ import errorController from "./Controller/errorController.js";
 const app = express();
 
 import userRoute from "./Route/userRoute.js";
+import paymentRoute from "./Route/paymentRoute.js";
 import productRoute from "./Route/productRoute.js";
 dotenv.config({ path: "./Server/config.env" });
 
@@ -15,13 +16,6 @@ app.use(
     origin: "*",
   })
 );
-
-// const limiter = rateLimit({
-//   max: 100,
-//   windowMs: 60 * 60 * 1000,
-//   message: "Too many requests from this IP, please try again in an hour!",
-// });
-// app.use("/api", limiter);
 
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
@@ -38,6 +32,7 @@ dotenv.config({ path: "./Server/config.env" });
 // app.use("/api/order", orderRoute);
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
+app.use("/api/payment", paymentRoute);
 
 app.use(errorController);
 
@@ -47,3 +42,6 @@ const port = 8000 || process.env.PORT;
 const server = app.listen(port, () => {
   console.log(`app running on ${port}...`);
 });
+
+// locahost:8000/api/user/login
+// root

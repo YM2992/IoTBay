@@ -192,3 +192,27 @@ body {
   outline: none;
   box-shadow: none;
 }
+.add-to-cart-button {
+  background-color: #007bff; /* Blue */
+  color: white;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.add-to-cart-button:hover {
+  background-color: #0056b3; /* Darker blue */
+  color: white;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Blue outline */
+  outline: none;
+}
+
+.add-to-cart-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.7); /* Keeps it accessible */
+}
+
+.add-to-cart-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}

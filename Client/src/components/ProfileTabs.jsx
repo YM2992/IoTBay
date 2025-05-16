@@ -12,6 +12,8 @@ import "react-tabs/style/react-tabs.css";
 
 import PaymentHistory from "./PaymentHistory";
 import PaymentCardsTab from "./PaymentCardsTab"; // Import the new component
+import OrderHistory from "./OrderHistory";
+
 import AddressBooks from "./AddressBooks";
 
 const tabStyle = {
@@ -72,13 +74,11 @@ function ProfileTabs() {
 
       {/* Orders Tab */}
       <TabPanel>
-        <p className="empty-msg">You haven’t made any orders yet.</p>
+        <OrderHistory />
       </TabPanel>
 
       {/* Reviews Tab */}
-      <TabPanel>
-        <p className="empty-msg">You don’t have any reviews yet.</p>
-      </TabPanel>
+      <TabPanel></TabPanel>
 
       <TabPanel>
         <PaymentCardsTab />

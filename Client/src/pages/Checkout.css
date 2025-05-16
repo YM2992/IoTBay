@@ -1,0 +1,28 @@
+.checkout-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.954);
+    padding: 2rem 0; 
+    gap: 30px;
+  }
+  
+  .checkout-left {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .checkout-right {
+    flex: 1;
+    background: white;
+    padding: 30px;
+    border-radius: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-width: 450px;
+    margin-right: 15px;
+  }
+  

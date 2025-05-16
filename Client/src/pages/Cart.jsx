@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 
 const { Text } = Typography;
+import EmptyCard from "../components/EmptyCard";
 
 function Cart() {
   const { cart, fetchCart } = useContext(AppContext);

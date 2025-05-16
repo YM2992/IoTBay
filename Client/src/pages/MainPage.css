@@ -45,12 +45,6 @@ body {
   animation: popEffect 12s ease infinite;
 }
 
-.item-image {
-  width: 200px;
-  height: 200px;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
 
 .products-h {
   font-size: 24px;

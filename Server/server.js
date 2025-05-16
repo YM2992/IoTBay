@@ -4,9 +4,8 @@ import cors from "cors";
 // const rateLimit = require("express-rate-limit");
 import errorController from "./Controller/errorController.js";
 dotenv.config({ path: "./Server/config.env" });
-import session from "express-session"; 
+import session from "express-session";
 import express from "express";
-
 
 const app = express();
 
@@ -16,6 +15,9 @@ import productRoute from "./Route/productRoute.js";
 import cartRoute from "./Route/cartRoute.js";
 import orderRoute from "./Route/orderRoute.js";
 
+import addressRoute from "./Route/addressRoute.js";
+
+dotenv.config({ path: "./Server/config.env" });
 
 app.use(
   cors({
@@ -26,15 +28,12 @@ app.use(
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
-
-
 app.use(function (req, res, next) {
   console.log("Query:", req.query);
   console.log("Params:", req.params);
   console.log("Body:", req.body);
   next();
 });
-
 
 // app.use("/api/order", orderRoute);
 app.use("/api/user", userRoute);
@@ -43,6 +42,7 @@ app.use("/api/payment", paymentRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/order", orderRoute);
 
+app.use("/api/address", addressRoute);
 
 app.use(errorController);
 

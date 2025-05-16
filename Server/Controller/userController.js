@@ -1,7 +1,7 @@
 import { createOne } from "./centralController.js";
 import { hashPassword } from "./authController.js";
 import catchAsync from "../Utils/catchAsync.js";
-import { getOne, getAll, updateOne,deleteOne } from "./centralController.js";
+import { getOne, getAll, updateOne, deleteOne } from "./centralController.js";
 import cusError from "../Utils/cusError.js";
 
 export const findUserByEmail = (email) => {
@@ -44,7 +44,7 @@ export const getAllUser = catchAsync(async (req, res, next) => {
 });
 
 export const createUser = catchAsync(async (req, res, next) => {
-  const { name, email, password, phone,role="customer" } = req.body;
+  const { name, email, password, phone, role = "customer" } = req.body;
 
   if (!name || !email || !password || !phone)
     return next(new cusError("Please provide all needed information", 400));
@@ -73,27 +73,25 @@ export const createUser = catchAsync(async (req, res, next) => {
   }
 });
 
-export const updateUserById = catchAsync(async(req,res,next)=> {
-    const{name,phone,userid,email} = req.body;
-    if (!name) {
-      return next (new cusError("Please enter new name",400));
-    }
+export const updateUserById = catchAsync(async (req, res, next) => {
+  const { name, phone, userid, email } = req.body;
+  if (!name) {
+    return next(new cusError("Please enter new name", 400));
+  }
 
-    try {
-      console.log("user id ", userid);
-      console.log("Name: ", name);
+  try {
+    console.log("user id ", userid);
+    console.log("Name: ", name);
 
-      await updateOne ("user",userid,{name,phone,email});
+    await updateOne("user", userid, { name, phone, email });
 
-      res.status(200).json({
-        status: "success",
-        data : {userid,name,phone},
-      });
-    }
-    catch(error){
-      return next(new cusError("Error updating user", 500));
-    }
-
+    res.status(200).json({
+      status: "success",
+      data: { userid, name, phone },
+    });
+  } catch (error) {
+    return next(new cusError("Error updating user", 500));
+  }
 });
 
 // export const updateUserById = catchAsync(async (req, res, next) => {
@@ -104,15 +102,14 @@ export const updateUserById = catchAsync(async(req,res,next)=> {
 //   try {
 
 //     console.log("user id received:", userid);  // Debug log
-//     console.log("Name received:", name); 
+//     console.log("Name received:", name);
 //     console.log("Phone received:", phone);
 //     // Use the helper function to find the user
-   
+
 //     // Update the user's name
 //     const updateResult = await updateOne("user", userid,{name,phone});
 
-//     console.log("Update result:", updateResult); 
-
+//     console.log("Update result:", updateResult);
 
 //     res.status(200).json({
 //       status: "success",
@@ -124,19 +121,18 @@ export const updateUserById = catchAsync(async(req,res,next)=> {
 //   }
 
 // });
-export const deleteUserById = catchAsync(async(req,res,next)=>{
-  const{userid} = req.body;
-  if(!userid) {
-    return next(new cusError("user id missing",400));
+export const deleteUserById = catchAsync(async (req, res, next) => {
+  const { userid } = req.body;
+  if (!userid) {
+    return next(new cusError("user id missing", 400));
   }
-    const deleteUser = await deleteOne("user",userid);
+  const deleteUser = await deleteOne("user", userid);
 
-    res.status(200).json({
-      status: " success",
-      data: deleteUser,
-    });
+  res.status(200).json({
+    status: " success",
+    data: deleteUser,
   });
-
+});
 
 // export const deleteUserById = catchAsync(async (req, res, next) => {
 //   const { userid } = req.body;
@@ -150,58 +146,56 @@ export const deleteUserById = catchAsync(async(req,res,next)=>{
 //   });
 // });
 
-export const toggleUserActivation = catchAsync (async(req,res,next)=>{
-  const{userid} = req.body;
-  if(!userid) {
-    return next(new cusError("user id missing",400));
+export const toggleUserActivation = catchAsync(async (req, res, next) => {
+  const { userid } = req.body;
+  if (!userid) {
+    return next(new cusError("user id missing", 400));
   }
 
   const user = await findUserById(userid);
 
-  if(!user){
-    return next(new cusError("User not founded",404));
+  if (!user) {
+    return next(new cusError("User not founded", 404));
   }
 
   const activateStatus = !user.activate;
-  const activateTrueFalse = activateStatus ?1:0;
+  const activateTrueFalse = activateStatus ? 1 : 0;
 
-  try{
-    const changedStatus = await updateOne("user",userid,{activate:activateTrueFalse});
+  try {
+    const changedStatus = await updateOne("user", userid, { activate: activateTrueFalse });
 
     res.status(200).json({
       status: "success",
       data: changedStatus,
     });
-  }catch(error){
+  } catch (error) {
     console.error(error);
-    return next(new cusError("Error updating activation",500));
+    return next(new cusError("Error updating activation", 500));
   }
-
 });
 
 // export const toggleUserActivation = catchAsync(async (req, res, next) => {
 //   const { userid } = req.body;
-  
+
 //   if (!userid) {
 //     return next(new cusError("User id is required", 400));
 //   }
-  
+
 //   // Retrieve the current user data
 //   const user = await findUserById(userid);
-  
+
 //   if (!user) {
 //     return next(new cusError("User not found", 404));
 //   }
-  
+
 //   // Toggle the activation status
 //   const newActivationStatus = !user.activate;
 //   const newActivationStatusNum = newActivationStatus ? 1 : 0;
 
-  
 //   try {
 //     const updateResult = await updateOne("user", userid, { activate: newActivationStatusNum });
 //     console.log("Toggle activation result:", updateResult);
-    
+
 //     res.status(200).json({
 //       status: "success",
 //       data: { userid, activate: newActivationStatus },

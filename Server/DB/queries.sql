@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_product;
 DROP TABLE IF EXISTS order_payment;
+DROP TABLE IF EXISTS address_book;
 
 
 CREATE TABLE user (
@@ -17,7 +18,7 @@ CREATE TABLE user (
     password VARCHAR(100) NOT NULL,
     address VARCHAR(100),
     activate boolean NOT NULL DEFAULT true,
-    role varchar(8) NOT NULL Check (role in ('customer', 'manager', 'staff', 'owner')) DEFAULT 'customer'
+    role varchar(8) NOT NULL Check (role in ('customer','admin' ,'manager', 'staff', 'owner')) DEFAULT 'customer'
 );
 
 CREATE TABLE payment_card (
@@ -80,12 +81,16 @@ CREATE TABLE order_payment (
 CREATE TABLE address_book (
     addressid INTEGER PRIMARY KEY,
     userid INTEGER,
+    recipient VARCHAR(100) NOT NULL,
     address VARCHAR(255) NOT NULL,
+    phone int NOT NULL DEFAULT 123456789,
+    is_default boolean NOT NULL DEFAULT false,
     FOREIGN KEY (userid) REFERENCES user(userid)
 );
 
+
 INSERT INTO user (name, phone, email, password, role) VALUES
-('Yasir Test', 0420555666, 'yasir@test.com', '$2b$12$AQDnbnawQkAeeQmKFhjNpe.eoDuoVLyDRhJEvRRwYF4j9wEzbk6wW', 'manager'),
+('Yasir Test', 0420555666, 'yasir@test.com', '$2b$12$AQDnbnawQkAeeQmKFhjNpe.eoDuoVLyDRhJEvRRwYF4j9wEzbk6wW', 'admin'),
 ('Jeff Test', 0420222333, 'jeff@test.com', '$2b$12$yTgqJX5rr9KafAU2aDDJQuTpuqW0RN.ubNNroElpXaOLYjf.y00Ze', 'manager'),
 ('Customer Test', 0420111222, 'random@test.com', '$2b$12$7we9rbwYFCwnHmI0as757Ol4bBam2lzA/ICKP4pYUgQs1I5A8oh9O', 'customer'),
 ('John Test', 0420111000, 'john@test.com', '$2b$12$v7q4jwss4Ory6pO/ILhnhOr4QfzzR/BDQQ12EUUq8I/3XJxv4a9.6', 'staff');
@@ -142,8 +147,15 @@ INSERT INTO order_payment (paymentid, paymentDate, amount, userid, cardNumber, o
 INSERT INTO order_payment (paymentid, amount, userid, cardNumber, orderid) VALUES
 (6, 50.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), (SELECT cardNumber FROM payment_card WHERE cardHolderName = 'Jeff Test' AND expiryDate = '11/25'), (SELECT orderid FROM orders WHERE paymentID = 'PAY76543'));
 
+INSERT INTO address_book (userid, recipient, address, phone, is_default) VALUES
+  ((SELECT userid FROM user WHERE email = 'jeff@test.com'), 'Jeff R', '2B/123 King St, Sydney NSW 2000', 0412345678, true),
+  ((SELECT userid FROM user WHERE email = 'jeff@test.com'), 'Jeff R', '10 George St, Parramatta NSW 2150', 0412345678, false),
+  ((SELECT userid FROM user WHERE email = 'random@test.com'), 'Bob Customer', '88 Queen St, Melbourne VIC 3000', 0423456789, true),
+  ((SELECT userid FROM user WHERE email = 'random@test.com'), 'Charlie Lee', '5 High St, Brisbane VIC 4000', 0434567890, false),
+  ((SELECT userid FROM user WHERE email = 'yasir@test.com'), 'Yasir M', 'Unit 12, 20 Pacific Hwy, Hornsby NSW 2077', 0434567890, true);
 
 SELECT * FROM user;
 SELECT * FROM product;
 SELECT * FROM orders;
 SELECT * FROM order_product;
+SELECT * FROM address_book;

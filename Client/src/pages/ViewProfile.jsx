@@ -7,15 +7,15 @@ import "react-tabs/style/react-tabs.css";
 import "./ViewProfile.css";
 
 const ViewProfile = () => {
-  const { user, token } = useContext(AppContext);
+  const { user, token, setUser } = useContext(AppContext); // ✅ Pull in setUser
   const { name, email, password, address, phone } = user;
 
   const [profile, setProfile] = useState({
     username: name,
-    password: password,
-    email: email,
-    phone: phone,
-    address: address,
+    password,
+    email,
+    phone,
+    address,
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -41,12 +41,26 @@ const ViewProfile = () => {
         };
 
         await fetchPost("user/", optionMaker(data, "PATCH", token));
-        toast.success("Profile updated successfully!");
+
+        // ✅ Update local state
         setProfile({ ...editedProfile });
+
+        // ✅ Update global AppContext state
+        setUser({
+          ...user,
+          name: editedProfile.username,
+          email: editedProfile.email,
+          password: editedProfile.password,
+          phone: editedProfile.phone,
+          address: editedProfile.address,
+        });
+
+        toast.success("Profile updated successfully!");
       } catch (error) {
         toast.error("Failed to update profile. Please try again.");
       }
     }
+
     setIsEditing(!isEditing);
   };
 
@@ -155,7 +169,6 @@ const ViewProfile = () => {
           <button
             className="deactivate-account-button"
             onClick={handleConfirmDelete}
-            // Updated function name
           >
             Deactivate My Account
           </button>
@@ -169,7 +182,7 @@ const ViewProfile = () => {
               <div className="popup-buttons">
                 <button
                   className="confirm-button"
-                  onClick={handleDeactivateAccount} // Updated function name
+                  onClick={handleDeactivateAccount}
                 >
                   Yes, Deactivate
                 </button>

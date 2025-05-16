@@ -1,16 +1,24 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("jwt"));
   const [token, setToken] = useState(localStorage.getItem("jwt"));
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || null
+  );
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   // const fetchProduct = useAutoFetch("product/");
 
   // const
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+  }, [user]);
 
   const login = (token, userData) => {
     localStorage.setItem("jwt", token);
@@ -31,7 +39,18 @@ export const AppProvider = ({ children }) => {
     setProducts(newProducts);
   };
   return (
-    <AppContext.Provider value={{ loggedIn, user, token, products, login, logout, updateProducts }}>
+    <AppContext.Provider
+      value={{
+        loggedIn,
+        user,
+        setUser,
+        token,
+        products,
+        login,
+        logout,
+        updateProducts,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

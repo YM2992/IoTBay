@@ -16,8 +16,10 @@ import Registration from "./pages/Registration";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 import ProductDetails from "./components/ProductDetails";
 import Manage from "./pages/Manage";
+import CheckoutReceipt from "./pages/CheckoutReceipt";
 // import Test from "./pages/Test";
 
 function App() {
@@ -44,6 +46,9 @@ function App() {
             {loggedIn && managers.includes(user.role) && (
               <Route path="/manage" element={<Manage />} />
             )}
+            {loggedIn && <Route path="/checkout" element={<Checkout />} />}
+            {loggedIn && <Route path="/checkout/receipt" element={<CheckoutReceipt />} />}
+
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

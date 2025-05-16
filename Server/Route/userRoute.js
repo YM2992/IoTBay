@@ -26,6 +26,6 @@ userRoute.route("/me").get(protect, getMe);
 
 userRoute.route("/deactivate").patch(protect, deactivateUser);
 
-userRoute.route("/access-log").get(protect, accessLog);
+userRoute.route("/access-log").post(protect, accessLog);
 
 export default userRoute;

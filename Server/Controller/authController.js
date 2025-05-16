@@ -42,6 +42,8 @@ const createSendToken = (user, statusCode, res) => {
     user,
   });
 };
+console.log("🔒 PROTECT middleware running");
+
 
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -72,6 +74,8 @@ export const login = catchAsync(async (req, res, next) => {
 
 export const protect = catchAsync(async (req, res, next) => {
   let token = req.headers.authorization;
+  console.log("🔒 PROTECT middleware running");
+
   if (!token || !token.startsWith("Bearer"))
     return next(new cusError("You are not logged in, please login first", 401));
 

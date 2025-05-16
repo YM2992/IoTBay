@@ -137,8 +137,13 @@ function ProfileTabs() {
                       </td>
                       <td>
                         {log.logout_time
-                          ? new Date(log.logout_time).toLocaleString()
-                          : "Still Logged In"}
+                          ? new Date(log.logout_time).toLocaleString("en-AU", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }) : "Still Logged In"}
                       </td>
 
                       <td>

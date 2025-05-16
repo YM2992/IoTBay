@@ -1,3 +1,4 @@
+import { fetchPost, optionMaker } from "@/api";
 import { createContext, useState, useEffect } from "react";
 
 export const AppContext = createContext();
@@ -33,6 +34,12 @@ export const AppProvider = ({ children }) => {
     localStorage.removeItem("user");
     setLoggedIn(false);
     setUser(null);
+
+    fetchPost("user/logout", optionMaker({}, "POST", token)).then((res) => {
+        console.log("Logout successful", res);
+    }).catch((err) => {
+        console.error("Logout failed", err);
+    });
   };
 
   const updateProducts = (newProducts) => {

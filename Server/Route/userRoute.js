@@ -1,5 +1,5 @@
 import express from "express";
-import { protect, restrictTo, login } from "../Controller/authController.js";
+import { protect, restrictTo, login, logout } from "../Controller/authController.js";
 import {
   getAllUser,
   createUser,
@@ -27,5 +27,7 @@ userRoute.route("/me").get(protect, getMe);
 userRoute.route("/deactivate").patch(protect, deactivateUser);
 
 userRoute.route("/access-log").post(protect, accessLog);
+
+userRoute.route("/logout").post(protect, logout);
 
 export default userRoute;

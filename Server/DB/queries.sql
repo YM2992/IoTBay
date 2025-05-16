@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_product;
+DROP TABLE IF EXISTS access_logs;
 
 
 CREATE TABLE user (
@@ -18,7 +19,7 @@ CREATE TABLE user (
 CREATE TABLE access_logs (
     logid INTEGER PRIMARY KEY,
     userid INTEGER NOT NULL,
-    login_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    login_time DATETIME,
     logout_time DATETIME,
     FOREIGN KEY (userid) REFERENCES user(userid)
 );

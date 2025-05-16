@@ -135,7 +135,16 @@ INSERT INTO order_product (orderid, productid, quantity) VALUES
  (SELECT productid FROM product WHERE name = 'LoRaWAN Gateway'), 1),
 
 ((SELECT orderid FROM orders WHERE paymentID = 'PAY54321'), 
- (SELECT productid FROM product WHERE name = 'Switch'), 2);
+ (SELECT productid FROM product WHERE name = 'Switch'), 2),
+
+((SELECT orderid FROM orders WHERE paymentID = 'PAY98765'),
+    (SELECT productid FROM product WHERE name = 'Raspberry Pi 4 Model B'), 1),
+((SELECT orderid FROM orders WHERE paymentID = 'PAY87654'),
+    (SELECT productid FROM product WHERE name = 'ESP32'), 1),
+((SELECT orderid FROM orders WHERE paymentID = 'PAY76543'),
+    (SELECT productid FROM product WHERE name = 'WROOM-32'), 1),
+((SELECT orderid FROM orders WHERE paymentID = 'PAY76543'),
+    (SELECT productid FROM product WHERE name = 'Test Product'), 1);
 
 INSERT INTO order_payment (paymentid, paymentDate, amount, userid, cardNumber, orderid) VALUES
 (1, '2024-03-12', 109.98, (SELECT userid FROM user WHERE email = 'random@test.com'), (SELECT cardNumber FROM payment_card WHERE cardHolderName = 'Customer Test' AND expiryDate = '01/23'), (SELECT orderid FROM orders WHERE paymentID = 'PAY12345')),

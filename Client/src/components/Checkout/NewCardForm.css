@@ -1,0 +1,27 @@
+.new-card-form-container {
+  margin-top: 15px;
+  padding: 20px;
+  background-color: #f9f9f9; /* Light background for the new card form */
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+}
+
+.new-card-form-container h4 {
+  font-size: 1.1em;
+  color: #444;
+  margin-bottom: 15px;
+  /* margin-top: 0; /* Reset top margin if .new-card-form-container provides it */
+}
+
+.new-card-form-container .ant-form-item {
+  margin-bottom: 12px; /* Adjusted for consistency */
+}
+
+.new-card-form-container .ant-form-item-label > label {
+  font-weight: 500; /* Slightly bolder labels */
+  color: #555;
+}
+
+.new-card-form-container .save-card-checkbox .ant-form-item-control-input-content {
+  margin-top: 8px; /* Add some space above the checkbox */
+}

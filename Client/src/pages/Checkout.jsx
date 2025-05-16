@@ -8,6 +8,8 @@ import "./Checkout.css";
 import { Radio, Button, Checkbox, Typography } from "antd"; // Input removed as it's now in NewCardForm
 import toast from "react-hot-toast";
 import { getPaymentCards } from "@/components/Payment"; 
+import { removeCartItem as removeCartItemAPI, updateCartQuantity } from "@/api/cartAPI";
+import { API_ROUTES, fetchPost, optionMaker } from "@/api";
 
 const { Text } = Typography;
 
@@ -20,10 +22,9 @@ function CheckoutPage() {
     cardNumber: "",
     expiryDate: "",
     cvv: "",
-    saveCard: false, // Keep this to control the checkbox's initial state and if other logic depends on it
+    saveCard: false
   });
-  // const [form] = Form.useForm(); // This form instance is now managed by NewCardForm
-  const newCardFormRef = useRef(null); // Ref for NewCardForm
+  const newCardFormRef = useRef(null);
 
   useEffect(() => {
     fetchCart();
@@ -37,6 +38,24 @@ function CheckoutPage() {
       setPaymentCards([]);
     }
   }, [token]);
+
+  const removeItemFromCart = async (productid) => {
+    try {
+      await removeCartItemAPI(productid);
+      await fetchCart();
+    } catch (err) {
+      console.error("❌ Failed to remove item:", err.message);
+    }
+  };
+
+  const handleQtyChange = async (item, newQty) => {
+    try {
+      await updateCartQuantity(item.productid, newQty);
+      await fetchCart();
+    } catch (err) {
+      console.error("❌ Failed to update quantity:", err.message);
+    }
+  };
 
   const fetchPaymentCards = async () => {
     try {
@@ -112,36 +131,54 @@ function CheckoutPage() {
     return null;
   };
 
+  const handlePaymentCallback = async () => {
+    const paymentDetails = await getPaymentDetailsForOrder();
+    if (!paymentDetails) {
+      toast.error("Failed to get payment details. Please check your selection.");
+      return;
+    }
+
+    // Call "/api/checkout" endpoint with the payment details
+    const orderDetails = {
+      items: cart,
+      paymentDetails,
+    };
+    try {
+      const response = await fetchPost(API_ROUTES.checkout.checkout, optionMaker(orderDetails, "POST", token));
+      if (response && response.status === "success") {
+        toast.success("Checkout successful!");
+        // Optionally redirect or clear cart
+        fetchCart(); // Refresh cart after checkout
+      } else {
+        toast.error(response?.message || "Checkout failed. Please try again.");
+      }
+    } catch (error) {
+      toast.error(error.message || "Error during checkout.");
+    }
+  }
+
   return (
     <div className="checkout-wrapper">
       <div className="cart-left">
-        {/* ... existing cart items rendering ... */}
         <div className="cart-header">
           <h2>Your Checkout Items</h2>
         </div>
-        {cart?.map((item) => (
+        {cart?.length > 0 ? (
+          cart.map((item) => (
           <CartItem
             key={`checkout-${item.productid}-${item.cartitemid}`} 
             item={item}
-            onDelete={() => {
-              console.log("Delete item from checkout:", item.productid);
-              // Implement actual delete logic here, e.g., by calling a context function
-              // and then fetchCart()
-            }} 
-            onQtyChange={(newQty) => {
-              console.log("Change quantity in checkout:", item.productid, newQty);
-              // Implement actual quantity change logic here, e.g., by calling a context function
-              // and then fetchCart()
-            }} 
+              onDelete={() => removeItemFromCart(item.productid)}
+              onQtyChange={handleQtyChange}
           />
-        ))}
-        {(!cart || cart.length === 0) && (
-          <Text>Your cart is empty.</Text>
+          ))
+        ) : (
+          <p>Your cart is empty</p>
         )}
       </div>
 
       <div className="cart-right">
-        <OrderSummary items={cart} getPaymentDetails={getPaymentDetailsForOrder} />
+        <OrderSummary items={cart} getPaymentDetails={getPaymentDetailsForOrder} paymentCallback={handlePaymentCallback} />
         
         <div className="payment-section-container">
           <h3>Payment Method</h3>
@@ -154,8 +191,8 @@ function CheckoutPage() {
               <PaymentCard 
                 key={card.cardid} 
                 card={card} 
-                token={token} // Pass token
-                onCardUpdated={fetchPaymentCards} // Pass callback to refresh list
+                token={token}
+                onCardUpdated={fetchPaymentCards}
               />
             ))}
             <Radio 

@@ -319,14 +319,4 @@ function SavedPaymentCard({ paymentCard }) {
   );
 }
 
-SavedPaymentCard.propTypes = {
-  paymentCard: PropTypes.shape({
-    cardid: PropTypes.string.isRequired,
-    cardNumber: PropTypes.string.isRequired,
-    expiryDate: PropTypes.string.isRequired,
-    cardholderName: PropTypes.string.isRequired,
-    cvv: PropTypes.string.isRequired,
-  }).isRequired,
-};
-
 export default SavedPaymentCard;

@@ -11,7 +11,7 @@ export const getOrderHistory = catchAsync(async (req, res, next) => {
         });
     }
 
-    const stmt = db.prepare(`
+    const orderHistory = db.prepare(`
         SELECT 
             o.orderid, 
             o.userid, 
@@ -26,9 +26,7 @@ export const getOrderHistory = catchAsync(async (req, res, next) => {
         JOIN product p ON op.productid = p.productid
         WHERE o.userid = ?
         ORDER BY o.orderDate DESC, o.orderid DESC
-    `);
-
-    const orderHistory = stmt.all(userid);
+    `).all(userid);
 
     // Check if order history is empty
     if (!orderHistory || orderHistory.length === 0) {

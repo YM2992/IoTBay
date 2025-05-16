@@ -123,21 +123,18 @@ export const accessLog = catchAsync(async (req, res, next) => {
   const userId = req.user.userid;
 
   try {
-    console.log("Fetching access logs for userId:", userId); // Debugging log
     const logs = await getAll(
       "access_logs",
       "userid",
       userId,
       "login_time DESC"
     );
-    console.log("Fetched logs:", logs); // Debugging log
 
     res.status(200).json({
       status: "success",
       data: logs,
     });
   } catch (error) {
-    console.error("Error fetching access logs:", error.message); // Debugging log
     return next(new cusError("Failed to fetch access logs", 500));
   }
 });

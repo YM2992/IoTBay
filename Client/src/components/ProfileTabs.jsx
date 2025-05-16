@@ -136,16 +136,11 @@ function ProfileTabs() {
                         })}
                       </td>
                       <td>
-                        {logoutTime
-                          ? logoutTime.toLocaleDateString("en-AU", {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
-                          : "-"}
+                        {log.logout_time
+                          ? new Date(log.logout_time).toLocaleString()
+                          : "Still Logged In"}
                       </td>
+
                       <td>
                         <span
                           className={`access-log-status ${

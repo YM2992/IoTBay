@@ -19,7 +19,7 @@ CREATE TABLE access_logs (
     logid INTEGER PRIMARY KEY,
     userid INTEGER NOT NULL,
     login_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-    logout_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    logout_time DATETIME,
     FOREIGN KEY (userid) REFERENCES user(userid)
 );
 

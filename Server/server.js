@@ -4,7 +4,6 @@ import cors from "cors";
 // const rateLimit = require("express-rate-limit");
 import errorController from "./Controller/errorController.js";
 dotenv.config({ path: "./Server/config.env" });
-import session from "express-session";
 import express from "express";
 
 const app = express();

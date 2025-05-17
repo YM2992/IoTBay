@@ -44,7 +44,7 @@ const UpdateAddressModal = ({ addressItem, refetch, ButtonType = "outlined" }) =
     try {
       setConfirmLoading(true);
       await fetchPost("address/", optionMaker(data, "PATCH", token));
-      toast.success("Successfully updated product");
+      toast.success("Successfully updated address");
     } catch (error) {
       toast.error(error.message || "An error occurred");
     } finally {

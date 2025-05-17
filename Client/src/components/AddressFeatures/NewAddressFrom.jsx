@@ -4,21 +4,20 @@ import { fetchPost, optionMaker } from "@/api";
 
 import { Button, Modal, Input } from "antd";
 import toast from "react-hot-toast";
+import AddressForm from "./AddressForm";
 
 function NewAddressFrom({ refetch }) {
   const [open, setOpen] = useState(false);
   const [addressItem, setAddressItem] = useState();
   const { token } = useContext(AppContext);
 
-  const handleChange =
-    (field, number = false) =>
-    (e) => {
-      const data = number ? e : e.target.value;
-      setAddressItem((prev) => ({
-        ...prev,
-        [field]: data,
-      }));
-    };
+  const handleChange = (field) => (e) => {
+    const data = e.target.value;
+    setAddressItem((prev) => ({
+      ...prev,
+      [field]: data,
+    }));
+  };
 
   const onSubmit = async () => {
     const { recipient, phone, address } = addressItem;
@@ -61,14 +60,7 @@ function NewAddressFrom({ refetch }) {
           </Button>,
         ]}
       >
-        <label>Address</label>
-        <Input placeholder="address" onChange={handleChange("address")} />
-
-        <label>Recipient</label>
-        <Input placeholder={"recipient"} onChange={handleChange("recipient")} />
-
-        <label>Phone</label>
-        <Input placeholder={"phone"} onChange={handleChange("phone")} />
+        <AddressForm handleChange={handleChange} />
       </Modal>
     </>
   );

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { AppContext } from "@/context/AppContext";
 import { fetchPost, optionMaker } from "@/api";
 
@@ -7,11 +7,15 @@ import toast from "react-hot-toast";
 
 const { TextArea } = Input;
 
-const UpdateAddressModal = ({ addressItem, refetch }) => {
+const UpdateAddressModal = ({ addressItem, refetch, ButtonType = "outlined" }) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { token } = useContext(AppContext);
   const [add, setAdd] = useState(addressItem);
+
+  useEffect(() => {
+    setAdd(addressItem);
+  }, [open]);
 
   const { addressid, recipient, phone, address } = add;
 
@@ -45,7 +49,7 @@ const UpdateAddressModal = ({ addressItem, refetch }) => {
       toast.error(error.message || "An error occurred");
     } finally {
       setConfirmLoading(false);
-      refetch();
+      if (refetch) refetch();
       setOpen(false);
     }
   };
@@ -62,7 +66,7 @@ const UpdateAddressModal = ({ addressItem, refetch }) => {
 
   return (
     <>
-      <Button color="primary" variant="outlined" onClick={showModal}>
+      <Button color="primary" variant={ButtonType} onClick={showModal}>
         Update
       </Button>
       <Modal

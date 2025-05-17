@@ -16,7 +16,9 @@ export const AppProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [buyNowItem, setBuyNowItem] = useState(null);
-  const [paymentCards, setPaymentCards] = useState(JSON.parse(localStorage.getItem("payment_cards")) || []);
+  const [paymentCards, setPaymentCards] = useState(
+    JSON.parse(localStorage.getItem("payment_cards")) || []
+  );
 
   const login = (token, userData) => {
     localStorage.setItem("jwt", token);
@@ -101,7 +103,7 @@ export const AppProvider = ({ children }) => {
         updateCartQuantity,
         buyNow,
         paymentCards,
-        setPaymentCards
+        setPaymentCards,
       }}
     >
       {children}

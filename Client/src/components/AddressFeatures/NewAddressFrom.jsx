@@ -30,7 +30,7 @@ function NewAddressFrom({ refetch }) {
       await fetchPost("address/", optionMaker(addressItem, "POST", token));
       toast.success("Successfully added new address");
       handleCancel();
-      refetch();
+      if (refetch) refetch();
     } catch (error) {
       console.log(error);
       toast.error(error.message || "Failed to add new address");

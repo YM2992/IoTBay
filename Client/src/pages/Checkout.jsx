@@ -5,14 +5,28 @@ import { useNavigate } from "react-router-dom";
 import SavedPaymentCard from "@/components/SavedPaymentCard";
 import { Button, Divider, Typography, List, Modal, Input } from "antd";
 import "./Checkout.css";
-import { removePaymentCard, savePaymentCard } from "@/components/Payment";
 
-function Checkout() {
-  const { cart, paymentCards, user, token, updatePaymentCards } = useContext(AppContext);
-  const [selectedCard, setSelectedCard] = useState(null);
-  const [expandedCard, setExpandedCard] = useState(null);
-  const [editedCardDetails, setEditedCardDetails] = useState({});
-  const navigate = useNavigate();
+import { Radio, Button, Checkbox, Typography } from "antd"; // Input removed as it's now in NewCardForm
+import toast from "react-hot-toast";
+import { getPaymentCards } from "@/components/Payment"; 
+import { removeCartItem as removeCartItemAPI, updateCartQuantity } from "@/api/cartAPI";
+import { API_ROUTES, fetchPost, optionMaker } from "@/api";
+
+const { Text } = Typography;
+
+function CheckoutPage() {
+  const { cart, fetchCart, token } = useContext(AppContext);
+  const [paymentCards, setPaymentCards] = useState([]);
+  const [selectedPaymentOption, setSelectedPaymentOption] = useState(null);
+  const [newCardDetails, setNewCardDetails] = useState({
+    cardholderName: "",
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    saveCard: false
+  });
+  const newCardFormRef = useRef(null);
+
 
   const handlePlaceOrder = () => {
     if (!selectedCard) {
@@ -20,17 +34,33 @@ function Checkout() {
       return;
     }
 
-    alert("Order placed successfully!");
-    navigate("/checkout/receipt", {
-      state: {
-        orderNumber: "#123456",
-        date: new Date().toLocaleDateString(),
-        totalAmount: cart ? cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2) : 0,
-        items: cart ? cart.map((item) => `${item.name} (x${item.quantity})`) : [],
-        paymentCard: selectedCard,
-      },
-    });
+
+  const removeItemFromCart = async (productid) => {
+    try {
+      await removeCartItemAPI(productid);
+      await fetchCart();
+    } catch (err) {
+      console.error("❌ Failed to remove item:", err.message);
+    }
   };
+
+  const handleQtyChange = async (item, newQty) => {
+    try {
+      await updateCartQuantity(item.productid, newQty);
+      await fetchCart();
+    } catch (err) {
+      console.error("❌ Failed to update quantity:", err.message);
+    }
+  };
+
+  const fetchPaymentCards = async () => {
+    try {
+      const res = await getPaymentCards(token);
+      if (res && res.status === "success" && Array.isArray(res.data)) {
+        setPaymentCards(res.data);
+        const currentSelectedCardId = selectedPaymentOption?.startsWith('saved_') ? selectedPaymentOption.split('_')[1] : null;
+        const stillExists = currentSelectedCardId ? res.data.some(card => card.cardid.toString() === currentSelectedCardId) : false;
+
 
   const handleEditCard = (card) => {
     setExpandedCard(card.cardNumber);
@@ -58,32 +88,79 @@ function Checkout() {
     }));
   };
 
-  return (
-    <div className="checkout-container">
-      <Typography.Title level={2} className="checkout-title">
-        Checkout
-      </Typography.Title>
+  const handlePaymentCallback = async () => {
+    const paymentDetails = await getPaymentDetailsForOrder();
+    if (!paymentDetails) {
+      toast.error("Failed to get payment details. Please check your selection.");
+      return;
+    }
 
-      <div className="checkout-content">
-        <div className="cart-summary">
-          <Typography.Title level={3}>Order Summary</Typography.Title>
-          <List
-            itemLayout="horizontal"
-            dataSource={cart}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  title={item.name}
-                  description={`Quantity: ${item.quantity} | Price: $${item.price.toFixed(2)}`}
-                />
-                <Typography.Text strong>
-                  ${(item.price * item.quantity).toFixed(2)}
-                </Typography.Text>
-              </List.Item>
-            )}
-          />
-          <Divider />
+    // Call "/api/checkout" endpoint with the payment details
+    const orderDetails = {
+      items: cart,
+      paymentDetails,
+    };
+    try {
+      const response = await fetchPost(API_ROUTES.checkout.checkout, optionMaker(orderDetails, "POST", token));
+      if (response && response.status === "success") {
+        toast.success("Checkout successful!");
+        // Optionally redirect or clear cart
+        fetchCart(); // Refresh cart after checkout
+      } else {
+        toast.error(response?.message || "Checkout failed. Please try again.");
+      }
+    } catch (error) {
+      toast.error(error.message || "Error during checkout.");
+    }
+  }
+
+  return (
+
+    <div className="checkout-wrapper">
+      <div className="cart-left">
+        <div className="cart-header">
+          <h2>Your Checkout Items</h2>
         </div>
+        {cart?.length > 0 ? (
+          cart.map((item) => (
+          <CartItem
+            key={`checkout-${item.productid}-${item.cartitemid}`} 
+            item={item}
+              onDelete={() => removeItemFromCart(item.productid)}
+              onQtyChange={handleQtyChange}
+          />
+          ))
+        ) : (
+          <p>Your cart is empty</p>
+        )}
+      </div>
+
+      <div className="cart-right">
+        <OrderSummary items={cart} getPaymentDetails={getPaymentDetailsForOrder} paymentCallback={handlePaymentCallback} />
+        
+        <div className="payment-section-container">
+          <h3>Payment Method</h3>
+          <Radio.Group 
+            onChange={handlePaymentOptionChange} 
+            value={selectedPaymentOption} 
+            className="payment-radio-group"
+          >
+            {paymentCards.map((card) => (
+              <PaymentCard 
+                key={card.cardid} 
+                card={card} 
+                token={token}
+                onCardUpdated={fetchPaymentCards}
+              />
+            ))}
+            <Radio 
+              value="new_card" 
+              className="new-card-radio-option" 
+            >
+              Pay with new card
+            </Radio>
+          </Radio.Group>
+
 
         <div className="payment-section">
           <Typography.Title level={3}>Payment Method</Typography.Title>

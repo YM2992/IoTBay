@@ -13,7 +13,7 @@ import paymentRoute from "./Route/paymentRoute.js";
 import productRoute from "./Route/productRoute.js";
 import cartRoute from "./Route/cartRoute.js";
 import orderRoute from "./Route/orderRoute.js";
-
+import checkoutRoute from './Route/checkoutRoute.js';
 import addressRoute from "./Route/addressRoute.js";
 
 dotenv.config({ path: "./Server/config.env" });
@@ -40,7 +40,7 @@ app.use("/api/product", productRoute);
 app.use("/api/payment", paymentRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/order", orderRoute);
-
+app.use('/api/checkout', checkoutRoute);
 app.use("/api/address", addressRoute);
 
 app.use(errorController);

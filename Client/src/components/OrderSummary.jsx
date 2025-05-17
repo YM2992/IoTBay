@@ -4,7 +4,7 @@ import "./OrderSummary.css";
 
 const { Title } = Typography;
 
-function OrderSummary({ items, shippingFee = 0 }) {
+function OrderSummary({ items, shippingFee = 0, paymentCallback }) {
   if (!items || items.length === 0) return <p>No items to summarize.</p>;
 
   const subtotal = items.reduce(
@@ -23,7 +23,7 @@ function OrderSummary({ items, shippingFee = 0 }) {
         <span>AU${total.toFixed(2)}</span>
       </div>
 
-      <button className="checkout-button">Pay Now</button>
+      <button className="checkout-button" onClick={paymentCallback}>Pay Now</button>
 
       <div className="payment-methods">
         <img src="/assets/Visa.png" alt="Visa" />
@@ -42,6 +42,7 @@ OrderSummary.propTypes = {
     })
   ),
   shippingFee: PropTypes.number,
+  paymentCallback: PropTypes.func.isRequired
 };
 
 export default OrderSummary;

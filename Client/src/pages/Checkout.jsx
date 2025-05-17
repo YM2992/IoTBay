@@ -14,6 +14,7 @@ import { API_ROUTES, fetchPost, optionMaker } from "@/api";
 import NewAddressFrom from "@/components/AddressFeatures/NewAddressFrom";
 import AddressSelection from "@/components/AddressFeatures/AddressSelection";
 import { useFetch } from "@/hook/useFetch";
+import AddressForm from "@/components/AddressFeatures/AddressForm";
 
 const { Text } = Typography;
 
@@ -54,6 +55,14 @@ function CheckoutPage() {
       setPaymentCards([]);
     }
   }, [token]);
+
+  const handleAddressInput = (field) => (e) => {
+    const data = e.target.value;
+    setSelectedAddress((prev) => ({
+      ...prev,
+      [field]: data,
+    }));
+  };
 
   const removeItemFromCart = async (productid) => {
     try {
@@ -163,22 +172,34 @@ function CheckoutPage() {
   const handlePaymentCallback = async () => {
     const paymentDetails = await getPaymentDetailsForOrder();
 
+    let order_address;
+
+    if (token) {
+      const addressid = selectedAddress.split("-")[1];
+      const { phone, recipient, address } = addressData.find(
+        (add) => add.addressid === parseInt(addressid)
+      );
+      order_address = { phone, recipient, address };
+    } else {
+      order_address = selectedAddress;
+    }
+
+    console.log(order_address);
+
     if (!paymentDetails) {
       toast.error("Failed to get payment details. Please check your selection.");
       return;
     }
 
     if (!selectedAddress) {
-      return toast.error("You must select an shipping address.");
+      return toast.error("You must select or input a shipping address.");
     }
-
-    const addressid = selectedAddress.split("-")[1];
 
     // Call "/api/checkout" endpoint with the payment details
     const orderDetails = {
       items: cart,
       paymentDetails,
-      addressid,
+      address: order_address,
     };
     try {
       const response = await fetchPost(
@@ -261,7 +282,7 @@ function CheckoutPage() {
 
         <div className="payment-section-container">
           <h3>Shipping Address</h3>
-          {addressData && (
+          {token && addressData && (
             <Radio.Group
               onChange={handleAddressOptionChange}
               value={selectedAddress}
@@ -274,7 +295,9 @@ function CheckoutPage() {
               ))}
             </Radio.Group>
           )}
-          <NewAddressFrom refetch={refetch} />
+          {token && addressData && <NewAddressFrom refetch={refetch} />}
+
+          {!token && <AddressForm handleChange={handleAddressInput} />}
         </div>
         <button className="checkout-button" onClick={handlePaymentCallback}>
           Pay Now

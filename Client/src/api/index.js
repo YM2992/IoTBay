@@ -22,9 +22,11 @@ export const API_ROUTES = {
     addPayment: "payment/addPayment"
   },
   order: {
-    getOrderHistory: "order/history",
+    getOrderHistory: "order/history"
   },
-  
+  checkout: {
+    checkout: "checkout"
+  }
 };
 
 export const urlMaker = (endpoint) => {

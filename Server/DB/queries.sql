@@ -43,7 +43,6 @@ CREATE TABLE product (
 
 CREATE TABLE orders(
     orderid INTEGER PRIMARY KEY,
-    paymentID VARCHAR(100),
     address VARCHAR(100) NOT NULL DEFAULT '1 The Street Ultimo',
     amount float NOT NULL check(amount >= 0),
     status varchar(10) NOT NULL Check (status IN ('fulfilled', 'pending', 'cancelled', 'delivered', 'paid')) DEFAULT 'pending',
@@ -51,7 +50,7 @@ CREATE TABLE orders(
     userid INTEGER,
     FOREIGN KEY (userid) REFERENCES user(userid),
     CHECK (
-        (status IN ('paid', 'fulfilled', 'delivered') AND paymentID IS NOT NULL)
+        (status IN ('paid', 'fulfilled', 'delivered'))
         OR
         (status IN ('pending', 'cancelled'))
     )
@@ -113,48 +112,48 @@ INSERT INTO product (name, price, quantity, description, image) VALUES
 
 INSERT INTO product (name, price, quantity, description) VALUES('Test Product', 10, 87, 'A test product making non sense');
 
-INSERT INTO orders (paymentID, amount, status, orderDate, userid) VALUES
-('PAY12345', 109.98, 'paid', '2025-03-14', (SELECT userid FROM user WHERE email = 'random@test.com')),
-('PAY67890', 45.50, 'fulfilled', '2025-03-14', (SELECT userid FROM user WHERE email = 'jeff@test.com')),
-('PAY54321', 79.99, 'delivered', '2025-03-13', (SELECT userid FROM user WHERE email = 'random@test.com')),
-('PAY98765', 120.00, 'paid', '2025-03-16', (SELECT userid FROM user WHERE email = 'jeff@test.com')),
-('PAY87654', 75.25, 'delivered', '2025-03-17', (SELECT userid FROM user WHERE email = 'jeff@test.com')),
-('PAY76543', 50.00, 'fulfilled', '2025-03-18', (SELECT userid FROM user WHERE email = 'jeff@test.com'));
+INSERT INTO orders (amount, status, orderDate, userid) VALUES
+(109.98, 'paid', '2025-03-14', (SELECT userid FROM user WHERE email = 'random@test.com')),
+(45.50, 'fulfilled', '2025-03-14', (SELECT userid FROM user WHERE email = 'jeff@test.com')),
+(79.99, 'delivered', '2025-03-13', (SELECT userid FROM user WHERE email = 'random@test.com')),
+(120.00, 'paid', '2025-03-16', (SELECT userid FROM user WHERE email = 'jeff@test.com')),
+(75.25, 'delivered', '2025-03-17', (SELECT userid FROM user WHERE email = 'jeff@test.com')),
+(50.00, 'fulfilled', '2025-03-18', (SELECT userid FROM user WHERE email = 'jeff@test.com'));
 
 INSERT INTO orders ( amount, status, orderDate, userid) VALUES
 ( 145.50, 'pending', '2025-03-15', (SELECT userid FROM user WHERE email = 'yasir@test.com'));
 
 INSERT INTO order_product (orderid, productid, quantity) VALUES
-((SELECT orderid FROM orders WHERE paymentID = 'PAY12345'), 
- (SELECT productid FROM product WHERE name = 'Raspberry Pi 3'), 1),
-
-((SELECT orderid FROM orders WHERE paymentID = 'PAY12345'), 
- (SELECT productid FROM product WHERE name = 'Arduino Uno'), 1),
-
-((SELECT orderid FROM orders WHERE paymentID = 'PAY67890'), 
- (SELECT productid FROM product WHERE name = 'LoRaWAN Gateway'), 1),
-
-((SELECT orderid FROM orders WHERE paymentID = 'PAY54321'), 
- (SELECT productid FROM product WHERE name = 'Switch'), 2),
-
-((SELECT orderid FROM orders WHERE paymentID = 'PAY98765'),
-    (SELECT productid FROM product WHERE name = 'Raspberry Pi 4 Model B'), 1),
-((SELECT orderid FROM orders WHERE paymentID = 'PAY87654'),
-    (SELECT productid FROM product WHERE name = 'ESP32'), 1),
-((SELECT orderid FROM orders WHERE paymentID = 'PAY76543'),
-    (SELECT productid FROM product WHERE name = 'WROOM-32'), 1),
-((SELECT orderid FROM orders WHERE paymentID = 'PAY76543'),
-    (SELECT productid FROM product WHERE name = 'Test Product'), 1);
+(1, (SELECT productid FROM product WHERE name = 'Raspberry Pi 4 Model B'), 1),
+(1, (SELECT productid FROM product WHERE name = 'Raspberry Pi 3'), 2),
+(2, (SELECT productid FROM product WHERE name = 'Arduino Uno'), 1),
+(3, (SELECT productid FROM product WHERE name = 'ESP32'), 3),
+(4, (SELECT productid FROM product WHERE name = 'LoRaWAN Gateway'), 1),
+(5, (SELECT productid FROM product WHERE name = 'Switch'), 2),
+(6, (SELECT productid FROM product WHERE name = 'WROOM-32'), 5),
+(7, (SELECT productid FROM product WHERE name = 'Test Product'), 1);
 
 INSERT INTO order_payment (paymentid, paymentDate, amount, userid, cardNumber, orderid) VALUES
-(1, '2024-03-12', 109.98, (SELECT userid FROM user WHERE email = 'random@test.com'), (SELECT cardNumber FROM payment_card WHERE cardHolderName = 'Customer Test' AND expiryDate = '01/23'), (SELECT orderid FROM orders WHERE paymentID = 'PAY12345')),
-(2, '2025-03-23', 45.50, (SELECT userid FROM user WHERE email = 'jeff@test.com'), (SELECT cardNumber FROM payment_card WHERE cardHolderName = 'Jeff Test' AND expiryDate = '11/25'), (SELECT orderid FROM orders WHERE paymentID = 'PAY67890')),
-(3, '2025-03-01', 79.99, (SELECT userid FROM user WHERE email = 'random@test.com'), (SELECT cardNumber FROM payment_card WHERE cardHolderName = 'Customer Test' AND expiryDate = '01/23'), (SELECT orderid FROM orders WHERE paymentID = 'PAY54321')),
-(4, '2025-03-29', 120.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), (SELECT cardNumber FROM payment_card WHERE cardHolderName = 'Jeff Test' AND expiryDate = '12/24'), (SELECT orderid FROM orders WHERE paymentID = 'PAY98765')),
-(5, '2025-04-27', 75.25, (SELECT userid FROM user WHERE email = 'jeff@test.com'), (SELECT cardNumber FROM payment_card WHERE cardHolderName = 'Jeff Test' AND expiryDate = '12/24'), (SELECT orderid FROM orders WHERE paymentID = 'PAY87654'));
-
-INSERT INTO order_payment (paymentid, amount, userid, cardNumber, orderid) VALUES
-(6, 50.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), (SELECT cardNumber FROM payment_card WHERE cardHolderName = 'Jeff Test' AND expiryDate = '11/25'), (SELECT orderid FROM orders WHERE paymentID = 'PAY76543'));
+(1, '2025-03-14', 109.98, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 1),
+(2, '2025-03-14', 45.50, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 2),
+(3, '2025-03-13', 79.99, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 3),
+(4, '2025-03-16', 120.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '5555666677778888', 4),
+(5, '2025-03-17', 75.25, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 5),
+(6, '2025-03-18', 50.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '5555666677778888', 6),
+(7, '2025-03-15', 145.50, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 7),
+(8, '2025-03-19', 60.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 1),
+(9, '2025-03-20', 80.00, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 2),
+(10, '2025-03-21', 95.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 3),
+(11, '2025-03-22', 110.00, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 4),
+(12, '2025-03-23', 130.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 5),
+(13, '2025-03-24', 70.00, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 6),
+(14, '2025-03-25', 85.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '5555666677778888', 7),
+(15, '2025-03-26', 100.00, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 1),
+(16, '2025-03-27', 115.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 2),
+(17, '2025-03-28', 125.00, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 3),
+(18, '2025-03-29', 140.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 4),
+(19, '2025-03-30', 155.00, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 5),
+(20, '2025-03-31', 165.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 6);
 
 INSERT INTO address_book (userid, recipient, address, phone, is_default) VALUES
   ((SELECT userid FROM user WHERE email = 'jeff@test.com'), 'Jeff R', '2B/123 King St, Sydney NSW 2000', 0412345678, true),

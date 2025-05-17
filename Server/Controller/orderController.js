@@ -24,7 +24,7 @@ export const getOrderHistory = catchAsync(async (req, res, next) => {
         FROM orders o
         JOIN order_product op ON o.orderid = op.orderid
         JOIN product p ON op.productid = p.productid
-        WHERE o.userid = ?
+        WHERE o.userid = ? AND o.status != 'pending'
         ORDER BY o.orderDate DESC, o.orderid DESC
     `).all(userid);
 

@@ -1,10 +1,11 @@
-import { useEffect, useContext, useState, useRef } from "react"; // Added useRef
+
+import { useContext, useState } from "react";
 import { AppContext } from "@/context/AppContext";
-import CartItem from "@/components/CartItem";
-import OrderSummary from "@/components/OrderSummary";
-import PaymentCard from "@/components/Checkout/PaymentCard";
-import NewCardForm from "@/components/Checkout/NewCardForm"; // Import NewCardForm
+import { useNavigate } from "react-router-dom";
+import SavedPaymentCard from "@/components/SavedPaymentCard";
+import { Button, Divider, Typography, List, Modal, Input } from "antd";
 import "./Checkout.css";
+
 import { Radio, Button, Checkbox, Typography } from "antd"; // Input removed as it's now in NewCardForm
 import toast from "react-hot-toast";
 import { getPaymentCards } from "@/components/Payment"; 
@@ -26,18 +27,13 @@ function CheckoutPage() {
   });
   const newCardFormRef = useRef(null);
 
-  useEffect(() => {
-    fetchCart();
-  }, []);
 
-  useEffect(() => {
-    if (token) {
-      fetchPaymentCards();
-    } else {
-      setSelectedPaymentOption("new_card");
-      setPaymentCards([]);
+  const handlePlaceOrder = () => {
+    if (!selectedCard) {
+      alert("Please select a payment method.");
+      return;
     }
-  }, [token]);
+
 
   const removeItemFromCart = async (productid) => {
     try {
@@ -65,70 +61,31 @@ function CheckoutPage() {
         const currentSelectedCardId = selectedPaymentOption?.startsWith('saved_') ? selectedPaymentOption.split('_')[1] : null;
         const stillExists = currentSelectedCardId ? res.data.some(card => card.cardid.toString() === currentSelectedCardId) : false;
 
-        if (selectedPaymentOption && stillExists) {
-          // Keep current selection if it still exists
-        } else if (res.data.length > 0) {
-          setSelectedPaymentOption(`saved_${res.data[0].cardid}`);
-        } else {
-          setSelectedPaymentOption("new_card");
-        }
-      } else {
-        toast.error(res?.message || "Failed to process payment cards data.");
-        setPaymentCards([]);
-        setSelectedPaymentOption("new_card");
-      }
-    } catch (error) {
-      toast.error(error.message || "Error fetching payment cards.");
-      setPaymentCards([]);
-      setSelectedPaymentOption("new_card");
-    }
+
+  const handleEditCard = (card) => {
+    setExpandedCard(card.cardNumber);
+    setEditedCardDetails({ ...card });
   };
 
-  const handlePaymentOptionChange = (e) => {
-    const newSelectedOption = e.target.value;
-    if (selectedPaymentOption === "new_card" && newSelectedOption !== "new_card") {
-      // Reset new card form if switching away from it
-      if (newCardFormRef.current && typeof newCardFormRef.current.resetFields === 'function') {
-        newCardFormRef.current.resetFields();
-      }
-    }
-    setSelectedPaymentOption(newSelectedOption);
+  const handleSaveEdit = () => {
+    savePaymentCard(editedCardDetails, token);
+    updatePaymentCards((prevCards) =>
+      prevCards.map((card) =>
+        card.cardNumber === editedCardDetails.cardNumber ? editedCardDetails : card
+      )
+    );
+    setExpandedCard(null);
   };
 
-  const getPaymentDetailsForOrder = async () => {
-    if (selectedPaymentOption && selectedPaymentOption.startsWith('saved_')) {
-      const cardId = selectedPaymentOption.split('_')[1];
-      const selectedCard = paymentCards.find(card => card.cardid.toString() === cardId);
-      if (selectedCard) {
-        // Basic expiry date validation (format MM/YY)
-        if (!selectedCard.expiryDate || !/^(0[1-9]|1[0-2])\/\d{2}$/.test(selectedCard.expiryDate)) {
-            toast.error(`Selected card (**** ${selectedCard.cardNumber ? selectedCard.cardNumber.slice(-4) : 'N/A'}) has an invalid expiry date format.`);
-            return null;
-        }
-        const [monthStr, yearStr] = selectedCard.expiryDate.split("/");
-        const month = parseInt(monthStr, 10);
-        const year = parseInt(`20${yearStr}`, 10);
-        const lastDayOfExpiryMonth = new Date(year, month, 0);
-        const currentDate = new Date();
-        currentDate.setHours(0,0,0,0);
+  const handleDeleteCard = (cardNumber) => {
+    removePaymentCard(cardNumber, token);
+  };
 
-        if (lastDayOfExpiryMonth < currentDate) {
-            toast.error(`Selected card (**** ${selectedCard.cardNumber.slice(-4)}) is expired.`);
-            return null;
-        }
-        return { ...selectedCard, isNew: false, saveCard: false }; // Existing cards are not "saved" again via this flow
-      }
-      toast.error("Selected saved card not found.");
-      return null;
-    } else if (selectedPaymentOption === 'new_card') {
-      if (newCardFormRef.current) {
-        return await newCardFormRef.current.validateAndGetNewCardDetails();
-      }
-      toast.error("New card form is not ready. Please try again.");
-      return null;
-    }
-    toast.error("Please select or enter a payment method.");
-    return null;
+  const handleInputChange = (field, value) => {
+    setEditedCardDetails((prevDetails) => ({
+      ...prevDetails,
+      [field]: value,
+    }));
   };
 
   const handlePaymentCallback = async () => {
@@ -158,6 +115,7 @@ function CheckoutPage() {
   }
 
   return (
+
     <div className="checkout-wrapper">
       <div className="cart-left">
         <div className="cart-header">
@@ -203,22 +161,89 @@ function CheckoutPage() {
             </Radio>
           </Radio.Group>
 
-          {selectedPaymentOption === "new_card" && (
-            <NewCardForm
-              ref={newCardFormRef}
-              initialDetails={newCardDetails}
-              onFormChange={(_, allValues) => {
-                // Update newCardDetails state if you need to react to live changes
-                // or if other parts of CheckoutPage depend on this intermediate state.
-                // For now, primarily used for initial values and potentially resetting.
-                setNewCardDetails(allValues); 
-              }}
-            />
+
+        <div className="payment-section">
+          <Typography.Title level={3}>Payment Method</Typography.Title>
+          {paymentCards.length > 0 ? (
+            paymentCards.map((card, index) => (
+              <div
+                key={index}
+                className={`payment-card ${selectedCard && selectedCard.cardNumber === card.cardNumber ? "selected" : ""}`}
+                onClick={() => setSelectedCard(card)}
+              >
+                {expandedCard === card.cardNumber ? (
+                  <div className="expanded-card">
+                    <Input
+                      value={editedCardDetails.cardholderName}
+                      onChange={(e) => handleInputChange("cardholderName", e.target.value)}
+                      placeholder="Cardholder Name"
+                    />
+                    <Input
+                      value={editedCardDetails.cardNumber}
+                      onChange={(e) => handleInputChange("cardNumber", e.target.value)}
+                      placeholder="Card Number"
+                    />
+                    <Input
+                      value={editedCardDetails.expiryDate}
+                      onChange={(e) => handleInputChange("expiryDate", e.target.value)}
+                      placeholder="Expiry Date"
+                    />
+                    <Input
+                      value={editedCardDetails.cvv}
+                      onChange={(e) => handleInputChange("cvv", e.target.value)}
+                      placeholder="CVV"
+                    />
+                    <Button type="primary" onClick={handleSaveEdit}>
+                      Save
+                    </Button>
+                    <Button onClick={() => setExpandedCard(null)}>Cancel</Button>
+                  </div>
+                ) : (
+                  <>
+                    <Typography.Text>
+                      {card.cardholderName} - **** **** **** {card.cardNumber.slice(-4)}
+                    </Typography.Text>
+                    <Button
+                      type="link"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditCard(card);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      type="link"
+                      danger
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteCard(card.cardNumber);
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </>
+                )}
+              </div>
+            ))
+          ) : (
+            <Typography.Text>No saved payment methods. Add one below:</Typography.Text>
           )}
+          <SavedPaymentCard />
         </div>
       </div>
+
+      <Button
+        type="primary"
+        size="large"
+        className="place-order-button"
+        onClick={handlePlaceOrder}
+      >
+        Place Order
+      </Button>
     </div>
   );
 }
 
-export default CheckoutPage;
+export default Checkout;
+

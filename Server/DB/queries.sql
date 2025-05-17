@@ -167,3 +167,13 @@ SELECT * FROM product;
 SELECT * FROM orders;
 SELECT * FROM order_product;
 SELECT * FROM address_book;
+
+-- SELECT o.orderid,address,amount,status, op.quantity, p.productid, p.name FROM orders o
+-- JOIN order_product op ON op.orderid = o.orderid
+-- JOIN product p ON op.productid = p.productid
+-- WHERE o.orderid = 1;
+
+
+
+-- SELECT * FROM order_product op
+-- WHERE orderid = 1;

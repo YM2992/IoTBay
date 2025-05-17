@@ -12,7 +12,7 @@ function isCardExpired(expiryDate) {
   if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiryDate)) {
     return true; // Invalid format is treated as potentially risky/expired
   }
-  const [monthStr, yearStr] = expiryDate.split('/');
+  const [monthStr, yearStr] = expiryDate.split("/");
   const month = parseInt(monthStr, 10);
   const year = parseInt(`20${yearStr}`, 10); // Assumes 21st century
 
@@ -28,7 +28,7 @@ function isCardExpired(expiryDate) {
   return expiryMonthObject <= currentDateObject;
 }
 
-const transactCheckout = db.transaction(async (data) => {
+const transactCheckout = db.transaction((data) => {
   const { userid, items, paymentDetailsResolved } = data;
   let totalAmount = 0;
   const productUpdates = [];
@@ -44,23 +44,29 @@ const transactCheckout = db.transaction(async (data) => {
       throw new cusError(`Product with ID ${item.productid} not found.`, 404);
     }
     if (product.quantity < item.quantity) {
-      throw new cusError(`Not enough stock for ${product.name}. Available: ${product.quantity}, Requested: ${item.quantity}`, 400);
+      throw new cusError(
+        `Not enough stock for ${product.name}. Available: ${product.quantity}, Requested: ${item.quantity}`,
+        400
+      );
     }
     totalAmount += product.price * item.quantity;
-    productUpdates.push({ productid: item.productid, newQuantity: product.quantity - item.quantity });
+    productUpdates.push({
+      productid: item.productid,
+      newQuantity: product.quantity - item.quantity,
+    });
     orderProductEntries.push({
-        productid: item.productid,
-        quantity: item.quantity,
-        price: product.price // Price at the time of purchase
+      productid: item.productid,
+      quantity: item.quantity,
+      price: product.price, // Price at the time of purchase
     });
   }
 
-  if (totalAmount <= 0 && items.length > 0) { // Allow $0 orders if items exist (e.g. fully discounted) but not if cart is empty leading to $0
+  if (totalAmount <= 0 && items.length > 0) {
+    // Allow $0 orders if items exist (e.g. fully discounted) but not if cart is empty leading to $0
     console.warn(`Order for user ${userid} has a total of $0. Proceeding.`);
   } else if (totalAmount < 0) {
-     throw new cusError("Order total cannot be negative.", 400);
+    throw new cusError("Order total cannot be negative.", 400);
   }
-
 
   // 2. Create Order
   const orderDate = new Date().toISOString().split("T")[0];
@@ -82,7 +88,7 @@ const transactCheckout = db.transaction(async (data) => {
     createOne("order_product", {
       orderid,
       productid: entry.productid,
-      quantity: entry.quantity
+      quantity: entry.quantity,
     });
   }
 
@@ -97,15 +103,15 @@ const transactCheckout = db.transaction(async (data) => {
     amount: totalAmount,
     userid,
     cardNumber: paymentDetailsResolved.cardNumberToStore, // Actual card number used for payment
-    orderid
+    orderid,
   });
 
   // 6. If new card and saveCard is true, save to payment_card (without CVV if schema doesn't support it)
   if (paymentDetailsResolved.isNew && paymentDetailsResolved.saveCard) {
     const cleanCardNumber = paymentDetailsResolved.cardNumber.replace(/\s+/g, "");
-    const existingUserCard = db.prepare(
-      "SELECT cardid FROM payment_card WHERE userid = ? AND cardNumber = ?"
-    ).get(userid, cleanCardNumber);
+    const existingUserCard = db
+      .prepare("SELECT cardid FROM payment_card WHERE userid = ? AND cardNumber = ?")
+      .get(userid, cleanCardNumber);
 
     if (!existingUserCard) {
       const cardToSave = {
@@ -114,7 +120,7 @@ const transactCheckout = db.transaction(async (data) => {
         cardNumber: cleanCardNumber,
         expiryDate: paymentDetailsResolved.expiryDate,
         // cvv: paymentDetailsResolved.cvv, // Only include if your payment_card table schema has CVV
-                                          // And you accept the security risks.
+        // And you accept the security risks.
       };
       createOne("payment_card", cardToSave);
     } else {
@@ -123,7 +129,9 @@ const transactCheckout = db.transaction(async (data) => {
   }
 
   // 7. Clear user's pending cart (which is an order with status 'pending')
-  const pendingCart = db.prepare("SELECT orderid FROM orders WHERE userid = ? AND status = 'pending' LIMIT 1").get(userid);
+  const pendingCart = db
+    .prepare("SELECT orderid FROM orders WHERE userid = ? AND status = 'pending' LIMIT 1")
+    .get(userid);
   if (pendingCart) {
     db.prepare("DELETE FROM order_product WHERE orderid = ?").run(pendingCart.orderid);
     db.prepare("DELETE FROM orders WHERE orderid = ?").run(pendingCart.orderid);
@@ -156,32 +164,47 @@ export const processCheckout = catchAsync(async (req, res, next) => {
   if (paymentDetails.isNew) {
     const { cardholderName, cardNumber, expiryDate, cvv } = paymentDetails;
     if (!cardholderName || !cardNumber || !expiryDate || !cvv) {
-      return next(new cusError("Cardholder name, card number, expiry date, and CVV are required for new cards.", 400));
+      return next(
+        new cusError(
+          "Cardholder name, card number, expiry date, and CVV are required for new cards.",
+          400
+        )
+      );
     }
     const cleanCardNumber = cardNumber.replace(/\s+/g, "");
-    if (!/^\d{15,16}$/.test(cleanCardNumber)) { // Common card lengths
-        return next(new cusError("Invalid card number format. Must be 15 or 16 digits.", 400));
+    if (!/^\d{15,16}$/.test(cleanCardNumber)) {
+      // Common card lengths
+      return next(new cusError("Invalid card number format. Must be 15 or 16 digits.", 400));
     }
-    if (!/^\d{3,4}$/.test(cvv)) { // Common CVV lengths
-        return next(new cusError("Invalid CVV format. Must be 3 or 4 digits.", 400));
+    if (!/^\d{3,4}$/.test(cvv)) {
+      // Common CVV lengths
+      return next(new cusError("Invalid CVV format. Must be 3 or 4 digits.", 400));
     }
     if (isCardExpired(expiryDate)) {
-        return next(new cusError("The provided card is expired or the expiry date is invalid.", 400));
+      return next(new cusError("The provided card is expired or the expiry date is invalid.", 400));
     }
 
     paymentDetailsResolved.cardNumberToStore = cleanCardNumber;
     paymentDetailsResolved.cardNumber = cleanCardNumber; // Ensure it's cleaned for saving
-  } else { // Using a saved card
+  } else {
+    // Using a saved card
     const { cardid } = paymentDetails;
     if (!cardid) {
       return next(new cusError("Saved card ID is required when not using a new card.", 400));
     }
     const savedCard = getOne("payment_card", "cardid", cardid);
     if (!savedCard || savedCard.userid !== userid) {
-      return next(new cusError("Saved card not found or you do not have permission to use it.", 404));
+      return next(
+        new cusError("Saved card not found or you do not have permission to use it.", 404)
+      );
     }
     if (isCardExpired(savedCard.expiryDate)) {
-      return next(new cusError(`The selected saved card (ending in ${savedCard.cardNumber.slice(-4)}) is expired.`, 400));
+      return next(
+        new cusError(
+          `The selected saved card (ending in ${savedCard.cardNumber.slice(-4)}) is expired.`,
+          400
+        )
+      );
     }
     paymentDetailsResolved.cardNumberToStore = savedCard.cardNumber; // Full card number from DB for payment record
     // For saved cards, we don't need to re-assign other details to paymentDetailsResolved unless they are used for saving logic

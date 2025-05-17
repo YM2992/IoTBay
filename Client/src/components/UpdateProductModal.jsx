@@ -100,7 +100,7 @@ const UpdateProductModal = ({ product, refetch }) => {
           </Button>,
         ]}
       >
-        <label>Image Name</label>
+        <label>Image Link</label>
         <Input placeholder={image} value={image} onChange={handleChange("image")} />
 
         <label>Name</label>

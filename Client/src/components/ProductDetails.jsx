@@ -1,75 +1,43 @@
-import { useContext, useEffect, useState } from "react";
-import { AppContext } from "@/context/AppContext";
-import { useParams } from "react-router-dom";
+import { Image, Typography, InputNumber } from "antd";
+import { useState, useEffect } from "react";
 
-import { Image, Button, Flex, InputNumber, Divider, Layout, Card } from "antd";
+const { Title, Text } = Typography;
 
-import { contentStyle, siderStyle, layoutStyle } from "./productLayout";
-
-const { Sider, Content } = Layout;
-
-function ProductDetails() {
-  const { productid } = useParams();
-  const { products } = useContext(AppContext);
-  const [data, setData] = useState();
+function ProductDetails({ product }) {
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    const product = products.find((element) => element.productid === Number(productid));
-    setData(product);
-  }, [products, data]);
+    setQuantity(1);
+  }, [product]);
 
-  if (!products || products.length === 0) return <p>Loading</p>;
+  if (!product) return <p>Loading...</p>;
+  
 
   return (
     <>
-      {!data && <p>loading...</p>}
+      <Image
+        src={`/assets/products/${product.image}.jpg`}
+        alt={product.name}
+        width={500}
+        height={500}
+        style={{ objectFit: "contain", borderRadius: "8px" }}
+        preview={true}
+      />
 
-      {data && (
-        <div style={{ width: "100%", position: "related", top: "1rem" }}>
-          <Layout style={layoutStyle}>
-            <Layout style={{ background: "transparent" }}>
-              <Content style={contentStyle}>
-                <Image style={{ width: "100%" }} src={`/assets/products/${data.image}.jpg`} />
+      <Title level={2}>{product.name}</Title>
+      <Text type="success">In stock</Text>
+      <Title level={3}>AU ${product.price.toFixed(2)} each</Title>
 
-                <Divider />
-                <Card
-                  title="Details"
-                  variant="borderless"
-                  style={{
-                    background: "transparent",
-                    color: "white",
-                    fontSize: "1.5rem",
-                    padding: "2rem",
-                  }}
-                >
-                  <p style={{ textAlign: "left" }}>{data.description}</p>
-                </Card>
-              </Content>
-            </Layout>
-            <Sider width="25%" style={siderStyle}>
-              <Flex gap="middle" vertical style={{ position: "sticky", top: "3rem" }}>
-                <p style={{ fontSize: "1.5rem", fontWeight: "bold" }}>{data.name}</p>
-                <p style={{ fontSize: "1.25rem" }}>${data.price}</p>
-
-                <Flex horizontal style={{ padding: "2rem", justifyContent: "space-between" }}>
-                  <Flex>
-                    <InputNumber
-                      min={1}
-                      max={data.quantity}
-                      defaultValue={1}
-                      style={{ marginRight: "0.5rem" }}
-                    />
-                    <p style={{ lineHeight: "2rem" }}> / {data.quantity}</p>
-                  </Flex>
-                  <Button type="primary" disabled={data.quantity === 0}>
-                    Add to Cart
-                  </Button>
-                </Flex>
-              </Flex>
-            </Sider>
-          </Layout>
-        </div>
-      )}
+      <div style={{ marginTop: "1rem" }}>
+        <Text strong>Quantity:</Text>{" "}
+        <InputNumber
+          min={1}
+          max={product.quantity}
+          value={quantity}
+          onChange={(val) => setQuantity(val)}
+        />{" "}
+        <Text>/ {product.quantity} available</Text>
+      </div>
     </>
   );
 }

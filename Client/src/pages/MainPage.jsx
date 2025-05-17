@@ -3,7 +3,7 @@ import ProductListing from "../components/ProductListing";
 import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { AppContext } from "@/context/AppContext";
-import { useFetchProduct } from "@/hook/useFetchProduct";
+import { useFetch } from "@/hook/useFetch";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 import { filterCompare, filterIncludes } from "@/utils/filter";
@@ -15,7 +15,7 @@ const { Search } = Input;
 function ProductPage() {
   const { products } = useContext(AppContext);
   const { updateProducts } = useContext(AppContext);
-  const { data, error, loading } = useFetchProduct("product/");
+  const { data, error, loading } = useFetch("product/");
   const [minValue, setMinValue] = useState(1);
   const [maxValue, setMaxValue] = useState(1000);
   const [search, setSearch] = useState("");

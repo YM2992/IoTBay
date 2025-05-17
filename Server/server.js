@@ -1,14 +1,21 @@
-import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+
 // const rateLimit = require("express-rate-limit");
 import errorController from "./Controller/errorController.js";
+dotenv.config({ path: "./Server/config.env" });
+import express from "express";
 
 const app = express();
 
 import userRoute from "./Route/userRoute.js";
 import paymentRoute from "./Route/paymentRoute.js";
 import productRoute from "./Route/productRoute.js";
+import cartRoute from "./Route/cartRoute.js";
+import orderRoute from "./Route/orderRoute.js";
+
+import addressRoute from "./Route/addressRoute.js";
+
 dotenv.config({ path: "./Server/config.env" });
 
 app.use(
@@ -27,12 +34,14 @@ app.use(function (req, res, next) {
   next();
 });
 
-dotenv.config({ path: "./Server/config.env" });
-
 // app.use("/api/order", orderRoute);
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/payment", paymentRoute);
+app.use("/api/cart", cartRoute);
+app.use("/api/order", orderRoute);
+
+app.use("/api/address", addressRoute);
 
 app.use(errorController);
 

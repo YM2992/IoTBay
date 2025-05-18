@@ -8,6 +8,13 @@ export const getAll = (dbname) => {
   return db.prepare(sql).all();
 };
 
+export const getAllWithFilter = (dbname, filter) => {
+  const sql = `SELECT * FROM ${dbname} WHERE ${Object.keys(filter)
+    .map((key) => `${key} = ?`)
+    .join(" AND ")}`;
+  return db.prepare(sql).all(...Object.values(filter));
+};
+
 export const getOne = (dbname, field, value) => {
   const sql = `SELECT * FROM ${dbname} WHERE ${field} = ?`;
   return db.prepare(sql).get(value);
@@ -16,17 +23,10 @@ export const getOne = (dbname, field, value) => {
 export const createOne = (dbname, data) => {
   const keys = Object.keys(data).join(",");
   const values = Object.values(data);
-  const vals = values
-    .map((val) => {
-      if (typeof val === "string" || val instanceof Date) {
-        return `'${val}'`;
-      } else {
-        return val;
-      }
-    })
-    .join(",");
-
-  const sql = `INSERT INTO ${dbname} (${keys}) VALUES (${vals})`;
+  const placeholders = Object.keys(data).map(() => "?").join(",");
+  const sql = `INSERT INTO ${dbname} (${keys}) VALUES (${placeholders})`;
+  return db.prepare(sql).run(...values);
+  
   //   console.log("SQL Query :", sql);
   return db.prepare(sql).run();
 };
@@ -35,9 +35,38 @@ export const updateOne = (dbname, id, data) => {
   const keys = Object.keys(data);
   const setClause = keys.map((key) => `${key} = ?`).join(", ");
   const values = Object.values(data);
+  const tableIdMap = {
+    user: "userid",
+    product: "productid",
+    orders: "orderid",
+    order_product: "order_productid",
+    payment: "paymentid",         
+    paymentCard: "cardid",         
+  };
+  
+  
 
-  const sql = `UPDATE ${dbname} SET ${setClause} WHERE ${dbname}id = ?`;
+  const idField = tableIdMap[dbname]; // ✅ Lookup correct column name
+const sql = `UPDATE ${dbname} SET ${setClause} WHERE ${idField} = ?`;
   return db.prepare(sql).run(...values, id);
+};
+
+export const updateOneWithFilter = (dbname, filter, data) => {
+  const keys = Object.keys(data);
+  const setClause = keys.map((key) => `${key} = ?`).join(", ");
+  const values = Object.values(data);
+
+  const sql = `UPDATE ${dbname} SET ${setClause} WHERE ${Object.keys(filter)
+    .map((key) => `${key} = ?`)
+    .join(" AND ")}`;
+  return db.prepare(sql).run(...values, ...Object.values(filter));
+};
+
+export const deleteOneByFilter = (dbname, filter) => {
+  const sql = `DELETE FROM ${dbname} WHERE ${Object.keys(filter)
+    .map((key) => `${key} = ?`)
+    .join(" AND ")}`;
+  return db.prepare(sql).run(...Object.values(filter));
 };
 
 export const deleteOne = (dbname, id) => {

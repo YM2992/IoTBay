@@ -1,0 +1,51 @@
+.payment-card-content-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.edit-card-button {
+  color: #007bff;
+  border: none;
+  /* padding: 10px 20px; */ /* This might be too large for an inline button, adjust as needed */
+  border-radius: 4px;
+  cursor: pointer;
+  background: none; 
+  padding-left: 10px; /* Space from the card details */
+}
+
+/* If you want the radio button itself (the one containing PaymentCard) to have specific styles,
+   you might need to target it from Checkout.css or pass a className to the Radio component in PaymentCard.jsx
+   For example, if you add className="saved-payment-card-radio" to the Radio in PaymentCard.jsx:
+.saved-payment-card-radio .ant-radio-wrapper {
+  display: block; 
+  padding: 15px;
+  border: 1px solid #ddd; 
+  border-radius: 5px; 
+  margin-bottom: 12px; 
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  cursor: pointer;
+  background-color: #fff; 
+}
+
+.saved-payment-card-radio .ant-radio-wrapper:hover {
+  border-color: #a0cfff; 
+  background-color: #f0f8ff; 
+}
+
+.saved-payment-card-radio .ant-radio-wrapper-checked {
+  border-color: #007bff; 
+  background-color: #e6f7ff; 
+  box-shadow: 0 0 0 1px #007bff; 
+}
+
+.saved-payment-card-radio .ant-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+*/

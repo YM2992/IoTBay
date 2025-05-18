@@ -1,10 +1,23 @@
 import { useState, useEffect, useContext } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import { FaBoxOpen, FaFileInvoice, FaStar, FaUser } from "react-icons/fa";
+import {
+  FaBoxOpen,
+  FaCreditCard,
+  FaFileInvoice,
+  FaStar, FaUser,
+  FaHistory,
+  FaAddressBook,
+} from "react-icons/fa";
 import { fetchPost, optionMaker } from "@/api";
 import { AppContext } from "@/context/AppContext";
 import { toast } from "react-hot-toast";
 import "react-tabs/style/react-tabs.css";
+
+import PaymentHistory from "./PaymentHistory";
+import PaymentCardsTab from "./PaymentCardsTab"; // Import the new component
+import OrderHistory from "./OrderHistory";
+
+import AddressBooks from "./AddressBooks";
 
 const tabStyle = {
   display: "flex",
@@ -17,6 +30,18 @@ const TabOptions = [
   { icon: <FaBoxOpen />, label: "Listings" },
   { icon: <FaFileInvoice />, label: "Orders" },
   { icon: <FaStar />, label: "Reviews" },
+  {
+    icon: <FaCreditCard />,
+    label: "Payment",
+  },
+  {
+    icon: <FaHistory />,
+    label: "Payment History",
+  },
+  {
+    icon: <FaAddressBook />,
+    label: "Address Book",
+  },
   { icon: <FaUser />, label: "Access Log" },
 ];
 
@@ -31,7 +56,7 @@ function ProfileTabs() {
   };
 
   useEffect(() => {
-    if (tabIndex === 3) {
+    if (tabIndex === 6) { // Access Log Tab
       const fetchAccessLogs = async () => {
         setLoading(true);
         try {
@@ -77,12 +102,22 @@ function ProfileTabs() {
 
       {/* Orders Tab */}
       <TabPanel>
-        <p className="empty-msg">You haven’t made any orders yet.</p>
+        <OrderHistory />
       </TabPanel>
 
       {/* Reviews Tab */}
+      <TabPanel></TabPanel>
+
       <TabPanel>
-        <p className="empty-msg">You don’t have any reviews yet.</p>
+        <PaymentCardsTab />
+      </TabPanel>
+
+      <TabPanel>
+        <PaymentHistory />
+      </TabPanel>
+
+      <TabPanel>
+        <AddressBooks />
       </TabPanel>
 
       {/* Access Log Tab */}

@@ -17,15 +17,15 @@ const correctPassword = async function (typedInPassword, dbSavedPassword) {
 };
 
 // sign new json web token
-const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const signToken = (user) => {
+  return jwt.sign({ id: user.userid, role: user.role }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
 
 // send token to user
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user.userid);
+  const token = signToken(user);
 
   user.password = undefined;
 
@@ -46,9 +46,12 @@ const createSendToken = (user, statusCode, res) => {
     user,
   });
 };
+console.log("🔒 PROTECT middleware running");
+
 
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
+  // console.log(email);
 
   if (!email || !password) {
     return next(new cusError("Please provide email and password", 400));
@@ -66,6 +69,13 @@ export const login = catchAsync(async (req, res, next) => {
     return next(
       new cusError("Please contact support to re-activate your account", 401)
     );
+  }
+  if(!user.activate){
+    return next(new cusError("please find us to re-activate your account",401));
+  }
+
+  if (!user.activate) {
+    return next(new cusError("Please find us to re-activate your account", 401));
   }
 
   // Check if user is already logged in and update the previous access log to be logout
@@ -140,6 +150,8 @@ export const logout = catchAsync(async (req, res, next) => {
 
 export const protect = catchAsync(async (req, res, next) => {
   let token = req.headers.authorization;
+  console.log("🔒 PROTECT middleware running");
+
   if (!token || !token.startsWith("Bearer"))
     return next(new cusError("You are not logged in, please login first", 401));
 
@@ -151,16 +163,17 @@ export const protect = catchAsync(async (req, res, next) => {
   const result = await jwt.verify(token, process.env.JWT_SECRET);
 
   const currentUser = findUserById(result.id);
+
   if (!currentUser) {
     return next(new cusError("The user no longer exist", 401));
   }
+  if(!currentUser.activate){
+    return next(new cusError("please find us to re-activate your account",401));
+  }
 
-  // if (!currentUser.activate) {
-  //   return next(
-  //     new cusError("Please find us to re-activate your account", 401)
-  //   );
-  // }
-
+  if (!currentUser.activate) {
+    return next(new cusError("Please find us to re-activate your account", 401));
+  }
   // Grand Access to Protected Route
   req.user = currentUser;
 

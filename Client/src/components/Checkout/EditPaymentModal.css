@@ -1,0 +1,8 @@
+.edit-card-modal-form .ant-form-item-label > label {
+  font-weight: 500; /* Slightly bolder labels */
+  color: #555;
+}
+
+.edit-card-modal-form .ant-form-item {
+  margin-bottom: 16px; /* Standard spacing for form items in a modal */
+}

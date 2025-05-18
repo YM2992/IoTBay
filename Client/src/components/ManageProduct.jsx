@@ -1,5 +1,5 @@
-import { Table, Button } from "antd";
-import UpdateModal from "./UpdateModal";
+import { Table } from "antd";
+import UpdateProductModal from "./UpdateProductModal";
 import AddProduct from "./AddProduct";
 
 const { Column } = Table;
@@ -29,7 +29,7 @@ function ManageProduct({ data, refetch }) {
           key="action"
           render={(_, record) => (
             <>
-              <UpdateModal refetch={refetch} key={record.productid} product={record} />
+              <UpdateProductModal refetch={refetch} key={record.productid} product={record} />
             </>
           )}
         />

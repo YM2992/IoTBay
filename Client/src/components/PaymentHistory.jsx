@@ -1,11 +1,11 @@
 import { API_ROUTES, fetchGet } from "@/api";
 import { AppContext } from "@/context/AppContext";
-import { Table, DatePicker } from "antd"; // Added DatePicker
+import { Table, DatePicker, Input } from "antd"; // Added DatePicker
 import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const { Column } = Table;
-const { RangePicker } = DatePicker; // Added RangePicker
+const { RangePicker } = DatePicker;
 
 import "./PaymentHistory.css";
 
@@ -14,7 +14,7 @@ function PaymentHistory() {
     const [paymentHistory, setPaymentHistory] = useState([]);
     const [visibleHistory, setVisibleHistory] = useState([]);
     const [idSearch, setIdSearch] = useState("");
-    const [dateSearch, setDateSearch] = useState(null); // Changed to null for RangePicker
+    const [dateSearch, setDateSearch] = useState(null);
 
     useEffect(() => {
         fetchGet(API_ROUTES.payment.getPaymentHistory, {
@@ -53,14 +53,9 @@ function PaymentHistory() {
 
         if (dateSearch && dateSearch.length === 2) {
             const [startDate, endDate] = dateSearch;
-            // Ensure dates are valid Moment.js objects or similar, then format them for comparison
-            // This example assumes item.paymentDate is a string that can be compared directly
-            // or converted to a Date object. Adjust as necessary for your date format.
-            // For antd DatePicker, values are moment objects.
             if (startDate && endDate) {
                 filteredHistory = filteredHistory.filter((item) => {
-                    const itemDate = new Date(item.paymentDate); // Convert item.paymentDate to Date object
-                    // Adjust comparison to be at the start of the selected start day and end of the selected end day
+                    const itemDate = new Date(item.paymentDate);
                     return itemDate >= startDate.startOf('day').toDate() && itemDate <= endDate.endOf('day').toDate();
                 });
             }
@@ -75,7 +70,7 @@ function PaymentHistory() {
             <div className="filter-controls">
                 <div className="filter-input-group">
                     <label htmlFor="idSearchInput">Search by ID:</label>
-                    <input
+                    <Input
                         id="idSearchInput"
                         className="payment-history-search id-search"
                         type="text"

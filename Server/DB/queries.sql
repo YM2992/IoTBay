@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS payment_card;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_product;
+DROP TABLE IF EXISTS access_logs;
 DROP TABLE IF EXISTS order_payment;
 DROP TABLE IF EXISTS address_book;
 
@@ -28,6 +29,14 @@ CREATE TABLE payment_card (
     expiryDate DATE NOT NULL,
     cvv int NOT NULL,
     userid INTEGER,
+    FOREIGN KEY (userid) REFERENCES user(userid)
+);
+
+CREATE TABLE access_logs (
+    logid INTEGER PRIMARY KEY,
+    userid INTEGER NOT NULL,
+    login_time DATETIME,
+    logout_time DATETIME,
     FOREIGN KEY (userid) REFERENCES user(userid)
 );
 
@@ -87,7 +96,7 @@ CREATE TABLE address_book (
     FOREIGN KEY (userid) REFERENCES user(userid)
 );
 
-
+UPDATE user SET activate = 1; 
 INSERT INTO user (name, phone, email, password, role) VALUES
 ('Yasir Test', 0420555666, 'yasir@test.com', '$2b$12$AQDnbnawQkAeeQmKFhjNpe.eoDuoVLyDRhJEvRRwYF4j9wEzbk6wW', 'admin'),
 ('Jeff Test', 0420222333, 'jeff@test.com', '$2b$12$yTgqJX5rr9KafAU2aDDJQuTpuqW0RN.ubNNroElpXaOLYjf.y00Ze', 'manager'),

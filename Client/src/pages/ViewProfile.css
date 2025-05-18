@@ -1,0 +1,160 @@
+.view-profile-container {
+  padding: 60px;
+  width: 90%;
+  max-width: 500px;
+  margin: 20px auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.view-profile-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: darkblue;
+}
+
+.view-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-input:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+.form-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.form-button:hover {
+  background-color: #0056b3;
+}
+
+.delete-account-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: red;
+}
+
+.delete-account-warning {
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.deactivate-account-button {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: red;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deactivate-account-button:hover {
+  background-color: darkred;
+}
+
+.confirm-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 1000;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.confirm-button {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  background-color: red;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.confirm-button:hover {
+  background-color: darkred;
+}
+
+.cancel-button {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  background-color: gray;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: darkgray;
+}
+
+/* Add media query for smaller screens */
+@media (max-width: 600px) {
+  .view-profile-container {
+    padding: 15px;
+    width: 100%;
+  }
+
+  .form-input {
+    font-size: 13px;
+  }
+
+  .form-button {
+    font-size: 14px;
+  }
+}

@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Image, Button, InputNumber, Typography, Card, Divider } from "antd";
 import "./ProductPage.css";
+import { getImageSrc } from "@/utils/helper";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -11,8 +12,8 @@ function ProductPage() {
   const { productid } = useParams();
   const [data, setData] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const { addToCart, fetchCart, products, loggedIn} = useContext(AppContext);
-  const navigate = useNavigate();
+  const { addToCart, fetchCart, products, loggedIn } = useContext(AppContext);
+  // const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -30,17 +31,17 @@ function ProductPage() {
       if (!loggedIn) {
         toast("🛒 Adding to cart as guest...", { icon: "👤" });
       }
-  
+
       console.log("🛒 Adding to cart:", {
         productid: data.productid,
         quantity,
       });
-  
+
       const response = await addToCart(data.productid, quantity);
-  
+
       if (Array.isArray(response)) {
         await fetchCart(); // no userid needed
-  
+
         toast.custom((t) => (
           <Card
             className="cart-toast-popup"
@@ -51,9 +52,7 @@ function ProductPage() {
               zIndex: 9999,
               width: 280,
               boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-              animation: t.visible
-                ? "slide-in 0.3s ease-out"
-                : "slide-out 0.3s ease-in",
+              animation: t.visible ? "slide-in 0.3s ease-out" : "slide-out 0.3s ease-in",
               cursor: "pointer",
             }}
             onClick={() => toast.dismiss(t.id)}
@@ -63,9 +62,7 @@ function ProductPage() {
               {quantity}x {data.name}
             </strong>{" "}
             added to cart!
-            <p style={{ fontSize: "12px", color: "#666", marginTop: 5 }}>
-              Click to dismiss
-            </p>
+            <p style={{ fontSize: "12px", color: "#666", marginTop: 5 }}>Click to dismiss</p>
           </Card>
         ));
       } else {
@@ -77,8 +74,6 @@ function ProductPage() {
       toast.error("Something went wrong adding to cart");
     }
   };
-  
-  
 
   return (
     <div className="page-wrapper">
@@ -86,7 +81,7 @@ function ProductPage() {
         <div className="product-left">
           <Image
             className="product-details-image"
-            src={`/assets/products/${data.image}.jpg`}
+            src={getImageSrc(data.image)}
             alt={data.name}
             width={500}
             height={500}
@@ -114,25 +109,20 @@ function ProductPage() {
               value={quantity}
               onChange={(val) => setQuantity(val)}
             />
-            <Text className="quantity-available">
-              / {data.quantity} available
-            </Text>
+            <Text className="quantity-available">/ {data.quantity} available</Text>
           </div>
 
           <div className="product-actions">
-
-          <div className="product-actions">
-  <Button
-    className="add-to-cart-button"
-    size="large"
-    disabled={data.quantity === 0}
-    onClick={handleAddToCart}
-  >
-    Add to Cart
-  </Button>
-</div>
-
-
+            <div className="product-actions">
+              <Button
+                className="add-to-cart-button"
+                size="large"
+                disabled={data.quantity === 0}
+                onClick={handleAddToCart}
+              >
+                Add to Cart
+              </Button>
+            </div>
           </div>
 
           <Divider />

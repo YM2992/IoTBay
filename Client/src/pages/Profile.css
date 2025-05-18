@@ -157,6 +157,86 @@ body {
   align-items: center;
   gap: 5px;
 }
+.access-log-container {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.access-log-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.access-log-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.access-log-table thead {
+  background-color: #f8f9fa;
+}
+
+.access-log-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #eee;
+}
+
+.access-log-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+
+.access-log-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.access-log-status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.status-active {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: #666;
+}
+
+.empty-logs {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 20px 0;
+}
 
 /* Selected tab */
 .react-tabs__tab--selected.custom-tab {
@@ -165,7 +245,7 @@ body {
 
 /* Underline for selected */
 .react-tabs__tab--selected.custom-tab::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -1px;
   left: 0;
@@ -177,7 +257,7 @@ body {
 
 /* Light hover underline */
 .custom-tab:not(.react-tabs__tab--selected):hover::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -1px;
   left: 0;

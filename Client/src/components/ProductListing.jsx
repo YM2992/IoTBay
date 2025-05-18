@@ -34,6 +34,19 @@ function ProductListing({ data }) {
   const { styles } = useStyle();
   const { name, image, price, productid } = data;
 
+  // Determine image source: if image is a valid URL, use it directly; otherwise, use local asset path or default image
+  const getImageSrc = (img) => {
+    if (!img) return "/assets/products/default_image.jpg";
+    try {
+      const isURL = img.startsWith("http://") || img.startsWith("https://");
+      
+      if (isURL) {
+        return img;
+      }
+    } catch {}
+    return `/assets/products/${img}.jpg`;
+  };
+
   return (
     <>
       <Card
@@ -42,7 +55,8 @@ function ProductListing({ data }) {
           <img
             className="product-image"
             style={{ border: "1px solid #F1F1F1", borderRadius: "5px" }}
-            src={`/assets/products/${image}.jpg`}
+            src={getImageSrc(image)}
+            alt={name}
           />
         }
         actions={[

@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS payment_card;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_product;
+DROP TABLE IF EXISTS access_logs;
 DROP TABLE IF EXISTS order_payment;
 DROP TABLE IF EXISTS address_book;
 
@@ -31,13 +32,21 @@ CREATE TABLE payment_card (
     FOREIGN KEY (userid) REFERENCES user(userid)
 );
 
+CREATE TABLE access_logs (
+    logid INTEGER PRIMARY KEY,
+    userid INTEGER NOT NULL,
+    login_time DATETIME,
+    logout_time DATETIME,
+    FOREIGN KEY (userid) REFERENCES user(userid)
+);
+
 CREATE TABLE product (
     productid INTEGER PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     price float NOT NULL check(price >= 0),
     quantity int NOT NULL check(quantity >= 0),
     description VARCHAR(100),
-    image VARCHAR(100) DEFAULT 'default_image',
+    image VARCHAR(256) DEFAULT 'default_image',
     available boolean DEFAULT true
 );
 
@@ -87,7 +96,7 @@ CREATE TABLE address_book (
     FOREIGN KEY (userid) REFERENCES user(userid)
 );
 
-
+UPDATE user SET activate = 1; 
 INSERT INTO user (name, phone, email, password, role) VALUES
 ('Yasir Test', 0420555666, 'yasir@test.com', '$2b$12$AQDnbnawQkAeeQmKFhjNpe.eoDuoVLyDRhJEvRRwYF4j9wEzbk6wW', 'admin'),
 ('Jeff Test', 0420222333, 'jeff@test.com', '$2b$12$yTgqJX5rr9KafAU2aDDJQuTpuqW0RN.ubNNroElpXaOLYjf.y00Ze', 'manager'),
@@ -102,15 +111,24 @@ INSERT INTO payment_card (cardNumber, cardHolderName, expiryDate, cvv, userid) V
 ('5555666677778888', 'Jeff Test', '11/25', 654, (SELECT userid FROM user WHERE email = 'jeff@test.com'));
 
 INSERT INTO product (name, price, quantity, description, image) VALUES
-('Raspberry Pi 4 Model B', 85, 10, 'A small computer that can be used for a variety of projects', 'Rash'),
-('Raspberry Pi 3', 65, 10, 'A small computer that can be used for a variety of projects', 'Rash'),
+('Raspberry Pi 4 Model B', 85, 10, 'A small computer that can be used for a variety of projects', 'https://core-electronics.com.au/media/catalog/product/cache/d5cf359726a1656c2b36f3682d3bbc67/p/i/pi-4-6.jpg'),
+('Raspberry Pi 3', 65, 10, 'A small computer that can be used for a variety of projects', 'https://m.media-amazon.com/images/I/71xW3XMkbwL.jpg'),
 ('Arduino Uno', 13, 5, 'A microcontroller that can be used for a variety of projects', 'Aduino'),
-('ESP32', 7, 87, 'A microcontroller that can be used for a variety of projects', 'Wifi'),
-('LoRaWAN Gateway', 70, 87, 'A long range wireless communication gateway', 'Wifi'),
+('ESP32', 7, 87, 'A microcontroller that can be used for a variety of projects', 'https://m.media-amazon.com/images/I/61o2ZUzB4XL.jpg'),
+('LoRaWAN Gateway', 70, 87, 'A long range wireless communication gateway', 'https://eu.mouser.com/images/marketingid/2019/img/142462271.png?v=070223.0400'),
 ('Switch', 20, 87, 'A network switch', 'Network'),
-('WROOM-32', 3, 87, 'A microcontroller that can be used for a variety of projects', 'Wifi');
-
-INSERT INTO product (name, price, quantity, description) VALUES('Test Product', 10, 87, 'A test product making non sense');
+('WROOM-32', 3, 87, 'A microcontroller that can be used for a variety of projects', 'https://au.mouser.com/images/marketingid/2018/img/199600425.png?v=121124.1217'),
+('LED Strip', 15, 87, 'A flexible circuit board with LEDs', 'https://res.cloudinary.com/rsc/image/upload/b_rgb:FFFFFF,c_pad,dpr_2.625,f_auto,h_214,q_auto,w_380/c_pad,h_214,w_380/R8904391-01?pgw=1'),
+('Breadboard', 5, 87, 'A board for prototyping electronic circuits', 'https://raspberry.piaustralia.com.au/cdn/shop/products/s50-5439p01wl.jpg?v=1573624909'),
+('Resistor Pack', 2, 87, 'A pack of resistors for electronic circuits', 'https://m.media-amazon.com/images/I/517sCkbv+nL._AC_UF894,1000_QL80_.jpg'),
+('Capacitor Pack', 3, 87, 'A pack of capacitors for electronic circuits', 'https://www.voltaat.com/cdn/shop/products/voltaat-voltaat-capacitor-kit-12-values-120-pack-15535211020390.jpg?v=1628440386'),
+('Transistor Pack', 4, 87, 'A pack of transistors for electronic circuits', 'https://core-electronics.com.au/media/catalog/product/cache/d5cf359726a1656c2b36f3682d3bbc67/f/i/fit0322.jpg'),
+('Diode Pack', 5, 87, 'A pack of diodes for electronic circuits', 'https://media.jaycar.com.au/product/images/ZR1005_economical-diode-pack_33248.jpg'),
+('LED Pack', 6, 87, 'A pack of LEDs for electronic circuits', 'https://www.makerstore.com.au/wp-content/uploads/2017/09/ELEC-LED-300PACK-02.jpg'),
+('Sensor Pack', 7, 87, 'A pack of assorted sensors for electronic circuits', 'https://www.makerstore.com.au/wp-content/uploads/2017/09/ELEC-SENSOR-37PACK-10.jpg'),
+('5V DC Motor', 8, 87, 'A 5 volt DC motor', 'https://au.element14.com/productimages/large/en_GB/599104-40.jpg'),
+('18650 Lithium Battery', 9, 87, 'A 18650 lithium battery for electronic circuits', 'https://monocure3d.com.au/wp-content/uploads/2021/10/INCREDAFILL_LOGO_BATT.jpg'),
+('Adjustable Variable Benchtop Power Supply', 120, 87, 'A power supply for electronic circuits', 'https://media.jaycar.com.au/product/images/MP3840_0-to-30vdc-0-to-5a-regulated-power-supply_70546.jpg');
 
 INSERT INTO orders (amount, status, orderDate, userid) VALUES
 (109.98, 'paid', '2025-03-14', (SELECT userid FROM user WHERE email = 'random@test.com')),

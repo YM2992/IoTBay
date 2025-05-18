@@ -6,19 +6,27 @@ import {
   updateCartQuantity as updateCartQuantityAPI,
   buyNow as buyNowAPI,
 } from "@/api/cartAPI";
+import { fetchPost, optionMaker } from "@/api";
 
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("jwt"));
   const [token, setToken] = useState(localStorage.getItem("jwt"));
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || null
+  );
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [buyNowItem, setBuyNowItem] = useState(null);
   const [paymentCards, setPaymentCards] = useState(
     JSON.parse(localStorage.getItem("payment_cards")) || []
   );
+
+  const updateUser = (userData) => {
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
 
   const login = (token, userData) => {
     localStorage.setItem("jwt", token);
@@ -34,6 +42,12 @@ export const AppProvider = ({ children }) => {
     localStorage.removeItem("payment_cards");
     setLoggedIn(false);
     setUser(null);
+
+    fetchPost("user/logout", optionMaker({}, "POST", token)).then((res) => {
+        console.log("Logout successful", res);
+    }).catch((err) => {
+        console.error("Logout failed", err);
+    });
   };
 
   const updatePaymentCards = (data) => {
@@ -104,6 +118,12 @@ export const AppProvider = ({ children }) => {
         buyNow,
         paymentCards,
         setPaymentCards,
+        setLoggedIn,
+        setToken,
+        setProducts,
+        setCart,
+        setBuyNowItem,
+        updateUser
       }}
     >
       {children}

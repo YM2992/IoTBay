@@ -56,7 +56,12 @@ function Cart() {
             />
           ))
         ) : (
-          <p>Your cart is empty.</p>
+          <EmptyCard
+            description={"Your cart is empty."}
+            btnLink="/products"
+            btnText="Explore Now"
+            style={{ margin: "0 1rem 0" }}
+          />
         )}
       </div>
 

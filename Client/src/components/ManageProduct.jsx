@@ -16,7 +16,7 @@ function ManageProduct({ data, refetch }) {
 
         <Column title="Quantity" dataIndex="quantity" key="quantity" />
         <Column title="Description" dataIndex="description" key="description" />
-        <Column title="Image" dataIndex="image" key="image" />
+        <Column ellipsis={true} title="Image" dataIndex="image" key="image" />
         <Column
           title="Available"
           dataIndex="available"

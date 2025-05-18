@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Button, Card, ConfigProvider } from "antd";
 const { Meta } = Card;
 import { createStyles } from "antd-style";
+import { getImageSrc } from "@/utils/helper";
 
 const useStyle = createStyles(({ prefixCls, css }) => ({
   linearGradientButton: css`
@@ -33,19 +34,6 @@ const useStyle = createStyles(({ prefixCls, css }) => ({
 function ProductListing({ data }) {
   const { styles } = useStyle();
   const { name, image, price, productid } = data;
-
-  // Determine image source: if image is a valid URL, use it directly; otherwise, use local asset path or default image
-  const getImageSrc = (img) => {
-    if (!img) return "/assets/products/default_image.jpg";
-    try {
-      const isURL = img.startsWith("http://") || img.startsWith("https://");
-      
-      if (isURL) {
-        return img;
-      }
-    } catch {}
-    return `/assets/products/${img}.jpg`;
-  };
 
   return (
     <>

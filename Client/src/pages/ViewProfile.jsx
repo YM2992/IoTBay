@@ -7,7 +7,7 @@ import "react-tabs/style/react-tabs.css";
 import "./ViewProfile.css";
 
 const ViewProfile = () => {
-  const { user, token, setUser } = useContext(AppContext); // ✅ Pull in setUser
+  const { user, token, updateUser } = useContext(AppContext); // ✅ Pull in setUser
   const { name, email, password, address, phone } = user;
 
   const [profile, setProfile] = useState({
@@ -40,23 +40,28 @@ const ViewProfile = () => {
           userid: user.id,
         };
 
-        await fetchPost("user/", optionMaker(data, "PATCH", token));
+        const result = await fetchPost("user/", optionMaker(data, "PATCH", token));
+        
+        if (result.status !== "success") {
+          throw new Error("Failed to update profile");
+        }
 
         // ✅ Update local state
         setProfile({ ...editedProfile });
 
         // ✅ Update global AppContext state
-        setUser({
+        updateUser({
           ...user,
           name: editedProfile.username,
           email: editedProfile.email,
           password: editedProfile.password,
           phone: editedProfile.phone,
-          address: editedProfile.address,
+          address: editedProfile.address
         });
 
         toast.success("Profile updated successfully!");
       } catch (error) {
+        console.error("Error updating profile:", error);
         toast.error("Failed to update profile. Please try again.");
       }
     }

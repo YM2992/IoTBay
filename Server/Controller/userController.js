@@ -78,7 +78,17 @@ export const updateUser = catchAsync(async (req, res, next) => {
   const { name, email, password, phone, address } = req.body;
 
   // Filter out null or undefined values and provide defaults
-  const data = { name, email, password, phone, address };
+  const data = {
+    name,
+    email,
+    password,
+    phone,
+    address
+  };
+
+  if (data.password) {
+    data.password = await hashPassword(data.password);
+  }
 
   // Remove undefined fields (e.g., if password is not provided)
   Object.keys(data).forEach((key) => {

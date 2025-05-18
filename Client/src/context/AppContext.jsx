@@ -23,6 +23,11 @@ export const AppProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("payment_cards")) || []
   );
 
+  const updateUser = (userData) => {
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
+
   const login = (token, userData) => {
     localStorage.setItem("jwt", token);
     localStorage.setItem("user", JSON.stringify(userData));
@@ -113,6 +118,12 @@ export const AppProvider = ({ children }) => {
         buyNow,
         paymentCards,
         setPaymentCards,
+        setLoggedIn,
+        setToken,
+        setProducts,
+        setCart,
+        setBuyNowItem,
+        updateUser
       }}
     >
       {children}

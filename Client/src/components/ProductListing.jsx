@@ -37,7 +37,6 @@ function ProductListing({ data }) {
   // Determine image source: if image is a valid URL, use it directly; otherwise, use local asset path or default image
   const getImageSrc = (img) => {
     if (!img) return "/assets/products/default_image.jpg";
-    console.log(img);
     try {
       const isURL = img.startsWith("http://") || img.startsWith("https://");
       

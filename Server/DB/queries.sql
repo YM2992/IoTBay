@@ -1,14 +1,13 @@
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS payment;
-DROP TABLE IF EXISTS paymentCard;
-DROP TABLE IF EXISTS card;
-DROP TABLE IF EXISTS payment_card;
-DROP TABLE IF EXISTS product;
-DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS order_product;
-DROP TABLE IF EXISTS access_logs;
-DROP TABLE IF EXISTS order_payment;
-DROP TABLE IF EXISTS address_book;
+-- Generate DROP TABLE statements for all tables and execute them
+PRAGMA foreign_keys = OFF;
+BEGIN TRANSACTION;
+SELECT 'DROP TABLE IF EXISTS "' || name || '";'
+FROM sqlite_master
+WHERE type = 'table' AND name NOT LIKE 'sqlite_%';
+-- Copy the output and execute it, or use a scripting language to automate execution.
+COMMIT;
+PRAGMA foreign_keys = ON;
+
 
 
 CREATE TABLE user (
@@ -79,11 +78,10 @@ CREATE TABLE order_payment (
     paymentDate DATE DEFAULT CURRENT_DATE,
     amount float NOT NULL check(amount >= 0),
     userid INTEGER NOT NULL,
-    cardNumber VARCHAR(16) NOT NULL, -- Changed from cardid INTEGER
+    cardNumber VARCHAR(16) NOT NULL,
     orderid INTEGER NOT NULL,
     FOREIGN KEY (userid) REFERENCES user(userid),
     FOREIGN KEY (orderid) REFERENCES orders(orderid)
-    -- Removed FOREIGN KEY (cardNumber) REFERENCES payment_card(cardNumber)
 );
 
 CREATE TABLE address_book (

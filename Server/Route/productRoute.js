@@ -13,10 +13,10 @@ const productRoute = express.Router();
 productRoute
   .route("/")
   .get(getAllAvailableProducts)
-  .post(protect, restrictTo("manager", "staff", "owner"), createProduct)
-  .patch(protect, restrictTo("manager", "staff", "owner"), updateProduct)
-  .delete(protect, restrictTo("manager", "staff", "owner"), deleteOneProduct);
+  .post(protect, restrictTo("manager", "staff", "admin"), createProduct)
+  .patch(protect, restrictTo("manager", "staff", "admin"), updateProduct)
+  .delete(protect, restrictTo("manager", "staff", "admin"), deleteOneProduct);
 
-productRoute.route("/all").get(protect, restrictTo("manager", "staff", "owner"), getAllProducts);
+productRoute.route("/all").get(protect, restrictTo("manager", "staff", "admin"), getAllProducts);
 
 export default productRoute;

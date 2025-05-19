@@ -1,43 +1,93 @@
-import { useFetchProduct } from "@/hook/useFetchProduct";
+import { useFetch } from "@/hook/useFetch";
 import { useContext, useEffect, useState } from "react";
 import { Tabs } from "antd";
 
+import EditUserPage from "./EditUserPage";
+import CreateUserPages from "./CreateUserPage";
+
 import ManageProduct from "@/components/ManageProduct";
 import { AppContext } from "@/context/AppContext";
+import EmptyCard from "@/components/EmptyCard";
 
 function Manage() {
   const [products, setProducts] = useState(null);
-  const { token } = useContext(AppContext);
-  const { data, error, loading, refetch } = useFetchProduct("product/all/", {
+  const [users, setUsers] = useState(null);
+  const { token, user } = useContext(AppContext);
+
+  const {
+    data: productData,
+    error: productError,
+    loading: productLoading,
+    refetch: refetchProduct,
+  } = useFetch("product/all/", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 
+  const {
+    data: userData,
+    error: userError,
+    loading: userLoading,
+    refetch: userRefetch,
+  } = useFetch("user", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
   useEffect(() => {
-    if (!loading || !error) setProducts(data);
-  }, [data, loading, error]);
+    if (!productLoading || !productError) setProducts(productData);
+  }, [productData, productLoading, productError]);
+
+  useEffect(() => {
+    if (!userLoading || !userError) setUsers(userData);
+  }, [userData, userLoading, userError]);
 
   const items = [
     {
       key: "1",
       label: "Product",
-      children: <ManageProduct data={products} refetch={refetch}></ManageProduct>,
+      children: <ManageProduct data={products} refetch={refetchProduct}></ManageProduct>,
     },
     {
       key: "2",
-      label: "Tab 2",
-      children: "Content of Tab Pane 2",
+      label: "Edit User",
+      children: (
+        <>
+          {user.role === "admin" && users ? (
+            <EditUserPage users={users} refetch={userRefetch} />
+          ) : (
+            <EmptyCard description={"This tab is for admin only"} showBtn={false} />
+          )}
+        </>
+      ),
     },
     {
       key: "3",
-      label: "Tab 3",
-      children: "Content of Tab Pane 3",
+      label: "Create User",
+      children: (
+        <>
+          {user.role === "admin" ? (
+            <CreateUserPages refetch={userRefetch} />
+          ) : (
+            <EmptyCard description={"This tab is for admin only"} showBtn={false} />
+          )}
+        </>
+      ),
     },
   ];
 
   return (
-    <div className="profile-container">
+    <div
+      style={{
+        padding: "0 1rem",
+        margin: "2rem auto",
+        backgroundColor: "rgba(255,255,255,0.2)",
+        minWidth: "80vw",
+      }}
+    >
       <h1>Manage</h1>
       <Tabs type="card" defaultActiveKey="1" items={items} size="large" centered />
     </div>

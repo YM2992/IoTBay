@@ -5,7 +5,7 @@ const defaultConfig = {
   refreshInterval: 60000,
 };
 
-export function useFetchProduct(endpoint, options = {}, config = {}) {
+export function useFetch(endpoint, options = {}, config = {}) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);

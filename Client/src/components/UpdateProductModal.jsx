@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 const { TextArea } = Input;
 
-const UpdateModal = ({ product, refetch }) => {
+const UpdateProductModal = ({ product, refetch }) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { token } = useContext(AppContext);
@@ -100,7 +100,7 @@ const UpdateModal = ({ product, refetch }) => {
           </Button>,
         ]}
       >
-        <label>Image Name</label>
+        <label>Image Link</label>
         <Input placeholder={image} value={image} onChange={handleChange("image")} />
 
         <label>Name</label>
@@ -149,4 +149,4 @@ const UpdateModal = ({ product, refetch }) => {
   );
 };
 
-export default UpdateModal;
+export default UpdateProductModal;

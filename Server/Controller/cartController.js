@@ -5,12 +5,13 @@ import {
   updateItemQuantity,
   removeItemFromCart,
   fetchUserCart,
+  fetchGuestCart,
 
 } from "../Services/cartService.js";
 
 // Add product to cart
 export const addToCart = catchAsync(async (req, res, next) => {
-  const userid = req.user.userid;  
+  const userid = req.user ? req.user.userid : null;
   const { productid, quantity } = req.body;
 
   if (!productid || !quantity) {
@@ -20,22 +21,27 @@ export const addToCart = catchAsync(async (req, res, next) => {
   const orderid = await addItemToCart(userid, productid, quantity);
   const updatedCart = await fetchUserCart(userid);
 
-  res.status(201).json({
-    status: "success",
-    message: "Product added to cart",
-    data: updatedCart,
-  });
+res.status(201).json({
+  status: "success",
+  message: "Product added to cart",
+  data: {
+    cart: updatedCart,
+    orderid, // 🧠 make sure you're returning this
+  },
+});
+
 });
 
 // Update item quantity
 export const updateCartQuantity = catchAsync(async (req, res, next) => {
-  const userid = req.user.userid;
-  const { productid, quantity } = req.body;
+  const userid = req.user ? req.user.userid : null;
+  const { productid, quantity, orderid } = req.body;
 
+  await updateItemQuantity(userid, productid, quantity, orderid);
 
-
-  await updateItemQuantity(userid, productid, quantity);
-  const updatedCart = await fetchUserCart(userid);
+  const updatedCart = userid
+    ? await fetchUserCart(userid)
+    : await fetchGuestCart(orderid);
 
   res.status(200).json({
     status: "success",
@@ -45,14 +51,21 @@ export const updateCartQuantity = catchAsync(async (req, res, next) => {
 });
 
 
+
 // Remove item from cart
 export const removeCartItem = catchAsync(async (req, res, next) => {
-  const userid = req.user.userid;
-  const { productid } = req.body;
+  const userid = req.user ? req.user.userid : null;
+  const productid = req.query.productid;
+  const orderid = req.query.orderid;
+  if (!productid) {
+    return next(new cusError("Missing product ID", 400));
+  }
 
+  await removeItemFromCart(userid, productid, orderid);
 
-  await removeItemFromCart(userid, productid);
-  const updatedCart = await fetchUserCart(userid);
+  const updatedCart = userid
+    ? await fetchUserCart(userid)
+    : await fetchGuestCart(orderid);
 
   res.status(200).json({
     status: "success",
@@ -64,16 +77,25 @@ export const removeCartItem = catchAsync(async (req, res, next) => {
 
 
 
+
+
 // Get Cart Items
 export const getCartItems = catchAsync(async (req, res, next) => {
-  const userid = req.user.userid;  
+  const userid = req.user ? req.user.userid : null;
+  const guestOrderId = req.query.orderid;
 
+  let items = [];
 
-  const items = await fetchUserCart(userid);
+  if (userid) {
+    items = await fetchUserCart(userid);
+  } else if (guestOrderId) {
+    items = await fetchGuestCart(guestOrderId);
+  }
 
   res.status(200).json({
     status: "success",
     data: items,
   });
 });
+
 

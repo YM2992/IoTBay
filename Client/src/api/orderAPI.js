@@ -1,4 +1,3 @@
-// src/api/orderAPI.js
 import { API_ROUTES, fetchGet } from "@/api";
 
 export const fetchOrderHistory = async (token) => {

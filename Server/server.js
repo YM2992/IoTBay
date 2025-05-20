@@ -41,7 +41,7 @@ app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
 app.use("/api/payment", paymentRoute);
 app.use("/api/cart", cartRoute);
-app.use("/api/order", orderRoute);
+app.use("/api/orders", orderRoute);
 
 
 app.use(errorController);

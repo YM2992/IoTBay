@@ -2,7 +2,7 @@ import { useEffect, useContext } from "react";
 import { AppContext } from "@/context/AppContext";
 import CartItem from "@/components/CartItem";
 import OrderSummary from "@/components/OrderSummary";
-import "./Checkout.css"; // optional styling
+import "./Checkout.css"; 
 
 function CheckoutPage() {
   const { cart, fetchCart } = useContext(AppContext);

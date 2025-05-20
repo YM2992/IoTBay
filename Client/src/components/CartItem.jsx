@@ -17,7 +17,7 @@ function CartItem({ item }) {
       await fetchCart();
       toast.success("Quantity updated");
     } catch (err) {
-      console.error("❌ Failed to update quantity:", err.message);
+      console.error("Failed to update quantity:", err.message);
       toast.error("Failed to update quantity");
     }
   };

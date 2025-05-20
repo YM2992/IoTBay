@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "@/context/AppContext";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Image, Button, InputNumber, Typography, Card, Divider } from "antd";
 import "./ProductPage.css";
@@ -12,7 +12,7 @@ function ProductPage() {
   const [data, setData] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const { addToCart, fetchCart, products, loggedIn} = useContext(AppContext);
-  const navigate = useNavigate();
+
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -31,15 +31,20 @@ function ProductPage() {
         toast("🛒 Adding to cart as guest...", { icon: "👤" });
       }
   
-      console.log("🛒 Adding to cart:", {
+      console.log("Adding to cart:", {
         productid: data.productid,
         quantity,
       });
   
       const response = await addToCart(data.productid, quantity);
   
-      if (Array.isArray(response)) {
-        await fetchCart(); // no userid needed
+      if (response?.cart && Array.isArray(response.cart)) {
+  // 🧠 Store guest orderid
+  if (!loggedIn && response.orderid) {
+    localStorage.setItem("guestOrderId", response.orderid);
+    console.log("💾 Guest order ID stored:", response.orderid);
+  }
+        await fetchCart(); 
   
         toast.custom((t) => (
           <Card

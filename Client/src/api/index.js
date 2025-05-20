@@ -22,7 +22,8 @@ export const API_ROUTES = {
     addPayment: "payment/addPayment"
   },
   order: {
-    getOrderHistory: "order/history",
+    getOrderHistory: "orders/history",
+    getOrderbyId: (id) => `order/${id}`,
   },
   
 };

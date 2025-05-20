@@ -42,7 +42,7 @@ const createSendToken = (user, statusCode, res) => {
     user,
   });
 };
-console.log("🔒 PROTECT middleware running");
+
 
 
 export const login = catchAsync(async (req, res, next) => {
@@ -74,33 +74,39 @@ export const login = catchAsync(async (req, res, next) => {
 
 export const protect = catchAsync(async (req, res, next) => {
   let token = req.headers.authorization;
-  console.log("🔒 PROTECT middleware running");
 
-  if (!token || !token.startsWith("Bearer"))
-    return next(new cusError("You are not logged in, please login first", 401));
+  // Allow guests (no token provided)
+  if (!token || !token.startsWith("Bearer")) {
+    req.user = null;
+    return next();
+  }
 
   token = token.split(" ")[1];
-  if (token.trim() == "null")
-    return next(new cusError("There is a token issue, please report it to us", 401));
 
-  const result = await jwt.verify(token, process.env.JWT_SECRET);
-
-  const currentUser = findUserById(result.id);
-
-  if (!currentUser) {
-    return next(new cusError("The user no longer exist", 401));
-  }
-  if(!currentUser.activate){
-    return next(new cusError("please find us to re-activate your account",401));
+  // Allow guests (token is literally "null")
+  if (token.trim() === "null") {
+    req.user = null;
+    return next();
   }
 
-  if (!currentUser.activate) {
-    return next(new cusError("Please find us to re-activate your account", 401));
+  // Try to verify the token
+  try {
+    const result = await jwt.verify(token, process.env.JWT_SECRET);
+    const currentUser = findUserById(result.id);
+
+    if (!currentUser || !currentUser.activate) {
+      req.user = null; // fallback to guest
+    } else {
+      req.user = currentUser;
+    }
+
+  } catch (err) {
+    req.user = null; // invalid token? treat as guest
   }
-  // Grand Access to Protected Route
-  req.user = currentUser;
+
   next();
 });
+
 
 export const restrictTo = (...roles) => {
   return (req, res, next) => {

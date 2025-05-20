@@ -1,5 +1,5 @@
-import { Table, Button } from "antd";
-import UpdateModal from "./UpdateModal";
+import { Table } from "antd";
+import UpdateProductModal from "./UpdateProductModal";
 import AddProduct from "./AddProduct";
 
 const { Column } = Table;
@@ -16,7 +16,7 @@ function ManageProduct({ data, refetch }) {
 
         <Column title="Quantity" dataIndex="quantity" key="quantity" />
         <Column title="Description" dataIndex="description" key="description" />
-        <Column title="Image" dataIndex="image" key="image" />
+        <Column ellipsis={true} title="Image" dataIndex="image" key="image" />
         <Column
           title="Available"
           dataIndex="available"
@@ -29,7 +29,7 @@ function ManageProduct({ data, refetch }) {
           key="action"
           render={(_, record) => (
             <>
-              <UpdateModal refetch={refetch} key={record.productid} product={record} />
+              <UpdateProductModal refetch={refetch} key={record.productid} product={record} />
             </>
           )}
         />

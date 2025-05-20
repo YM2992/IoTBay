@@ -1,1 +1,1 @@
-export const managers = ["manager", "owner", "staff"];
+export const managers = ["manager", "admin", "staff"];

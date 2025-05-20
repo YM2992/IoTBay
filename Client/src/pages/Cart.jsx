@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 
 const { Text } = Typography;
+import EmptyCard from "../components/EmptyCard";
 
 function Cart() {
   const { cart, fetchCart } = useContext(AppContext);
@@ -55,7 +56,12 @@ function Cart() {
             />
           ))
         ) : (
-          <p>Your cart is empty.</p>
+          <EmptyCard
+            description={"Your cart is empty."}
+            btnLink="/products"
+            btnText="Explore Now"
+            style={{ margin: "0 1rem 0" }}
+          />
         )}
       </div>
 

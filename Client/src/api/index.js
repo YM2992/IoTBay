@@ -25,7 +25,9 @@ export const API_ROUTES = {
     getOrderHistory: "orders/history",
     getOrderbyId: (id) => `order/${id}`,
   },
-  
+  checkout: {
+    checkout: "checkout"
+  }
 };
 
 export const urlMaker = (endpoint) => {

@@ -14,7 +14,7 @@ import { AppContext } from "@/context/AppContext";
 import "./SavedPaymentCard.css";
 import { FaTrash } from "react-icons/fa";
 import { getPaymentCards, removePaymentCard, savePaymentCard } from "./Payment";
-import { Modal, Button } from "antd"; // Import Button
+import { Modal, Button, Input } from "antd"; // Import Button
 import { ExclamationCircleFilled } from '@ant-design/icons'; // Import an icon
 
 function SavedPaymentCard({ paymentCard }) {
@@ -202,7 +202,7 @@ function SavedPaymentCard({ paymentCard }) {
           <div>
             <label>
               Card Number
-              <input
+              <Input
                 className="card-number"
                 type="text"
                 name="cardNumber"
@@ -215,7 +215,7 @@ function SavedPaymentCard({ paymentCard }) {
           <div>
             <label>
               Cardholder Name
-              <input
+              <Input
                 className="cardholder-name"
                 type="text"
                 name="cardholderName"
@@ -228,7 +228,7 @@ function SavedPaymentCard({ paymentCard }) {
           <div className="flex-row">
             <label>
               Expiry Date
-              <input
+              <Input
                 className="expiry-date"
                 type="text"
                 name="expiryDate"
@@ -239,7 +239,7 @@ function SavedPaymentCard({ paymentCard }) {
             </label>
             <label>
               CVV
-              <input
+              <Input
                 className="cvv"
                 type="text"
                 name="cvv"
@@ -261,7 +261,7 @@ function SavedPaymentCard({ paymentCard }) {
           <div>
             <label>
               Card Number
-              <input
+              <Input
                 className="card-number"
                 type="text"
                 name="cardNumber"
@@ -274,7 +274,7 @@ function SavedPaymentCard({ paymentCard }) {
           <div>
             <label>
               Cardholder Name
-              <input
+              <Input
                 className="cardholder-name"
                 type="text"
                 name="cardholderName"
@@ -287,7 +287,7 @@ function SavedPaymentCard({ paymentCard }) {
           <div className="flex-row">
             <label>
               Expiry Date
-              <input
+              <Input
                 className="expiry-date"
                 type="text"
                 name="expiryDate"
@@ -298,7 +298,7 @@ function SavedPaymentCard({ paymentCard }) {
             </label>
             <label>
               CVV
-              <input
+              <Input
                 className="cvv"
                 type="text"
                 name="cvv"
@@ -318,15 +318,5 @@ function SavedPaymentCard({ paymentCard }) {
     </div>
   );
 }
-
-SavedPaymentCard.propTypes = {
-  paymentCard: PropTypes.shape({
-    cardid: PropTypes.string.isRequired,
-    cardNumber: PropTypes.string.isRequired,
-    expiryDate: PropTypes.string.isRequired,
-    cardholderName: PropTypes.string.isRequired,
-    cvv: PropTypes.string.isRequired,
-  }).isRequired,
-};
 
 export default SavedPaymentCard;

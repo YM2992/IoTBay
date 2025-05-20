@@ -4,9 +4,7 @@ import cors from "cors";
 // const rateLimit = require("express-rate-limit");
 import errorController from "./Controller/errorController.js";
 dotenv.config({ path: "./Server/config.env" });
-import session from "express-session"; 
 import express from "express";
-
 
 const app = express();
 
@@ -15,18 +13,25 @@ import paymentRoute from "./Route/paymentRoute.js";
 import productRoute from "./Route/productRoute.js";
 import cartRoute from "./Route/cartRoute.js";
 import orderRoute from "./Route/orderRoute.js";
+import checkoutRoute from './Route/checkoutRoute.js';
+import addressRoute from "./Route/addressRoute.js";
 
+dotenv.config({ path: "./Server/config.env" });
 
 app.use(
+  // cors({
+  //   origin: "*",
+  // })
   cors({
-    origin: "*",
+    origin: "http://localhost:5173", // your Vite frontend
+    credentials: true, // allow cookies, auth headers, etc.
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
-
-
 
 app.use(function (req, res, next) {
   console.log("Query:", req.query);
@@ -34,7 +39,6 @@ app.use(function (req, res, next) {
   console.log("Body:", req.body);
   next();
 });
-
 
 // app.use("/api/order", orderRoute);
 app.use("/api/user", userRoute);

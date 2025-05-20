@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Button, Card, ConfigProvider } from "antd";
 const { Meta } = Card;
 import { createStyles } from "antd-style";
+import { getImageSrc } from "@/utils/helper";
 
 const useStyle = createStyles(({ prefixCls, css }) => ({
   linearGradientButton: css`
@@ -42,7 +43,8 @@ function ProductListing({ data }) {
           <img
             className="product-image"
             style={{ border: "1px solid #F1F1F1", borderRadius: "5px" }}
-            src={`/assets/products/${image}.jpg`}
+            src={getImageSrc(image)}
+            alt={name}
           />
         }
         actions={[

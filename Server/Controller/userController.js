@@ -1,7 +1,7 @@
 import { createOne } from "./centralController.js";
 import { hashPassword } from "./authController.js";
 import catchAsync from "../Utils/catchAsync.js";
-import { getOne, getAll, updateOne,deleteOne } from "./centralController.js";
+import { getOne, getAll, updateOne, deleteOne } from "./centralController.js";
 import cusError from "../Utils/cusError.js";
 
 export const findUserByEmail = (email) => {
@@ -44,7 +44,7 @@ export const getAllUser = catchAsync(async (req, res, next) => {
 });
 
 export const createUser = catchAsync(async (req, res, next) => {
-  const { name, email, password, phone,role="customer" } = req.body;
+  const { name, email, password, phone, role = "customer" } = req.body;
 
   if (!name || !email || !password || !phone)
     return next(new cusError("Please provide all needed information", 400));
@@ -67,33 +67,74 @@ export const createUser = catchAsync(async (req, res, next) => {
     });
   } catch (error) {
     let message = `${error.code} ${error.message}`;
-    if (error.code === "SQLITE_CONSTRAINT_UNIQUE") message = `Duplicate Field: ${error.message}`;
+    if (error.code === "SQLITE_CONSTRAINT_UNIQUE")
+      message = `Duplicate Field: ${error.message}`;
 
     return next(new cusError(message, 400));
   }
 });
 
-export const updateUserById = catchAsync(async(req,res,next)=> {
-    const{name,phone,userid,email} = req.body;
-    if (!name) {
-      return next (new cusError("Please enter new name",400));
+export const updateUser = catchAsync(async (req, res, next) => {
+  const { name, email, password, phone, address } = req.body;
+
+  // Filter out null or undefined values and provide defaults
+  const data = {
+    name,
+    email,
+    password,
+    phone,
+    address
+  };
+
+  if (data.password) {
+    data.password = await hashPassword(data.password);
+  }
+
+  // Remove undefined fields (e.g., if password is not provided)
+  Object.keys(data).forEach((key) => {
+    if (data[key] === undefined || !data[key]) {
+      delete data[key];
     }
+  });
 
-    try {
-      console.log("user id ", userid);
-      console.log("Name: ", name);
+  try {
+    updateOne("user", req.user.userid, data);
 
-      await updateOne ("user",userid,{name,phone,email});
+    // Remove sensitive data before sending the response
+    delete data.password;
 
-      res.status(200).json({
-        status: "success",
-        data : {userid,name,phone},
-      });
-    }
-    catch(error){
-      return next(new cusError("Error updating user", 500));
-    }
+    res.status(200).json({
+      status: "success",
+      data: data,
+    });
+  } catch (error) {
+    let message = `${error.code} ${error.message}`;
+    if (error.code === "SQLITE_CONSTRAINT_UNIQUE")
+      message = `Duplicate Field: ${error.message}`;
 
+    return next(new cusError(message, 400));
+  }
+});
+
+export const updateUserById = catchAsync(async (req, res, next) => {
+  const { name, phone, userid, email } = req.body;
+  if (!name) {
+    return next(new cusError("Please enter new name", 400));
+  }
+
+  try {
+    console.log("user id ", userid);
+    console.log("Name: ", name);
+
+    await updateOne("user", userid, { name, phone, email });
+
+    res.status(200).json({
+      status: "success",
+      data: { userid, name, phone },
+    });
+  } catch (error) {
+    return next(new cusError("Error updating user", 500));
+  }
 });
 
 // export const updateUserById = catchAsync(async (req, res, next) => {
@@ -104,15 +145,14 @@ export const updateUserById = catchAsync(async(req,res,next)=> {
 //   try {
 
 //     console.log("user id received:", userid);  // Debug log
-//     console.log("Name received:", name); 
+//     console.log("Name received:", name);
 //     console.log("Phone received:", phone);
 //     // Use the helper function to find the user
-   
+
 //     // Update the user's name
 //     const updateResult = await updateOne("user", userid,{name,phone});
 
-//     console.log("Update result:", updateResult); 
-
+//     console.log("Update result:", updateResult);
 
 //     res.status(200).json({
 //       status: "success",
@@ -124,19 +164,18 @@ export const updateUserById = catchAsync(async(req,res,next)=> {
 //   }
 
 // });
-export const deleteUserById = catchAsync(async(req,res,next)=>{
-  const{userid} = req.body;
-  if(!userid) {
-    return next(new cusError("user id missing",400));
+export const deleteUserById = catchAsync(async (req, res, next) => {
+  const { userid } = req.body;
+  if (!userid) {
+    return next(new cusError("user id missing", 400));
   }
-    const deleteUser = await deleteOne("user",userid);
+  const deleteUser = await deleteOne("user", userid);
 
-    res.status(200).json({
-      status: " success",
-      data: deleteUser,
-    });
+  res.status(200).json({
+    status: " success",
+    data: deleteUser,
   });
-
+});
 
 // export const deleteUserById = catchAsync(async (req, res, next) => {
 //   const { userid } = req.body;
@@ -150,58 +189,56 @@ export const deleteUserById = catchAsync(async(req,res,next)=>{
 //   });
 // });
 
-export const toggleUserActivation = catchAsync (async(req,res,next)=>{
-  const{userid} = req.body;
-  if(!userid) {
-    return next(new cusError("user id missing",400));
+export const toggleUserActivation = catchAsync(async (req, res, next) => {
+  const { userid } = req.body;
+  if (!userid) {
+    return next(new cusError("user id missing", 400));
   }
 
   const user = await findUserById(userid);
 
-  if(!user){
-    return next(new cusError("User not founded",404));
+  if (!user) {
+    return next(new cusError("User not founded", 404));
   }
 
   const activateStatus = !user.activate;
-  const activateTrueFalse = activateStatus ?1:0;
+  const activateTrueFalse = activateStatus ? 1 : 0;
 
-  try{
-    const changedStatus = await updateOne("user",userid,{activate:activateTrueFalse});
+  try {
+    const changedStatus = await updateOne("user", userid, { activate: activateTrueFalse });
 
     res.status(200).json({
       status: "success",
       data: changedStatus,
     });
-  }catch(error){
+  } catch (error) {
     console.error(error);
-    return next(new cusError("Error updating activation",500));
+    return next(new cusError("Error updating activation", 500));
   }
-
 });
 
 // export const toggleUserActivation = catchAsync(async (req, res, next) => {
 //   const { userid } = req.body;
-  
+
 //   if (!userid) {
 //     return next(new cusError("User id is required", 400));
 //   }
-  
+
 //   // Retrieve the current user data
 //   const user = await findUserById(userid);
-  
+
 //   if (!user) {
 //     return next(new cusError("User not found", 404));
 //   }
-  
+
 //   // Toggle the activation status
 //   const newActivationStatus = !user.activate;
 //   const newActivationStatusNum = newActivationStatus ? 1 : 0;
 
-  
 //   try {
 //     const updateResult = await updateOne("user", userid, { activate: newActivationStatusNum });
 //     console.log("Toggle activation result:", updateResult);
-    
+
 //     res.status(200).json({
 //       status: "success",
 //       data: { userid, activate: newActivationStatus },
@@ -211,3 +248,36 @@ export const toggleUserActivation = catchAsync (async(req,res,next)=>{
 //     return next(new cusError("Error updating user activation", 500));
 //   }
 // });
+
+export const deactivateUser = catchAsync(async (req, res, next) => {
+  const userId = req.user.userid; // Ensure req.user.userid is populated
+  console.log("Deactivating user with ID:", userId); // Debugging log
+
+  // Update the "activate" column to 0
+  await updateOne("user", userId, { activate: 0 }, "userid");
+
+  res.status(200).json({
+    status: "success",
+    message: "Account deactivated successfully",
+  });
+});
+
+export const accessLog = catchAsync(async (req, res, next) => {
+  const userId = req.user.userid;
+
+  try {
+    const logs = await getAll(
+      "access_logs",
+      "userid",
+      userId,
+      "login_time DESC"
+    );
+
+    res.status(200).json({
+      status: "success",
+      data: logs,
+    });
+  } catch (error) {
+    return next(new cusError("Failed to fetch access logs", 500));
+  }
+});

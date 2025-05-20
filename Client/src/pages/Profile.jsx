@@ -3,10 +3,16 @@ import { RxAvatar } from "react-icons/rx";
 import ProfileTabs from "../components/ProfileTabs";
 import { AppContext } from "@/context/AppContext";
 import "./profile.css";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
+  const navigate = useNavigate();
   const { user } = useContext(AppContext);
   const { name } = user;
+
+  const navigateToViewProfile = () => {
+    navigate("/view-profile");
+  };
 
   return (
     <div className="profile-page">
@@ -26,7 +32,9 @@ function Profile() {
           </div>
         </div>
         <div className="profile-actions">
-          <button className="edit-btn">Edit Profile</button>
+          <button className="edit-btn" onClick={navigateToViewProfile}>
+            Edit Profile
+          </button>
         </div>
       </div>
 

@@ -18,6 +18,7 @@ import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import ProductDetails from "./pages/ProductPage";
 import Manage from "./pages/Manage";
+import ViewProfile from "./pages/ViewProfile";
 import Checkout from "./pages/Checkout";
 // import Test from "./pages/Test";
 
@@ -43,6 +44,9 @@ function App() {
             {loggedIn && <Route path="/welcome" element={<Welcome />} />}
             {loggedIn && <Route path="/logout" element={<Logout />} />}
             {loggedIn && <Route path="/profile" element={<Profile />} />}
+            {loggedIn && (
+              <Route path="/view-profile" element={<ViewProfile />} />
+            )}
             {loggedIn && managers.includes(user.role) && (
               <Route path="/manage" element={<Manage />} />
             )}
@@ -51,7 +55,11 @@ function App() {
         </Routes>
       </BrowserRouter>
 
-      <Toaster position="top-center" gutter={12} containerStyle={{ margin: "1rem" }} />
+      <Toaster
+        position="top-center"
+        gutter={12}
+        containerStyle={{ margin: "1rem" }}
+      />
     </>
   );
 }

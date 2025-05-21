@@ -4,7 +4,7 @@ import { getOrderHistory, getOrderById, getAllOrders } from "../Controller/order
 
 const orderRoute = express.Router();
 
-orderRoute.route("/").get(getAllOrders);
+// orderRoute.route("/").get(getAllOrders);
 
 orderRoute.get("/history", protect, getOrderHistory);
 orderRoute.get("/:orderid", protect, getOrderById);

@@ -182,14 +182,35 @@ function CheckoutPage() {
       paymentDetails,
       address: order_address,
     };
+
+    if (!token) {
+      const guestOrderId = localStorage.getItem("guestOrderId");
+      if (guestOrderId) {
+        orderDetails.guestOrderId = guestOrderId;
+      } else {
+        return toast.error("Guest order ID not found.");
+      }
+
+      // If the user is not logged in, we don't want to save the card
+      if (orderDetails.paymentDetails && orderDetails.paymentDetails.isNew) {
+        orderDetails.paymentDetails.saveCard = false;
+      }
+    }
+
     try {
       const response = await fetchPost(
         API_ROUTES.checkout.checkout,
         optionMaker(orderDetails, "POST", token)
       );
-      if (response && response.status === "success") {
+      if (response && response.status === "success" && response.data) {
         toast.success("Checkout successful!");
-        fetchCart();
+
+        if (!token && localStorage.getItem("guestOrderId")) {
+          localStorage.removeItem("guestOrderId");
+        }
+
+        fetchCart(); // clear cart after checkout
+
         navigate("/order-confirmation", {
           state: {
             orderid: response.data.orderid,

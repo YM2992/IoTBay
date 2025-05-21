@@ -46,7 +46,7 @@ export const updateOne = (dbname, id, data) => {
   
   
 
-  const idField = tableIdMap[dbname]; // ✅ Lookup correct column name
+  const idField = tableIdMap[dbname]; 
 const sql = `UPDATE ${dbname} SET ${setClause} WHERE ${idField} = ?`;
   return db.prepare(sql).run(...values, id);
 };

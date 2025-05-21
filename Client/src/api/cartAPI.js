@@ -13,7 +13,6 @@ axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("jwt"); 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-    console.log("📤 Token attached to request:", token);
   }
   return config;
 });
@@ -23,23 +22,34 @@ axiosInstance.interceptors.request.use((config) => {
 // Add item to cart
 export const addToCart = async (productid, quantity) => {
   const res = await axiosInstance.post("/cart/add", { productid, quantity });
-  return res.data.data; // standardized
+  return res.data.data; 
 };
 
 // Remove item from cart
 export const removeCartItem = async (productid) => {
-  const res = await axiosInstance.delete("/cart/remove", {
-    data: { productid },
-  });
+  const guestOrderId = localStorage.getItem("guestOrderId");
+
+  const url = guestOrderId
+    ? `/cart/remove?productid=${productid}&orderid=${guestOrderId}`
+    : `/cart/remove?productid=${productid}`;
+
+
+  const res = await axiosInstance.delete(url);
   return res.data.data;
 };
 
+
+
 // Update quantity
 export const updateCartQuantity = async (productid, quantity) => {
+  const guestOrderId = localStorage.getItem("guestOrderId");
+
   const res = await axiosInstance.patch("/cart/update-quantity", {
     productid,
     quantity,
+    orderid: guestOrderId || undefined,
   });
+
   return res.data.data;
 };
 
@@ -52,7 +62,14 @@ export const buyNow = async (productid, quantity) => {
 
 // Fetch cart
 export const fetchCart = async () => {
-  const res = await axiosInstance.get("/cart");
+  const guestOrderId = localStorage.getItem("guestOrderId");
+  const isLoggedIn = !!localStorage.getItem("jwt");
+
+  const url = !isLoggedIn && guestOrderId
+    ? `/cart?orderid=${guestOrderId}`
+    : `/cart`;
+
+  const res = await axiosInstance.get(url);
   return res.data.data;
 };
 

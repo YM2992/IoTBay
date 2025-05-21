@@ -16,7 +16,7 @@ function ProductDetails({ product }) {
   return (
     <>
       <Image
-        src={`/assets/products/${product.image}.jpg`}
+        src={getImageSrc(product.image)}
         alt={product.name}
         width={500}
         height={500}

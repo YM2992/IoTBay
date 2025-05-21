@@ -55,9 +55,7 @@ function ProductPage() {
               zIndex: 9999,
               width: 280,
               boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-              animation: t.visible
-                ? "slide-in 0.3s ease-out"
-                : "slide-out 0.3s ease-in",
+              animation: t.visible ? "slide-in 0.3s ease-out" : "slide-out 0.3s ease-in",
               cursor: "pointer",
             }}
             onClick={() => toast.dismiss(t.id)}
@@ -67,9 +65,7 @@ function ProductPage() {
               {quantity}x {data.name}
             </strong>{" "}
             added to cart!
-            <p style={{ fontSize: "12px", color: "#666", marginTop: 5 }}>
-              Click to dismiss
-            </p>
+            <p style={{ fontSize: "12px", color: "#666", marginTop: 5 }}>Click to dismiss</p>
           </Card>
         ));
       } else {
@@ -104,7 +100,9 @@ function ProductPage() {
           <Title level={3} className="product-price">
             AU ${data.price.toFixed(2)} each
           </Title>
-          <Text className="in-stock-text">In stock</Text>
+          <Text className="in-stock-text" style={{ color: data.quantity > 0 ? "green" : "red" }}>
+            {data.quantity > 0 ? "In stock" : "Out of stock"}
+          </Text>
 
           <div className="product-quantity">
             <Text strong className="quantity-label">
@@ -116,9 +114,7 @@ function ProductPage() {
               value={quantity}
               onChange={(val) => setQuantity(val)}
             />
-            <Text className="quantity-available">
-              / {data.quantity} available
-            </Text>
+            <Text className="quantity-available">/ {data.quantity} available</Text>
           </div>
 
           <div className="product-actions">

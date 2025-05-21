@@ -1,13 +1,11 @@
--- Generate DROP TABLE statements for all tables and execute them
-PRAGMA foreign_keys = OFF;
-BEGIN TRANSACTION;
-SELECT 'DROP TABLE IF EXISTS "' || name || '";'
-FROM sqlite_master
-WHERE type = 'table' AND name NOT LIKE 'sqlite_%';
--- Copy the output and execute it, or use a scripting language to automate execution.
-COMMIT;
-PRAGMA foreign_keys = ON;
-
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS payment_card;
+DROP TABLE IF EXISTS access_logs;
+DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS order_product;
+DROP TABLE IF EXISTS order_payment;
+DROP TABLE IF EXISTS address_book;
 
 
 CREATE TABLE user (
@@ -77,10 +75,9 @@ CREATE TABLE order_payment (
     paymentid INTEGER PRIMARY KEY,
     paymentDate DATE DEFAULT CURRENT_DATE,
     amount float NOT NULL check(amount >= 0),
-    userid INTEGER NOT NULL,
+    userid INTEGER,
     cardNumber VARCHAR(16) NOT NULL,
     orderid INTEGER NOT NULL,
-    FOREIGN KEY (userid) REFERENCES user(userid),
     FOREIGN KEY (orderid) REFERENCES orders(orderid)
 );
 
@@ -134,7 +131,8 @@ INSERT INTO orders (amount, status, orderDate, userid) VALUES
 (79.99, 'delivered', '2025-03-13', (SELECT userid FROM user WHERE email = 'random@test.com')),
 (120.00, 'paid', '2025-03-16', (SELECT userid FROM user WHERE email = 'jeff@test.com')),
 (75.25, 'delivered', '2025-03-17', (SELECT userid FROM user WHERE email = 'jeff@test.com')),
-(50.00, 'fulfilled', '2025-03-18', (SELECT userid FROM user WHERE email = 'jeff@test.com'));
+(50.00, 'fulfilled', '2025-03-18', (SELECT userid FROM user WHERE email = 'jeff@test.com')),
+(145.50, 'pending', '2025-03-15', null);
 
 INSERT INTO orders ( amount, status, orderDate, userid) VALUES
 ( 145.50, 'pending', '2025-03-15', (SELECT userid FROM user WHERE email = 'yasir@test.com'));
@@ -149,27 +147,28 @@ INSERT INTO order_product (orderid, productid, quantity) VALUES
 (6, (SELECT productid FROM product WHERE name = 'WROOM-32'), 5),
 (7, (SELECT productid FROM product WHERE name = 'Test Product'), 1);
 
-INSERT INTO order_payment (paymentid, paymentDate, amount, userid, cardNumber, orderid) VALUES
-(1, '2025-03-14', 109.98, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 1),
-(2, '2025-03-14', 45.50, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 2),
-(3, '2025-03-13', 79.99, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 3),
-(4, '2025-03-16', 120.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '5555666677778888', 4),
-(5, '2025-03-17', 75.25, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 5),
-(6, '2025-03-18', 50.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '5555666677778888', 6),
-(7, '2025-03-15', 145.50, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 7),
-(8, '2025-03-19', 60.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 1),
-(9, '2025-03-20', 80.00, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 2),
-(10, '2025-03-21', 95.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 3),
-(11, '2025-03-22', 110.00, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 4),
-(12, '2025-03-23', 130.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 5),
-(13, '2025-03-24', 70.00, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 6),
-(14, '2025-03-25', 85.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '5555666677778888', 7),
-(15, '2025-03-26', 100.00, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 1),
-(16, '2025-03-27', 115.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 2),
-(17, '2025-03-28', 125.00, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 3),
-(18, '2025-03-29', 140.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 4),
-(19, '2025-03-30', 155.00, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 5),
-(20, '2025-03-31', 165.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 6);
+INSERT INTO order_payment (paymentDate, amount, userid, cardNumber, orderid) VALUES
+('2025-03-14', 109.98, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 1),
+('2025-03-14', 45.50, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 2),
+('2025-03-13', 79.99, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 3),
+('2025-03-16', 120.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '5555666677778888', 4),
+('2025-03-17', 75.25, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 5),
+('2025-03-18', 50.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '5555666677778888', 6),
+('2025-03-15', 145.50, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 7),
+('2025-03-19', 60.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 1),
+('2025-03-20', 80.00, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 2),
+('2025-03-21', 95.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 3),
+('2025-03-22', 110.00, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 4),
+('2025-03-23', 130.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 5),
+('2025-03-24', 70.00, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 6),
+('2025-03-25', 85.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '5555666677778888', 7),
+('2025-03-26', 100.00, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 1),
+('2025-03-27', 115.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 2),
+('2025-03-28', 125.00, (SELECT userid FROM user WHERE email = 'random@test.com'), '1111222233334444', 3),
+('2025-03-29', 140.00, (SELECT userid FROM user WHERE email = 'jeff@test.com'), '2222333344445555', 4),
+('2025-03-30', 155.00, (SELECT userid FROM user WHERE email = 'yasir@test.com'), '1234567812345678', 5),
+('2025-03-31', 165.00, (SELECT userid FROM user WHERE email = 'john@test.com'), '4444333322221111', 6),
+('2025-03-31', 20.00, NULL, '4444333322225549', 7);
 
 INSERT INTO address_book (userid, recipient, address, phone, is_default) VALUES
   ((SELECT userid FROM user WHERE email = 'jeff@test.com'), 'Jeff R', '2B/123 King St, Sydney NSW 2000', 0412345678, true),

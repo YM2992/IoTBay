@@ -15,11 +15,14 @@ import NewAddressFrom from "@/components/AddressFeatures/NewAddressFrom";
 import AddressSelection from "@/components/AddressFeatures/AddressSelection";
 import { useFetch } from "@/hook/useFetch";
 import AddressForm from "@/components/AddressFeatures/AddressForm";
+import { useNavigate } from "react-router-dom";
 
 const { Text } = Typography;
 
 function CheckoutPage() {
   const { cart, fetchCart, token } = useContext(AppContext);
+  const navigate = useNavigate();
+  
   const [paymentCards, setPaymentCards] = useState([]);
   const [selectedPaymentOption, setSelectedPaymentOption] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -134,26 +137,6 @@ function CheckoutPage() {
       const cardId = selectedPaymentOption.split("_")[1];
       const selectedCard = paymentCards.find((card) => card.cardid.toString() === cardId);
       if (selectedCard) {
-        // Basic expiry date validation (format MM/YY)
-        if (!selectedCard.expiryDate || !/^(0[1-9]|1[0-2])\/\d{2}$/.test(selectedCard.expiryDate)) {
-          toast.error(
-            `Selected card (**** ${
-              selectedCard.cardNumber ? selectedCard.cardNumber.slice(-4) : "N/A"
-            }) has an invalid expiry date format.`
-          );
-          return null;
-        }
-        const [monthStr, yearStr] = selectedCard.expiryDate.split("/");
-        const month = parseInt(monthStr, 10);
-        const year = parseInt(`20${yearStr}`, 10);
-        const lastDayOfExpiryMonth = new Date(year, month, 0);
-        const currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0);
-
-        if (lastDayOfExpiryMonth < currentDate) {
-          toast.error(`Selected card (**** ${selectedCard.cardNumber.slice(-4)}) is expired.`);
-          return null;
-        }
         return { ...selectedCard, isNew: false, saveCard: false }; // Existing cards are not "saved" again via this flow
       }
       toast.error("Selected saved card not found.");
@@ -187,7 +170,6 @@ function CheckoutPage() {
     console.log(order_address);
 
     if (!paymentDetails) {
-      toast.error("Failed to get payment details. Please check your selection.");
       return;
     }
 
@@ -195,21 +177,47 @@ function CheckoutPage() {
       return toast.error("You must select or input a shipping address.");
     }
 
-    // Call "/api/checkout" endpoint with the payment details
     const orderDetails = {
       items: cart,
       paymentDetails,
       address: order_address,
     };
+
+    if (!token) {
+      const guestOrderId = localStorage.getItem("guestOrderId");
+      if (guestOrderId) {
+        orderDetails.guestOrderId = guestOrderId;
+      } else {
+        return toast.error("Guest order ID not found.");
+      }
+
+      // If the user is not logged in, we don't want to save the card
+      if (orderDetails.paymentDetails && orderDetails.paymentDetails.isNew) {
+        orderDetails.paymentDetails.saveCard = false;
+      }
+    }
+
     try {
       const response = await fetchPost(
         API_ROUTES.checkout.checkout,
         optionMaker(orderDetails, "POST", token)
       );
-      if (response && response.status === "success") {
+      if (response && response.status === "success" && response.data) {
         toast.success("Checkout successful!");
-        // Optionally redirect or clear cart
-        fetchCart(); // Refresh cart after checkout
+
+        if (!token && localStorage.getItem("guestOrderId")) {
+          localStorage.removeItem("guestOrderId");
+        }
+
+        fetchCart(); // clear cart after checkout
+
+        navigate("/order-confirmation", {
+          state: {
+            orderid: response.data.orderid,
+            totalAmount: response.data.totalAmount,
+            products: response.data.products
+          }
+        })
       } else {
         toast.error(response?.message || "Checkout failed. Please try again.");
       }

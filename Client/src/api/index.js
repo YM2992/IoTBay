@@ -22,7 +22,7 @@ export const API_ROUTES = {
     addPayment: "payment/addPayment"
   },
   order: {
-    getOrderHistory: "orders/history",
+    getOrderHistory: "order/history",
     getOrderbyId: (id) => `order/${id}`,
   },
   checkout: {

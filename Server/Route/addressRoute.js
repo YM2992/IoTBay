@@ -6,15 +6,18 @@ import {
   createAddress,
   deleteOneAddressBook,
   updateOneAddressBook,
+  updateOrderAddress,
 } from "../Controller/addressBookController.js";
 
-const productRoute = express.Router();
+const addressRoute = express.Router();
 
-productRoute
+addressRoute
   .route("/")
   .get(protect, getUserAddressBook)
   .post(protect, createAddress)
   .patch(protect, updateOneAddressBook)
   .delete(protect, deleteOneAddressBook);
 
-export default productRoute;
+addressRoute.route("/shipment").patch(protect, updateOrderAddress);
+
+export default addressRoute;

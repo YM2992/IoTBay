@@ -8,7 +8,7 @@ export const getOrderHistory = catchAsync(async (req, res, next) => {
   const history = db
     .prepare(
       `
-SELECT DISTINCT o.orderid, o.orderDate, o.status, o.amount
+SELECT DISTINCT *
 FROM orders o
 WHERE o.userid = ? AND o.status = 'paid'
 ORDER BY o.orderDate DESC;
@@ -38,9 +38,7 @@ export const getOrderById = catchAsync(async (req, res, next) => {
     .all(orderid);
 
   if (!items || items.length === 0) {
-    return res
-      .status(404)
-      .json({ status: "fail", message: "No products found for this order." });
+    return res.status(404).json({ status: "fail", message: "No products found for this order." });
   }
 
   res.status(200).json({

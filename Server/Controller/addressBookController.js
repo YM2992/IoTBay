@@ -4,6 +4,7 @@ import {
   deleteOneByFilter,
   updateOneWithFilter,
   getAllWithFilter,
+  getOne,
 } from "./centralController.js";
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
@@ -96,6 +97,29 @@ export const updateOneAddressBook = catchAsync(async (req, res, next) => {
   } catch (error) {
     if (error.code.startsWith("SQLITE")) return next(new cusError(error, 500, "Database_Error"));
 
+    console.error(error);
+    return next(new cusError("Something went wrong", 500));
+  }
+});
+
+export const updateOrderAddress = catchAsync(async (req, res, next) => {
+  const { address, orderid } = req.body;
+  const { userid } = req.user;
+
+  const curOrder = getAllWithFilter("orders", { orderid, userid });
+
+  if (curOrder.length < 1) return next(new cusError("Order not found", 404));
+  if (curOrder[0].status !== "paid")
+    return next(new cusError("You can only update paid orders", 401));
+
+  try {
+    updateOneWithFilter("orders", { orderid, userid }, { address });
+
+    res.status(200).json({
+      status: "success",
+    });
+  } catch (error) {
+    if (error.code.startsWith("SQLITE")) return next(new cusError(error, 500, "Database_Error"));
     console.error(error);
     return next(new cusError("Something went wrong", 500));
   }

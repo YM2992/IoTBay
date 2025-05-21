@@ -1,15 +1,9 @@
-// Server/Route/orderRoute.js
-
 import express from "express";
 import { protect } from "../Controller/authController.js";
-import { getOrderHistory } from "../Controller/orderController.js";
+import { getOrderHistory, getOrderById } from "../Controller/orderController.js";
 
 const orderRoute = express.Router();
 
-// 🧾 Order history route
-orderRoute
-  .route("/history")
-  .get(protect, getOrderHistory);
-
-// ✅ Export like payment route
+orderRoute.get("/history", protect, getOrderHistory);
+orderRoute.get("/:orderid", protect, getOrderById); 
 export default orderRoute;

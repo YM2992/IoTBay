@@ -29,10 +29,9 @@ function OrderHistory() {
       .then((data) => {
         setOrderHistory(data);
         setVisibleOrders(data);
-        console.log("✅ Order history data:", data);
       })
       .catch((error) => {
-        console.error("❌ Error fetching order history:", error);
+        console.error("Error fetching order history:", error);
         toast.error("Failed to fetch order history.");
       });
   }, [token]);
@@ -47,9 +46,21 @@ function OrderHistory() {
     setVisibleOrders(filtered);
   };
 
-  const showOrderDetails = (order) => {
-    setSelectedOrder(order);
-    setIsModalOpen(true);
+  const showOrderDetails = async (order) => {
+    try {
+      const res = await fetchGet(`orders/${order.orderid}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setSelectedOrder({
+        ...order,
+        products: res.data,
+      });
+
+      setIsModalOpen(true);
+    } catch (err) {
+      toast.error("Failed to load order details");
+    }
   };
 
   const closeModal = () => {
@@ -75,15 +86,19 @@ function OrderHistory() {
         </Button>
       </Space>
 
-      <Table dataSource={visibleOrders} rowKey="orderid" rowHoverable>
+      <Table
+        dataSource={visibleOrders}
+        rowKey={(record) => `${record.orderid}-${record.orderDate}`}
+        rowHoverable
+      >
         <Column title="Order ID" dataIndex="orderid" key="orderid" />
-        <Column title="User ID" dataIndex="userid" key="userid" />
         <Column title="Date" dataIndex="orderDate" key="orderDate" />
         <Column title="Status" dataIndex="status" key="status" />
-        <Column title="Amount" dataIndex="amount" key="amount" />
-        <Column title="Product" dataIndex="name" key="name" />
-        <Column title="Quantity" dataIndex="quantity" key="quantity" />
-        <Column title="Price" dataIndex="price" key="price" />
+        <Column
+          title="Amount"
+          key="amount"
+          render={(_, record) => `$${record.amount.toFixed(2)}`}
+        />
         <Column
           title="Actions"
           key="actions"
@@ -103,12 +118,43 @@ function OrderHistory() {
       >
         {selectedOrder && (
           <div>
-            <p><strong>Date:</strong> {selectedOrder.orderDate}</p>
-            <p><strong>Status:</strong> {selectedOrder.status}</p>
-            <p><strong>Amount:</strong> ${selectedOrder.amount.toFixed(2)}</p>
-            <p><strong>Product:</strong> {selectedOrder.name}</p>
-            <p><strong>Quantity:</strong> {selectedOrder.quantity}</p>
-            <p><strong>Price:</strong> ${selectedOrder.price.toFixed(2)}</p>
+            <p>
+              <strong>Date:</strong> {selectedOrder.orderDate}
+            </p>
+            <p>
+              <strong>Status:</strong> {selectedOrder.status}
+            </p>
+            <p>
+              <strong>Total Amount:</strong> ${selectedOrder.amount.toFixed(2)}
+            </p>
+            <hr />
+            <h4>Products:</h4>
+            {selectedOrder.products.map((p) => (
+              <div
+                key={p.productid}
+                style={{ display: "flex", marginBottom: "1rem" }}
+              >
+                <img
+                  src={`/assets/products/${p.image}.jpg`}
+                  alt={p.name}
+                  style={{
+                    width: 60,
+                    height: 60,
+                    objectFit: "cover",
+                    borderRadius: "6px",
+                    border: "1px solid #ccc",
+                    marginRight: 10,
+                  }}
+                />
+                <div>
+                  <p>
+                    <strong>{p.name}</strong>
+                  </p>
+                  <p>Quantity: {p.quantity}</p>
+                  <p>Price: ${p.price.toFixed(2)}</p>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </Modal>

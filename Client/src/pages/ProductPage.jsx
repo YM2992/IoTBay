@@ -1,10 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "@/context/AppContext";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Image, Button, InputNumber, Typography, Card, Divider } from "antd";
 import "./ProductPage.css";
-import { getImageSrc } from "@/utils/helper";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -13,7 +12,6 @@ function ProductPage() {
   const [data, setData] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const { addToCart, fetchCart, products, loggedIn } = useContext(AppContext);
-  // const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -32,15 +30,19 @@ function ProductPage() {
         toast("🛒 Adding to cart as guest...", { icon: "👤" });
       }
 
-      console.log("🛒 Adding to cart:", {
+      console.log("Adding to cart:", {
         productid: data.productid,
         quantity,
       });
 
       const response = await addToCart(data.productid, quantity);
 
-      if (Array.isArray(response)) {
-        await fetchCart(); // no userid needed
+      if (response?.cart && Array.isArray(response.cart)) {
+        // Store guest orderid
+        if (!loggedIn && response.orderid) {
+          localStorage.setItem("guestOrderId", response.orderid);
+        }
+        await fetchCart();
 
         toast.custom((t) => (
           <Card
@@ -52,7 +54,9 @@ function ProductPage() {
               zIndex: 9999,
               width: 280,
               boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-              animation: t.visible ? "slide-in 0.3s ease-out" : "slide-out 0.3s ease-in",
+              animation: t.visible
+                ? "slide-in 0.3s ease-out"
+                : "slide-out 0.3s ease-in",
               cursor: "pointer",
             }}
             onClick={() => toast.dismiss(t.id)}
@@ -62,15 +66,17 @@ function ProductPage() {
               {quantity}x {data.name}
             </strong>{" "}
             added to cart!
-            <p style={{ fontSize: "12px", color: "#666", marginTop: 5 }}>Click to dismiss</p>
+            <p style={{ fontSize: "12px", color: "#666", marginTop: 5 }}>
+              Click to dismiss
+            </p>
           </Card>
         ));
       } else {
-        console.warn("⚠️ Unexpected response in addToCart:", response);
-        toast.error("❌ Could not add to cart");
+        console.warn("Unexpected response in addToCart:", response);
+        toast.error("Could not add to cart");
       }
     } catch (err) {
-      console.error("❌ Error in handleAddToCart:", err);
+      console.error("Error in handleAddToCart:", err);
       toast.error("Something went wrong adding to cart");
     }
   };
@@ -81,7 +87,7 @@ function ProductPage() {
         <div className="product-left">
           <Image
             className="product-details-image"
-            src={getImageSrc(data.image)}
+            src={`/assets/products/${data.image}.jpg`}
             alt={data.name}
             width={500}
             height={500}
@@ -109,7 +115,9 @@ function ProductPage() {
               value={quantity}
               onChange={(val) => setQuantity(val)}
             />
-            <Text className="quantity-available">/ {data.quantity} available</Text>
+            <Text className="quantity-available">
+              / {data.quantity} available
+            </Text>
           </div>
 
           <div className="product-actions">

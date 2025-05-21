@@ -31,6 +31,7 @@ export const AppProvider = ({ children }) => {
   const login = (token, userData) => {
     localStorage.setItem("jwt", token);
     localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.removeItem("guestOrderId"); // CLEAR guest cart
     setToken(token);
     setLoggedIn(true);
     setUser(userData);

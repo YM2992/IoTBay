@@ -1,5 +1,6 @@
 import { API_ROUTES, fetchGet } from "@/api";
 import { AppContext } from "@/context/AppContext";
+import { getImageSrc } from "@/utils/helper";
 import { Table, Input, Button, Space, Modal } from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -48,7 +49,7 @@ function OrderHistory() {
 
   const showOrderDetails = async (order) => {
     try {
-      const res = await fetchGet(`orders/${order.orderid}`, {
+      const res = await fetchGet(`order/${order.orderid}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -135,7 +136,7 @@ function OrderHistory() {
                 style={{ display: "flex", marginBottom: "1rem" }}
               >
                 <img
-                  src={`/assets/products/${p.image}.jpg`}
+                  src={getImageSrc(p.image)}
                   alt={p.name}
                   style={{
                     width: 60,

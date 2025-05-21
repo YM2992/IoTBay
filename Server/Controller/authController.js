@@ -166,6 +166,7 @@ export const protect = catchAsync(async (req, res, next) => {
   if (token.trim() == "null")
     return next(new cusError("There is a token issue, please report it to us", 401));
 
+  const result = await jwt.verify(token, process.env.JWT_SECRET);
   const currentUser = findUserById(result.id);
 
   if (!currentUser) {

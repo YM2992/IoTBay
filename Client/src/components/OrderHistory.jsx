@@ -14,6 +14,7 @@ function OrderHistory() {
   const [searchValue, setSearchValue] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [inputAddress, setInputAddress] = useState(null);
   // console.log(orderHistory);
 
@@ -77,15 +78,18 @@ function OrderHistory() {
 
   const onUpdateAddress = async function () {
     const { orderid } = selectedOrder;
+
     if (!inputAddress) return toast.error("Nothing has changed");
-    if (inputAddress.trim() === selectedOrder.address.trim()) {
-      setInputAddress(null);
-      return toast.success("Nothing has changed");
-    }
+
+    // if (inputAddress.trim() === selectedOrder.address.trim()) {
+    //   setInputAddress(null);
+    //   return toast.success("Nothing has changed");
+    // }
+    console.log(inputAddress);
 
     const data = {
       orderid,
-      address: inputAddress,
+      shipment: inputAddress,
     };
 
     try {
@@ -158,24 +162,52 @@ function OrderHistory() {
             <p>
               <strong>Status:</strong> {selectedOrder.status}
             </p>
-            <p>
+            <>
               <strong>Address:</strong>
               <Space.Compact style={{ width: "100%" }}>
                 <Input
                   key={selectedOrder.address}
                   defaultValue={selectedOrder.address}
                   onChange={(e) => {
-                    setInputAddress(e.target.value);
+                    setInputAddress({ ...inputAddress, address: e.target.value });
                   }}
                 />
-                <Button
-                  disabled={selectedOrder.status !== "paid"}
-                  type="primary"
-                  onClick={onUpdateAddress}
-                >
-                  Update Address
-                </Button>
               </Space.Compact>
+            </>
+
+            <>
+              <strong>Phone:</strong>
+              <Space.Compact style={{ width: "100%" }}>
+                <Input
+                  key={selectedOrder.phone}
+                  defaultValue={selectedOrder.phone}
+                  onChange={(e) => {
+                    setInputAddress({ ...inputAddress, phone: e.target.value });
+                  }}
+                />
+              </Space.Compact>
+            </>
+
+            <>
+              <strong>Recipient:</strong>
+              <Space.Compact style={{ width: "100%" }}>
+                <Input
+                  key={selectedOrder.recipient}
+                  defaultValue={selectedOrder.recipient}
+                  onChange={(e) => {
+                    setInputAddress({ ...inputAddress, recipient: e.target.value });
+                  }}
+                />
+              </Space.Compact>
+            </>
+            <p>
+              <Button
+                disabled={selectedOrder.status !== "paid"}
+                type="primary"
+                onClick={onUpdateAddress}
+              >
+                Update Shipment
+              </Button>
             </p>
             <p>
               <strong>Total Amount:</strong> ${selectedOrder.amount.toFixed(2)}

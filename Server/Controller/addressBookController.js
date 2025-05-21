@@ -103,7 +103,7 @@ export const updateOneAddressBook = catchAsync(async (req, res, next) => {
 });
 
 export const updateOrderAddress = catchAsync(async (req, res, next) => {
-  const { address, orderid } = req.body;
+  const { shipment, orderid } = req.body;
   const { userid } = req.user;
 
   const curOrder = getAllWithFilter("orders", { orderid, userid });
@@ -112,8 +112,14 @@ export const updateOrderAddress = catchAsync(async (req, res, next) => {
   if (curOrder[0].status !== "paid")
     return next(new cusError("You can only update paid orders", 401));
 
+  const allowedKeys = ["phone", "address", "recipient"];
+
+  const cleanShipment = Object.fromEntries(
+    Object.entries(shipment).filter(([key]) => allowedKeys.includes(key))
+  );
+
   try {
-    updateOneWithFilter("orders", { orderid, userid }, { address });
+    updateOneWithFilter("orders", { orderid, userid }, { ...cleanShipment });
 
     res.status(200).json({
       status: "success",

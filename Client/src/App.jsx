@@ -20,6 +20,7 @@ import ProductDetails from "./pages/ProductPage";
 import Manage from "./pages/Manage";
 import ViewProfile from "./pages/ViewProfile";
 import Checkout from "./pages/Checkout";
+import OrderConfirmation from "./pages/OrderConfirmation";
 // import Test from "./pages/Test";
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
             <Route path="/products" element={<ProductPage />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-confirmation" element={<OrderConfirmation />} />
 
             {!loggedIn && <Route path="/login" element={<Login />} />}
             {!loggedIn && <Route path="/register" element={<Registration />} />}

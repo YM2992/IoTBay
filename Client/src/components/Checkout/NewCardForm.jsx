@@ -1,10 +1,13 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React, { forwardRef, useContext, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input, Checkbox } from 'antd';
 import toast from 'react-hot-toast';
 import './NewCardForm.css';
+import { AppContext } from '@/context/AppContext';
 
 const NewCardForm = forwardRef(({ initialDetails, onFormChange }, ref) => {
+  const { token } = useContext(AppContext);
+
   const [form] = Form.useForm();
 
   useImperativeHandle(ref, () => ({
@@ -63,9 +66,11 @@ const NewCardForm = forwardRef(({ initialDetails, onFormChange }, ref) => {
         >
           <Input placeholder="123" />
         </Form.Item>
-        <Form.Item name="saveCard" valuePropName="checked" className="save-card-checkbox">
-          <Checkbox>Save this card for future payments</Checkbox>
-        </Form.Item>
+        {token && (
+          <Form.Item name="saveCard" valuePropName="checked" className="save-card-checkbox">
+            <Checkbox>Save this card for future payments</Checkbox>
+          </Form.Item>
+        )}
       </Form>
     </div>
   );

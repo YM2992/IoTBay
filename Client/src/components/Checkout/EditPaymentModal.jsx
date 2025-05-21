@@ -10,39 +10,40 @@ const EditPaymentModal = ({ open, onOk, onCancel, form }) => {
       onOk={onOk}
       onCancel={onCancel}
       okText="Save Changes"
-      destroyOnClose // Ensures form fields are reset if not explicitly handled
+      destroyOnHidden
       className="edit-card-modal-form"
     >
       <Form 
         form={form}
         name="edit_card_form"
         layout="vertical"
-        style={{ maxWidth: 500 }}
-        // initialValues will be set by form.setFieldsValue in the parent
       >
+        <label htmlFor="editPayment_cardholderName">Cardholder Name</label>
         <Form.Item
           name="cardholderName"
-          label="Cardholder Name"
         >
-          <Input placeholder="First Last"/>
+          <Input placeholder="First Last" id="editPayment_cardholderName"/>
         </Form.Item>
+
+        <label htmlFor="editPayment_cardNumber">Card Number</label>
         <Form.Item
           name="cardNumber"
-          label="Card Number"
         >
-          <Input placeholder="1234 5678 9123 4567" />
+          <Input placeholder="1234 5678 9123 4567" id="editPayment_cardNumber" />
         </Form.Item>
+
+        <label htmlFor="editPayment_expiryDate">Expiry Date (MM/YY)</label>
         <Form.Item
           name="expiryDate"
-          label="Expiry Date (MM/YY)"
         >
-          <Input placeholder="MM/YY" />
+          <Input placeholder="MM/YY" id="editPayment_expiryDate" />
         </Form.Item>
+
+        <label htmlFor="editPayment_cvv">CVV</label>
         <Form.Item
           name="cvv"
-          label="CVV"
         >
-          <Input placeholder="123" />
+          <Input placeholder="123" id="editPayment_cvv" />
         </Form.Item>
       </Form>
     </Modal>

@@ -9,3 +9,14 @@ export const getImageSrc = (img) => {
   if (isURL) return img;
   return `/assets/products/${img}.jpg`;
 };
+
+export const getExpiryDateStatus = (expiryDate) => {
+  const [month, year] = expiryDate.split("/");
+  const expiryDateObj = new Date(`20${year}`, month - 1);
+  const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+  expiryDateObj.setMonth(expiryDateObj.getMonth() + 1);
+  expiryDateObj.setDate(0);
+  expiryDateObj.setHours(23, 59, 59, 999);
+  return expiryDateObj < currentDate ? "Expired" : "Active";
+};

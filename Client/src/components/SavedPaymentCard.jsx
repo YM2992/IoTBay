@@ -16,6 +16,7 @@ import { FaTrash } from "react-icons/fa";
 import { getPaymentCards, removePaymentCard, savePaymentCard } from "./Payment";
 import { Modal, Button, Input } from "antd"; // Import Button
 import { ExclamationCircleFilled } from '@ant-design/icons'; // Import an icon
+import { getExpiryDateStatus } from "@/utils/helper";
 
 function SavedPaymentCard({ paymentCard }) {
   const { user, token, paymentCards, updatePaymentCards } = useContext(AppContext);
@@ -107,17 +108,6 @@ function SavedPaymentCard({ paymentCard }) {
       });
   };
 
-  const getExpiryDateStatus = () => {
-    const [month, year] = paymentCard.expiryDate.split("/");
-    const expiryDateObj = new Date(`20${year}`, month - 1);
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    expiryDateObj.setMonth(expiryDateObj.getMonth() + 1);
-    expiryDateObj.setDate(0);
-    expiryDateObj.setHours(23, 59, 59, 999);
-    return expiryDateObj < currentDate ? "Expired" : "Active";
-  }
-
   return (
     <div className="payment-card-info">
       <Modal
@@ -171,7 +161,7 @@ function SavedPaymentCard({ paymentCard }) {
           <div className="expiry-date">
             <span className="label">Expiry Date:</span>
             {
-              getExpiryDateStatus() === "Expired" ? (
+              getExpiryDateStatus(paymentCard.expiryDate) === "Expired" ? (
                 <span className="value expired">{paymentCard.expiryDate}</span>
               ) : (
                 <span className="value">{paymentCard.expiryDate}</span>

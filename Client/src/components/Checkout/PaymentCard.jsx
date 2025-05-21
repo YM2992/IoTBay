@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import EditPaymentModal from './EditPaymentModal'; // Import the modal
 import { savePaymentCard } from '@/components/Payment'; // Import the API function
 import './PaymentCard.css';
+import { getExpiryDateStatus } from '@/utils/helper';
 
 const { Text } = Typography;
 
@@ -31,7 +32,7 @@ const PaymentCard = ({ card, token, onCardUpdated }) => {
     try {
       const values = await editForm.validateFields();
       const cardDataToUpdate = {
-        cardid: card.cardid, // Use cardid from the prop
+        cardid: card.cardid,
         cardholderName: values.cardholderName,
         expiryDate: values.expiryDate,
         cardNumber: values.cardNumber,
@@ -43,20 +44,15 @@ const PaymentCard = ({ card, token, onCardUpdated }) => {
       if (response && response.status === "success") {
         toast.success(response.message || "Payment method updated successfully!");
         if (onCardUpdated) {
-          onCardUpdated(); // Callback to refresh the card list in CheckoutPage
+          onCardUpdated(); // refresh the card list in CheckoutPage
         }
-        handleCancelEdit(); // Close modal and reset form
+        handleCancelEdit(); // close modal and reset form
       } else {
         toast.error(response?.message || "Failed to update payment method.");
       }
     } catch (errorInfo) {
-      if (errorInfo.name === 'ValidationError' || errorInfo.errorFields) {
-        // Antd modal form will show validation errors
-        console.log("Edit Card Save Failed (Validation):", errorInfo);
-      } else {
-        toast.error(errorInfo.message || "Failed to update. Please check details.");
-        console.log("Edit Card Save Failed (Other):", errorInfo);
-      }
+      toast.error(errorInfo.message || "Failed to update. Please check details.");
+      console.log("Edit Card Save Failed (Other):", errorInfo);
     }
   };
 
@@ -65,8 +61,15 @@ const PaymentCard = ({ card, token, onCardUpdated }) => {
       <Radio value={`saved_${card.cardid}`}>
         <div className="payment-card-content-wrapper">
           <div>
-            <Text>Card ending in **** {card.cardNumber ? card.cardNumber.slice(-4) : 'N/A'}</Text><br/>
-            <Text type="secondary" style={{fontSize: '0.9em'}}>{card.cardholderName} - Expires: {card.expiryDate}</Text>
+            <Text>Card ending in **** {card.cardNumber ? card.cardNumber.slice(-4) : 'N/A'}</Text>
+            <br/>
+            <Text type="secondary" style={{fontSize: '0.9em'}}>{card.cardholderName}</Text>
+            <br/>
+            {getExpiryDateStatus(card.expiryDate) === "Expired" ? (
+              <Text type="danger" style={{fontSize: '0.9em'}}>Expired on {card.expiryDate}</Text>
+            ) : (
+              <Text type="success" style={{fontSize: '0.9em'}}>Valid until {card.expiryDate}</Text>
+            )}
           </div>
           <Button
             type="link"

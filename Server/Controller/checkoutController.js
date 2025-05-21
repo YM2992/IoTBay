@@ -133,6 +133,7 @@ const transactCheckout = db.transaction((data) => {
     .prepare("SELECT orderid FROM orders WHERE userid = ? AND status = 'pending' LIMIT 1")
     .get(userid);
   if (pendingCart) {
+    console.log(`Clearing pending cart for user ${userid} with order ID ${pendingCart.orderid}`);
     db.prepare("DELETE FROM order_product WHERE orderid = ?").run(pendingCart.orderid);
     db.prepare("DELETE FROM orders WHERE orderid = ?").run(pendingCart.orderid);
   }
@@ -206,8 +207,7 @@ export const processCheckout = catchAsync(async (req, res, next) => {
         )
       );
     }
-    paymentDetailsResolved.cardNumberToStore = savedCard.cardNumber; // Full card number from DB for payment record
-    // For saved cards, we don't need to re-assign other details to paymentDetailsResolved unless they are used for saving logic
+    paymentDetailsResolved.cardNumberToStore = savedCard.cardNumber;
   }
 
   const result = await transactCheckout({ userid, items, paymentDetailsResolved });
@@ -218,6 +218,7 @@ export const processCheckout = catchAsync(async (req, res, next) => {
     data: {
       orderid: result.orderid,
       totalAmount: result.totalAmount,
-    },
+      products: items
+    }
   });
 });

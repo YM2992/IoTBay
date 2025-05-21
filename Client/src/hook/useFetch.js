@@ -3,17 +3,20 @@ import { urlMaker } from "@/api";
 
 const defaultConfig = {
   refreshInterval: 60000,
+  enable: true,
 };
 
 export function useFetch(endpoint, options = {}, config = {}) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { refreshInterval } = { ...defaultConfig, ...config };
+  const { refreshInterval, enable } = { ...defaultConfig, ...config };
 
   const url = urlMaker(endpoint);
 
   const fetchData = async () => {
+    if (!enable) return;
+
     try {
       setLoading(true);
       const res = await fetch(url, options);

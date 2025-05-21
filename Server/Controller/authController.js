@@ -30,9 +30,7 @@ const createSendToken = (user, statusCode, res) => {
   user.password = undefined;
 
   const cookieOptions = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
+    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
     secure: true,
     httpOnly: true,
     sameSite: "none",
@@ -46,8 +44,6 @@ const createSendToken = (user, statusCode, res) => {
     user,
   });
 };
-
-
 
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -66,12 +62,10 @@ export const login = catchAsync(async (req, res, next) => {
   }
 
   if (!user.activate) {
-    return next(
-      new cusError("Please contact support to re-activate your account", 401)
-    );
+    return next(new cusError("Please contact support to re-activate your account", 401));
   }
-  if(!user.activate){
-    return next(new cusError("please find us to re-activate your account",401));
+  if (!user.activate) {
+    return next(new cusError("please find us to re-activate your account", 401));
   }
 
   if (!user.activate) {
@@ -79,19 +73,27 @@ export const login = catchAsync(async (req, res, next) => {
   }
 
   // Check if user is already logged in and update the previous access log to be logout
-  const previousAccessLog = db.prepare(`
+  const previousAccessLog = db
+    .prepare(
+      `
     SELECT logid FROM access_logs
     WHERE userid = ? AND logout_time IS NULL
     ORDER BY login_time DESC
     LIMIT 1
-  `).get(user.userid);
+  `
+    )
+    .get(user.userid);
 
   if (previousAccessLog) {
-    const updateResult = db.prepare(`
+    const updateResult = db
+      .prepare(
+        `
       UPDATE access_logs
       SET logout_time = ?
       WHERE logid = ?
-    `).run(new Date().toISOString(), previousAccessLog.logid);
+    `
+      )
+      .run(new Date().toISOString(), previousAccessLog.logid);
 
     if (updateResult.changes === 0) {
       console.error("No access log found for this user to update.");
@@ -105,7 +107,7 @@ export const login = catchAsync(async (req, res, next) => {
   try {
     await createOne("access_logs", {
       userid: user.userid,
-      login_time: new Date().toISOString()
+      login_time: new Date().toISOString(),
     });
   } catch (err) {
     console.error("Failed to insert access log:", err.message);
@@ -119,7 +121,9 @@ export const login = catchAsync(async (req, res, next) => {
 export const logout = catchAsync(async (req, res, next) => {
   if (req.user && req.user.userid) {
     try {
-      const updateResult = db.prepare(`
+      const updateResult = db
+        .prepare(
+          `
         UPDATE access_logs
         SET logout_time = ?
         WHERE logid = (
@@ -128,7 +132,9 @@ export const logout = catchAsync(async (req, res, next) => {
           ORDER BY login_time DESC
           LIMIT 1
         )
-      `).run(new Date().toISOString(), req.user.userid);
+      `
+        )
+        .run(new Date().toISOString(), req.user.userid);
 
       if (updateResult.changes === 0) {
         console.error("No access log found for this user to update.");
@@ -152,44 +158,35 @@ export const protect = catchAsync(async (req, res, next) => {
   let token = req.headers.authorization;
 
   // Allow guests (no token provided)
-  if (!token || !token.startsWith("Bearer")) {
-    req.user = null;
-    return next();
-  }
+  if (!token || !token.startsWith("Bearer"))
+    return next(new cusError("You are not logged in, please login first", 401));
 
   token = token.split(" ")[1];
 
-  // Allow guests (token is literally "null")
-  if (token.trim() === "null") {
-    req.user = null;
-    return next();
+  if (token.trim() == "null")
+    return next(new cusError("There is a token issue, please report it to us", 401));
+
+  const currentUser = findUserById(result.id);
+
+  if (!currentUser) {
+    return next(new cusError("The user no longer exist", 401));
+  }
+  if (!currentUser.activate) {
+    return next(new cusError("please find us to re-activate your account", 401));
   }
 
-  // Try to verify the token
-  try {
-    const result = await jwt.verify(token, process.env.JWT_SECRET);
-    const currentUser = findUserById(result.id);
-
-    if (!currentUser || !currentUser.activate) {
-      req.user = null; // fallback to guest
-    } else {
-      req.user = currentUser;
-    }
-
-  } catch (err) {
-    req.user = null; // invalid token? treat as guest
+  if (!currentUser.activate) {
+    return next(new cusError("Please find us to re-activate your account", 401));
   }
-
+  // Grand Access to Protected Route
+  req.user = currentUser;
   next();
 });
-
 
 export const restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return next(
-        new cusError("You do not have permission to perform this action", 403)
-      );
+      return next(new cusError("You do not have permission to perform this action", 403));
     }
     next();
   };

@@ -13,9 +13,7 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("jwt"));
   const [token, setToken] = useState(localStorage.getItem("jwt"));
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
-  );
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")) || null);
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [buyNowItem, setBuyNowItem] = useState(null);
@@ -41,14 +39,17 @@ export const AppProvider = ({ children }) => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("user");
     localStorage.removeItem("payment_cards");
+    setToken(null);
     setLoggedIn(false);
     setUser(null);
 
-    fetchPost("user/logout", optionMaker({}, "POST", token)).then((res) => {
+    fetchPost("user/logout", optionMaker({}, "POST", token))
+      .then((res) => {
         console.log("Logout successful", res);
-    }).catch((err) => {
+      })
+      .catch((err) => {
         console.error("Logout failed", err);
-    });
+      });
   };
 
   const updatePaymentCards = (data) => {
@@ -81,7 +82,7 @@ export const AppProvider = ({ children }) => {
   };
 
   const addToCart = async (productid, quantity) => {
-    return await addToCartAPI(productid, quantity);
+    return await addToCartAPI(productid, quantity, "/cart/guest");
   };
 
   const removeItemFromCart = async (productid) => {
@@ -124,7 +125,7 @@ export const AppProvider = ({ children }) => {
         setProducts,
         setCart,
         setBuyNowItem,
-        updateUser
+        updateUser,
       }}
     >
       {children}

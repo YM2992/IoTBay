@@ -1,12 +1,10 @@
 import { useContext, useEffect } from "react";
 import { AppContext } from "@/context/AppContext";
-import { Typography } from "antd";
 import CartItem from "../components/CartItem";
 import { removeCartItem as removeCartItemAPI, updateCartQuantity } from "@/api/cartAPI";
 import { useNavigate } from "react-router-dom";
 import "./Cart.css";
 
-const { Text } = Typography;
 import EmptyCard from "../components/EmptyCard";
 
 function Cart() {

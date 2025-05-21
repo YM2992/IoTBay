@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 const axiosInstance = axios.create({
@@ -8,21 +7,18 @@ const axiosInstance = axios.create({
   },
 });
 
-
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("jwt"); 
+  const token = localStorage.getItem("jwt");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
-
-
 // Add item to cart
-export const addToCart = async (productid, quantity) => {
-  const res = await axiosInstance.post("/cart/add", { productid, quantity });
-  return res.data.data; 
+export const addToCart = async (productid, quantity, url = "/cart/add") => {
+  const res = await axiosInstance.post(url, { productid, quantity });
+  return res.data.data;
 };
 
 // Remove item from cart
@@ -30,21 +26,20 @@ export const removeCartItem = async (productid) => {
   const guestOrderId = localStorage.getItem("guestOrderId");
 
   const url = guestOrderId
-    ? `/cart/remove?productid=${productid}&orderid=${guestOrderId}`
+    ? `/cart/guest?productid=${productid}&orderid=${guestOrderId}`
     : `/cart/remove?productid=${productid}`;
-
 
   const res = await axiosInstance.delete(url);
   return res.data.data;
 };
 
-
-
 // Update quantity
 export const updateCartQuantity = async (productid, quantity) => {
   const guestOrderId = localStorage.getItem("guestOrderId");
 
-  const res = await axiosInstance.patch("/cart/update-quantity", {
+  const url = guestOrderId ? "/cart/guest" : "/cart/update-quantity";
+
+  const res = await axiosInstance.patch(url, {
     productid,
     quantity,
     orderid: guestOrderId || undefined,
@@ -52,7 +47,6 @@ export const updateCartQuantity = async (productid, quantity) => {
 
   return res.data.data;
 };
-
 
 // Buy now
 export const buyNow = async (productid, quantity) => {
@@ -64,13 +58,15 @@ export const buyNow = async (productid, quantity) => {
 export const fetchCart = async () => {
   const guestOrderId = localStorage.getItem("guestOrderId");
   const isLoggedIn = !!localStorage.getItem("jwt");
+  let url;
 
-  const url = !isLoggedIn && guestOrderId
-    ? `/cart?orderid=${guestOrderId}`
-    : `/cart`;
+  if (!isLoggedIn) {
+    url = guestOrderId ? `/cart/guest?orderid=${guestOrderId}` : `/cart/guest`;
+  } else {
+    url = `/cart`;
+  }
+  // const url = !isLoggedIn && guestOrderId ? `/cart/guest?orderid=${guestOrderId}` : `/cart`;
 
   const res = await axiosInstance.get(url);
   return res.data.data;
 };
-
-

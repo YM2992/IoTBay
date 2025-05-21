@@ -3,6 +3,7 @@ import { AppContext } from "@/context/AppContext";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { Image, Button, InputNumber, Typography, Card, Divider } from "antd";
+import { getImageSrc } from "@/utils/helper";
 import "./ProductPage.css";
 
 const { Title, Text, Paragraph } = Typography;
@@ -87,7 +88,7 @@ function ProductPage() {
         <div className="product-left">
           <Image
             className="product-details-image"
-            src={`/assets/products/${data.image}.jpg`}
+            src={getImageSrc(data.image)}
             alt={data.name}
             width={500}
             height={500}

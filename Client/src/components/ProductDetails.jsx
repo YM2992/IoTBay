@@ -1,5 +1,6 @@
 import { Image, Typography, InputNumber } from "antd";
 import { useState, useEffect } from "react";
+import { getImageSrc } from "@/utils/helper";
 
 const { Title, Text } = Typography;
 

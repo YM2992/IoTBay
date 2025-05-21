@@ -13,6 +13,14 @@ export const API_ROUTES = {
     getProducts: "product/getProducts",
     getProductById: "product/getProductById",
   },
+  // new supplier route
+  supplier:{
+    create: "supplier/",
+    getAll: "supplier/",
+    getById: (id) => `supplier/${id}`, // Look up item id when delte from data base | Id = dynamic handelling 
+    update: (id) => `supplier/${id}`, 
+    delete: (id) => `supplier/${id}`    
+  },
   payment: {
     getPaymentCards: "payment/card/",
     updatePaymentCard: "payment/card/",

@@ -5,6 +5,8 @@ import { Toaster } from "react-hot-toast";
 import "./index.css";
 import "./App.css";
 import { managers } from "./utils/const";
+import React from 'react'; // *** 
+import { Inspector } from 'react-dev-inspector';
 
 import Layout from "./components/Layout";
 import ProductPage from "./pages/MainPage";
@@ -23,10 +25,13 @@ import Checkout from "./pages/Checkout";
 import OrderConfirmation from "./pages/OrderConfirmation";
 // import Test from "./pages/Test";
 
+
+// wrap everythig into <Inspector></Inspector>
 function App() {
   const { loggedIn, user } = useContext(AppContext);
 
-  return (
+  return (  
+    <Inspector>  
     <>
       <BrowserRouter>
         <Routes>
@@ -63,6 +68,7 @@ function App() {
         containerStyle={{ margin: "1rem" }}
       />
     </>
+    </Inspector>
   );
 }
 

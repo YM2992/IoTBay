@@ -29,7 +29,7 @@ function isCardExpired(expiryDate) {
 }
 
 const transactCheckout = db.transaction((data) => {
-  const { userid, items, paymentDetailsResolved, guestOrderId } = data; // Added guestOrderId
+  const { userid, items, paymentDetailsResolved, guestOrderId, shippingAddress } = data; // Added guestOrderId
   let totalAmount = 0;
   const productUpdates = [];
 
@@ -58,7 +58,11 @@ const transactCheckout = db.transaction((data) => {
   }
 
   if (totalAmount <= 0 && items.length > 0) {
-    console.warn(`Order for ${userid ? `user ${userid}` : `guest ${guestOrderId}`} has a total of $0. Proceeding.`);
+    console.warn(
+      `Order for ${
+        userid ? `user ${userid}` : `guest ${guestOrderId}`
+      } has a total of $0. Proceeding.`
+    );
   } else if (totalAmount < 0) {
     throw new cusError("Order total cannot be negative.", 400);
   }
@@ -66,14 +70,21 @@ const transactCheckout = db.transaction((data) => {
   const orderDate = new Date().toISOString().split("T")[0];
   let finalOrderId;
 
-  if (userid) { // Logged-in user
+  const { phone, recipient, address } = shippingAddress;
+
+  if (userid) {
+    // Logged-in user
     // 2. Create NEW 'paid' Order for logged-in user
     const newOrderData = {
       userid,
       orderDate,
       status: "paid",
       amount: totalAmount,
+      phone,
+      recipient,
+      address,
     };
+
     const newOrderResult = createOne("orders", newOrderData);
     finalOrderId = newOrderResult.lastInsertRowid;
     if (!finalOrderId) {
@@ -88,20 +99,30 @@ const transactCheckout = db.transaction((data) => {
         quantity: item.quantity,
       });
     }
-  } else if (guestOrderId) { // Guest user
+  } else if (guestOrderId) {
+    console.log("=========GUEST ORDER: ==========");
+    console.log(shippingAddress);
+    // Guest user
     // 2. Update existing 'pending' guest order to 'paid'
-    const guestOrder = db.prepare(
-      "SELECT orderid, status FROM orders WHERE orderid = ? AND userid IS NULL AND status = 'pending'"
-    ).get(guestOrderId);
+    const guestOrder = db
+      .prepare(
+        "SELECT orderid, status FROM orders WHERE orderid = ? AND userid IS NULL AND status = 'pending'"
+      )
+      .get(guestOrderId);
 
     if (!guestOrder) {
-      throw new cusError(`Pending guest order with ID ${guestOrderId} not found, already processed, or does not belong to a guest.`, 404);
+      throw new cusError(
+        `Pending guest order with ID ${guestOrderId} not found, already processed, or does not belong to a guest.`,
+        404
+      );
     }
 
     // Update order status, amount, and date
-    const updateResult = db.prepare(
-      "UPDATE orders SET status = 'paid', amount = ?, orderDate = ? WHERE orderid = ?"
-    ).run(totalAmount, orderDate, guestOrderId);
+    const updateResult = db
+      .prepare(
+        "UPDATE orders SET status = 'paid', amount = ?, orderDate = ?, phone = ?, recipient = ?, address = ? WHERE orderid = ?"
+      )
+      .run(totalAmount, orderDate, phone, recipient, address, guestOrderId);
 
     if (updateResult.changes === 0) {
       throw new cusError(`Failed to update guest order ${guestOrderId}.`, 500);
@@ -154,7 +175,9 @@ const transactCheckout = db.transaction((data) => {
       .prepare("SELECT orderid FROM orders WHERE userid = ? AND status = 'pending' LIMIT 1")
       .get(userid);
     if (pendingUserCart) {
-      console.log(`Clearing pending cart for user ${userid} with order ID ${pendingUserCart.orderid} after successful checkout.`);
+      console.log(
+        `Clearing pending cart for user ${userid} with order ID ${pendingUserCart.orderid} after successful checkout.`
+      );
       db.prepare("DELETE FROM order_product WHERE orderid = ?").run(pendingUserCart.orderid);
       db.prepare("DELETE FROM orders WHERE orderid = ?").run(pendingUserCart.orderid);
     }
@@ -167,7 +190,14 @@ const transactCheckout = db.transaction((data) => {
 export const processCheckout = catchAsync(async (req, res, next) => {
   const userid = req.user ? req.user.userid : null;
   // Retrieve guestOrderId from request body for guest checkouts
-  const { items, paymentDetails, guestOrderId: clientGuestOrderId, address: shippingAddress } = req.body;
+  console.log(req.body);
+
+  const {
+    items,
+    paymentDetails,
+    guestOrderId: clientGuestOrderId,
+    address: shippingAddress,
+  } = req.body;
 
   if (!items || items.length === 0) {
     return next(new cusError("Your cart is empty. Cannot proceed to checkout.", 400));
@@ -179,10 +209,20 @@ export const processCheckout = catchAsync(async (req, res, next) => {
     return next(new cusError("Shipping address is required.", 400));
   }
   // Basic validation for shipping address object
-  if (typeof shippingAddress !== 'object' || shippingAddress === null || !shippingAddress.recipient || !shippingAddress.address || !shippingAddress.phone) {
-    return next(new cusError("Invalid shipping address format. Recipient, address, and phone are required.", 400));
+  if (
+    typeof shippingAddress !== "object" ||
+    shippingAddress === null ||
+    !shippingAddress.recipient ||
+    !shippingAddress.address ||
+    !shippingAddress.phone
+  ) {
+    return next(
+      new cusError(
+        "Invalid shipping address format. Recipient, address, and phone are required.",
+        400
+      )
+    );
   }
-
 
   let paymentDetailsResolved = {
     isNew: paymentDetails.isNew,
@@ -218,9 +258,10 @@ export const processCheckout = catchAsync(async (req, res, next) => {
 
     paymentDetailsResolved.cardNumberToStore = cleanCardNumber;
     paymentDetailsResolved.cardNumber = cleanCardNumber; // Ensure it's cleaned for saving
-  } else { // Using a saved card (only applicable if userid is present)
+  } else {
+    // Using a saved card (only applicable if userid is present)
     if (!userid) {
-        return next(new cusError("Cannot use a saved card for guest checkout.", 400));
+      return next(new cusError("Cannot use a saved card for guest checkout.", 400));
     }
     const { cardid } = paymentDetails;
     if (!cardid) {
@@ -252,12 +293,11 @@ export const processCheckout = catchAsync(async (req, res, next) => {
     items,
     paymentDetailsResolved,
     guestOrderId: clientGuestOrderId, // Pass guestOrderId
-    // shippingAddress, // If transactCheckout needs the address directly
+    shippingAddress, // If transactCheckout needs the address directly
   });
 
   // TODO: Save shippingAddress to a new table like 'order_shipping_address' linked to the orderid
   // For now, we assume it's for display or other processing not directly in this transaction.
-
 
   res.status(201).json({
     status: "success",
@@ -265,7 +305,7 @@ export const processCheckout = catchAsync(async (req, res, next) => {
     data: {
       orderid: result.orderid,
       totalAmount: result.totalAmount,
-      products: items // Return the items that were part of this order
-    }
+      products: items, // Return the items that were part of this order
+    },
   });
 });

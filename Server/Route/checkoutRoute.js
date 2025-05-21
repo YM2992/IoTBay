@@ -7,4 +7,6 @@ const checkoutRoute = express.Router();
 
 checkoutRoute.route("/").post(protect, processCheckout);
 
+checkoutRoute.route("/guest").post(processCheckout);
+
 export default checkoutRoute;

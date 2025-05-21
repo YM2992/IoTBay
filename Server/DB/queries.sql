@@ -50,6 +50,8 @@ CREATE TABLE product (
 CREATE TABLE orders(
     orderid INTEGER PRIMARY KEY,
     address VARCHAR(100) NOT NULL DEFAULT '1 The Street Ultimo',
+    recipient VARCHAR(100) NOT NULL DEFAULT '1 The Street Ultimo',
+    phone int NOT NULL DEFAULT 123456789,
     amount float NOT NULL check(amount >= 0),
     status varchar(10) NOT NULL Check (status IN ('fulfilled', 'pending', 'cancelled', 'delivered', 'paid')) DEFAULT 'pending',
     orderDate date DEFAULT CURRENT_DATE,

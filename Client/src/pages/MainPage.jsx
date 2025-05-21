@@ -68,8 +68,6 @@ function ProductPage() {
     }
   }, [loading, error, data, updateProducts]);
 
-  console.log(data);
-
   if (loading || !loaded || error) {
     return (
       <div className="main-container">

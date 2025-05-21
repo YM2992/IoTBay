@@ -23,12 +23,11 @@ export const getOne = (dbname, field, value) => {
 export const createOne = (dbname, data) => {
   const keys = Object.keys(data).join(",");
   const values = Object.values(data);
-  const placeholders = Object.keys(data).map(() => "?").join(",");
+  const placeholders = Object.keys(data)
+    .map(() => "?")
+    .join(",");
   const sql = `INSERT INTO ${dbname} (${keys}) VALUES (${placeholders})`;
   return db.prepare(sql).run(...values);
-  
-  //   console.log("SQL Query :", sql);
-  return db.prepare(sql).run();
 };
 
 export const updateOne = (dbname, id, data) => {
@@ -40,14 +39,12 @@ export const updateOne = (dbname, id, data) => {
     product: "productid",
     orders: "orderid",
     order_product: "order_productid",
-    payment: "paymentid",         
-    paymentCard: "cardid",         
+    payment: "paymentid",
+    paymentCard: "cardid",
   };
-  
-  
 
-  const idField = tableIdMap[dbname]; 
-const sql = `UPDATE ${dbname} SET ${setClause} WHERE ${idField} = ?`;
+  const idField = tableIdMap[dbname];
+  const sql = `UPDATE ${dbname} SET ${setClause} WHERE ${idField} = ?`;
   return db.prepare(sql).run(...values, id);
 };
 

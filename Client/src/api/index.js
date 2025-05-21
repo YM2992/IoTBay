@@ -19,15 +19,16 @@ export const API_ROUTES = {
     removePaymentCard: "payment/card/",
 
     getPaymentHistory: "payment/history/",
-    addPayment: "payment/addPayment"
+    addPayment: "payment/addPayment",
   },
   order: {
     getOrderHistory: "order/history",
     getOrderbyId: (id) => `order/${id}`,
   },
   checkout: {
-    checkout: "checkout"
-  }
+    checkout: "checkout",
+    guest: "checkout/guest",
+  },
 };
 
 export const urlMaker = (endpoint) => {
@@ -45,14 +46,14 @@ export const optionMaker = (data, method = "POST", token = null) => {
   };
 };
 
-export const fetchDelete = async (endpoint, options={}) => {
+export const fetchDelete = async (endpoint, options = {}) => {
   const response = await fetch(urlMaker(endpoint), {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       ...options.headers,
     },
-    body: JSON.stringify(options.body)
+    body: JSON.stringify(options.body),
   });
   const resData = await response.json();
 
@@ -93,5 +94,3 @@ export const checkEmail = async (email) => {
 
   return resData;
 };
-
-

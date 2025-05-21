@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Input from "../components/Input";
 import { toast } from "react-hot-toast";
 import { strictEmailRegex, numberRegex } from "../utils/helper";
 import { fetchPost, checkEmail, optionMaker, API_ROUTES } from "../api";
+import { AppContext } from "@/context/AppContext"; // Should provide token context - no more null roles!
 
 import "./Login.css";
 
 function CreateSupplier({ refetch }) {
+  const { token } = useContext(AppContext); // authenticate
   const [agent, setAgent] = useState("");
   const [company, setCompany] = useState("");
   const [email, setEmail] = useState("");
@@ -44,7 +46,6 @@ function CreateSupplier({ refetch }) {
   };
 
   const handleSubmit = async () => {
-    // Field guards
     if (!agent.trim() || !company.trim() || !email.trim() || !address.trim()) {
       return toast.error("All fields must be filled");
     }

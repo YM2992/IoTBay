@@ -2,11 +2,11 @@ import {getAll,getOne,createOne,updateOne,deleteOne} from "./centralController.j
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
 
-const SUPPLIER_TABLE = "supplier"; // Define the supplier table name
+const SUPPLIER_TABLE = "supplier"; 
 
 // Get all suppliers
 export const getAllSuppliers = catchAsync(async (req, res, next) => {
-  const suppliers = getAll(SUPPLIER_TABLE);
+  const suppliers = await getAll(SUPPLIER_TABLE);
 
   res.status(200).json({
     status: "success",
@@ -38,17 +38,17 @@ export const createSupplier = catchAsync(async (req, res, next) => {
   }
 
   try {
-    const result = createOne(SUPPLIER_TABLE, { contactName, companyName, email, address });
+    const result = await createOne(SUPPLIER_TABLE, { contactName, companyName, email, address }); // Await the asynchronous operation
 
     res.status(201).json({
       status: "success",
-      data: { id: result.lastInsertRowid, contactName, companyName, email, address },
+      data: {id: result.lastInsertRowid, contactName, companyName, email, address,},
     });
   } catch (error) {
-    let message = `${error.code} ${error.message}`;
-    if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
-      message = `Duplicate Field: ${error.message}`;
-    }
+    let message = error.code === "SQLITE_CONSTRAINT_UNIQUE" 
+      ? `Duplicate Field: ${error.message}` 
+      : "Error creating supplier";
+
     return next(new cusError(message, 400));
   }
 });

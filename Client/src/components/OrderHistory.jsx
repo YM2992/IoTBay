@@ -81,12 +81,6 @@ function OrderHistory() {
 
     if (!inputAddress) return toast.error("Nothing has changed");
 
-    // if (inputAddress.trim() === selectedOrder.address.trim()) {
-    //   setInputAddress(null);
-    //   return toast.success("Nothing has changed");
-    // }
-    console.log(inputAddress);
-
     const data = {
       orderid,
       shipment: inputAddress,

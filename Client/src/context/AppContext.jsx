@@ -82,6 +82,8 @@ export const AppProvider = ({ children }) => {
   };
 
   const addToCart = async (productid, quantity) => {
+    if (token) return addToCartAPI(productid, quantity);
+
     return await addToCartAPI(productid, quantity, "/cart/guest");
   };
 

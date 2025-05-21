@@ -5,7 +5,8 @@ import { processCheckout } from "../Controller/checkoutController.js"; // Adjust
 
 const checkoutRoute = express.Router();
 
-// checkoutRoute.route("/").post(protect, processCheckout);
-checkoutRoute.route("/").post(processCheckout);
+checkoutRoute.route("/").post(protect, processCheckout);
+
+checkoutRoute.route("/guest").post(processCheckout);
 
 export default checkoutRoute;

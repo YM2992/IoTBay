@@ -1,5 +1,6 @@
 import db from "../Controller/dbController.js";
 import catchAsync from "../Utils/catchAsync.js";
+import { getAll } from "./centralController.js";
 
 export const getOrderHistory = catchAsync(async (req, res, next) => {
   const userid = req.user.userid;
@@ -44,5 +45,14 @@ export const getOrderById = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data: items,
+  });
+});
+
+export const getAllOrders = catchAsync(async (req, res, next) => {
+  const orders = getAll("orders");
+
+  res.status(200).json({
+    status: "success",
+    data: orders,
   });
 });

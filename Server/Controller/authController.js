@@ -156,8 +156,6 @@ export const logout = catchAsync(async (req, res, next) => {
 
 export const protect = catchAsync(async (req, res, next) => {
   let token = req.headers.authorization;
-
-  // Allow guests (no token provided)
   if (!token || !token.startsWith("Bearer"))
     return next(new cusError("You are not logged in, please login first", 401));
 
@@ -167,6 +165,7 @@ export const protect = catchAsync(async (req, res, next) => {
     return next(new cusError("There is a token issue, please report it to us", 401));
 
   const result = await jwt.verify(token, process.env.JWT_SECRET);
+
   const currentUser = findUserById(result.id);
 
   if (!currentUser) {
@@ -181,6 +180,7 @@ export const protect = catchAsync(async (req, res, next) => {
   }
   // Grand Access to Protected Route
   req.user = currentUser;
+  // console.log("Protect: ", currentUser);
   next();
 });
 

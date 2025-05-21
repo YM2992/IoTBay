@@ -68,5 +68,6 @@ export const fetchCart = async () => {
   // const url = !isLoggedIn && guestOrderId ? `/cart/guest?orderid=${guestOrderId}` : `/cart`;
 
   const res = await axiosInstance.get(url);
+
   return res.data.data;
 };

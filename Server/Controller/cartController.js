@@ -11,7 +11,11 @@ import {
 // Add product to cart
 export const addToCart = catchAsync(async (req, res, next) => {
   const userid = req.user ? req.user.userid : null;
+  console.log("Cur User: ", req.user);
+
   const { productid, quantity } = req.body;
+
+  // console.log("USER ID", userid);
 
   if (!productid || !quantity) {
     return next(new cusError("Missing product or quantity", 400));

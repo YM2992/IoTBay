@@ -193,10 +193,8 @@ function CheckoutPage() {
     }
 
     try {
-      const response = await fetchPost(
-        API_ROUTES.checkout.checkout,
-        optionMaker(orderDetails, "POST", token)
-      );
+      const url = token ? API_ROUTES.checkout.checkout : API_ROUTES.checkout.guest;
+      const response = await fetchPost(url, optionMaker(orderDetails, "POST", token));
       if (response && response.status === "success" && response.data) {
         toast.success("Checkout successful!");
 

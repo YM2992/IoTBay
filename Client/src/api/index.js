@@ -27,6 +27,7 @@ export const API_ROUTES = {
   },
   checkout: {
     checkout: "checkout",
+    guest: "checkout/guest",
   },
 };
 

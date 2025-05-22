@@ -37,15 +37,19 @@ export const getAllAvailableProducts = catchAsync(async (req, res, next) => {
 });
 
 export const createProduct = catchAsync(async (req, res, next) => {
-  const { name, price, quantity, description } = req.body;
+  const { name, price, quantity, description, image } = req.body;
+
   if (!name || !price || !quantity || !description)
     return next(new cusError("Please provide all needed fields", 400));
+
+  if (!image) image = "default_image";
 
   const dataFilter = {
     name,
     price,
     quantity,
     description,
+    image,
   };
 
   try {

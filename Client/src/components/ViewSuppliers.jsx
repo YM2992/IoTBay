@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
-import { Table, Button, Space, Input, Spin, Alert, Modal, Form } from 'antd';
+import { Table, Button, Space, Input, Alert, Modal, Form } from 'antd';
 import { getSuppliers, updateSupplier, deleteSupplier, toggleSupplierActivation } from '@/api/Supplier';
+import { API_ROUTES, urlMaker } from '@/api/index'; // end point is found this way?
 import { AppContext } from "@/context/AppContext";
 import { fetchPost, optionMaker } from '@/api';
 import { toast } from "react-hot-toast";
@@ -49,15 +50,20 @@ const ViewSuppliers = () => {
     } finally { 
       setLoading(false); 
     } 
+    fetchSuppliers();
   };
 
-  const handleDeleteSupplier = async () => { 
-    const data = {supplierid};
-    try{
-      await fetchPost("Your-end-point", optionMaker(data, "DELETE", token));
+  const handleDeleteSupplier = async (supplierid) => {
+    // PUT??
+    const data = {supplierid};           
+    try{ 
+      const endpoint = API_ROUTES.supplier.delete(data);
+      await fetchPost(endpoint, optionMaker(data, "DELETE", token));
       toast.sucess("Sucessfully deleted");
+      fetchSuppliers();
     } catch (error){
       toast.error(error.message || "An error occurred");
+      fetchSuppliers();;
     }
     /*
     try { 
@@ -73,10 +79,17 @@ const ViewSuppliers = () => {
       */
   };
 
-  const toggleActivation = async (supplier) => { 
-    /**
-      
-     */
+  const toggleActivation = async (record) => { 
+    const statUpdated = { activate: !record.activate}; //negate/toggle
+    const data = {record}
+    const endpoint = API_ROUTES.supplier.update(data);
+    try{
+      await fetchPost(endpoint, optionMaker(data,"PATCH",token)); // How to I only make activate boolean change
+      toast.success("Sucessfully updated")
+    } catch (error){
+      toast.error(error.message || "an error occurred");
+    }
+    /*
     try { 
       setLoading(true); 
       await toggleSupplierActivation(supplier.supplierid, !supplier.activate, token); 
@@ -87,6 +100,7 @@ const ViewSuppliers = () => {
     } finally { 
       setLoading(false); 
     } 
+    */
   };
 
   const filteredResults = suppliers.filter((supplier) => 
@@ -130,10 +144,7 @@ const ViewSuppliers = () => {
       ), 
     }, 
   ];
-
-  if (loading) return <Spin tip="Loading suppliers..." />; 
   if (error) return <Alert message="Error" description={error} type="error" />;
-
   return (
     <div>
       <Space style={{ marginBottom: 16 }}>

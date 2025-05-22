@@ -1,5 +1,5 @@
 import React from 'react';
-import ViewSuppliers from './ViewSuppliers';
+import ViewSuppliers from "@/components/ViewSuppliers";
 
 const ContainerSupplier = () => {
   return (

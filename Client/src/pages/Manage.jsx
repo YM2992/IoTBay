@@ -10,6 +10,7 @@ import { AppContext } from "@/context/AppContext";
 import EmptyCard from "@/components/EmptyCard";
 import ViewSuppliers from "@/components/ViewSuppliers";
 import CreateSupplier from "./CreateSupplier";
+import ContainerSupplier from "@/components/Checkout/ContainerSupplier";
 
 function Manage() {
   const [products, setProducts] = useState(null);
@@ -85,7 +86,7 @@ function Manage() {
       children: (        
         <>
           {user.role === "admin" && users ? (
-            <ViewSuppliers users={users} refetch={userRefetch} />
+            <ContainerSupplier users={users} refetch={userRefetch} />
           ) : (
             <EmptyCard description={"This tab is for admin only"} showBtn={false} />
           )}

@@ -3,24 +3,29 @@ import React, { useState, useContext } from "react";
 import { Table, Input, Space, Button } from "antd";
 import { fetchPost, optionMaker } from "@/api";
 */ // This has failed me thus far.. 
-import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form, Input, Alert } from 'antd';
+import React, { useContext, useEffect, useState } from 'react';
+import { Table, Button, Modal, Form, Input, Spin, Alert } from 'antd';
 import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '@/api/Supplier';
+import { AppContext } from "@/context/AppContext";
 
 const ViewSuppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  //const [isModalVisible, setIsModalVisible] = useState(false); // deprecated 
+  const [isOpen, setIsOpen] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState(null);
   const [form] = Form.useForm();
+  const {token} = useContext(AppContext);
 
-  const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
+  console.log("Token:",token);
+ // const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
 
   // Fetch suppliers on component mount
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
+        console.log("TOKEN:", token)
         const data = await getSuppliers(token);
         setSuppliers(data);
       } catch (err) {
@@ -35,14 +40,14 @@ const ViewSuppliers = () => {
 
   // Handle form submission for creating/updating a supplier
   const handleSave = async (values) => {
-    try {
+  try {
       setLoading(true);
       if (editingSupplier) {
-        await updateSupplier(editingSupplier.supplierid, values, token);
+        await updateSupplier(editingSupplier.supplierid, values, token); // This will now use PATCH
       } else {
         await createSupplier(values, token);
       }
-      setIsModalVisible(false);
+      setIsIsOpen(false);
       form.resetFields();
       const data = await getSuppliers(token);
       setSuppliers(data);
@@ -51,7 +56,9 @@ const ViewSuppliers = () => {
     } finally {
       setLoading(false);
     }
-  };
+  };  
+  
+  // Old PUT method found at old-Handle local
 
   // Handle deleting a supplier
   const handleDelete = async (id) => {
@@ -70,7 +77,7 @@ const ViewSuppliers = () => {
   // Open the modal for adding/editing a supplier
   const openModal = (supplier = null) => {
     setEditingSupplier(supplier);
-    setIsModalVisible(true);
+    setIsOpen(true);
     if (supplier) {
       form.setFieldsValue(supplier);
     } else {
@@ -80,7 +87,7 @@ const ViewSuppliers = () => {
 
   // Close the modal
   const closeModal = () => {
-    setIsModalVisible(false);
+    setIsOpen(false);
     setEditingSupplier(null);
     form.resetFields();
   };
@@ -121,6 +128,11 @@ const ViewSuppliers = () => {
       ),
     },
   ];
+
+  if (loading) {
+    return <Spin tip="Loading suppliers..." />;
+  }
+
   if (error) {
     return <Alert message="Error" description={error} type="error" />;
   }
@@ -140,7 +152,7 @@ const ViewSuppliers = () => {
       />
       <Modal
         title={editingSupplier ? 'Edit Supplier' : 'Add Supplier'}
-        visible={isModalVisible}
+        open={isOpen} //visible was  deprecated
         onCancel={closeModal}
         onOk={() => form.submit()}
       >

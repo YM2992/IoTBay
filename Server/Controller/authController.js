@@ -7,6 +7,7 @@ import { findUserByEmail, findUserById } from "./userController.js";
 import { createOne } from "./centralController.js";
 import db from "../Controller/dbController.js";
 
+
 export const hashPassword = async function (password) {
   return await bcrypt.hash(password, 12);
 };
@@ -148,44 +149,49 @@ export const logout = catchAsync(async (req, res, next) => {
   });
 });
 
+// OLD protect > New protect 
 export const protect = catchAsync(async (req, res, next) => {
   let token = req.headers.authorization;
-
-  // Allow guests (no token provided)
-  if (!token || !token.startsWith("Bearer")) {
-    req.user = null;
-    return next();
-  }
-
+  if (!token || !token.startsWith("Bearer"))
+    return next(new cusError("You are not logged in, please login first", 401));
+ 
   token = token.split(" ")[1];
-
-  // Allow guests (token is literally "null")
-  if (token.trim() === "null") {
-    req.user = null;
-    return next();
+ 
+  if (token.trim() == "null")
+    return next(new cusError("There is a token issue, please report it to us", 401));
+ 
+  const result = await jwt.verify(token, process.env.JWT_SECRET);
+ 
+  const currentUser = findUserById(result.id);
+ 
+  if (!currentUser) {
+    return next(new cusError("The user no longer exist", 401));
   }
-
-  // Try to verify the token
-  try {
-    const result = await jwt.verify(token, process.env.JWT_SECRET);
-    const currentUser = findUserById(result.id);
-
-    if (!currentUser || !currentUser.activate) {
-      req.user = null; // fallback to guest
-    } else {
-      req.user = currentUser;
-    }
-
-  } catch (err) {
-    req.user = null; // invalid token? treat as guest
+  if (!currentUser.activate) {
+    return next(new cusError("please find us to re-activate your account", 401));
   }
-
+ 
+  if (!currentUser.activate) {
+    return next(new cusError("Please find us to re-activate your account", 401));
+  }
+  // Grand Access to Protected Route
+  req.user = currentUser;
+  // console.log("Protect: ", currentUser);
   next();
 });
 
 
-export const restrictTo = (...roles) => {
+// Error (propbably cause of something else)
+export const restrictTo = (...roles) => {  
   return (req, res, next) => {
+  /* sorry it was disruptting other stuff too  
+  if (token) {
+      console.log("Token:", token);
+    } else {
+      console.log("Token is null or undefined");
+    } // token testing delete above
+     */
+
     if (!roles.includes(req.user.role)) {
       return next(
         new cusError("You do not have permission to perform this action", 403)

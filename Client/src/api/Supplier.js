@@ -1,7 +1,7 @@
-import { API_ROUTES, fetchGet, fetchPost, fetchDelete, optionMaker } from '@/api';
+import { API_ROUTES, fetchGet, fetchPost,fetchPatch, fetchDelete, optionMaker } from '@/api'; //fetchPatch
 
 // Get all suppliers
-export const getSuppliers = async (token) => {
+export const getSuppliers = async (token) => { // API_ROUTES.supplier.getAll,
   const response = await fetchGet(API_ROUTES.supplier.getAll, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -15,7 +15,7 @@ export const getSuppliers = async (token) => {
 
 // Create a new supplier
 export const createSupplier = async (supplierData, token) => {
-  const response = await fetchPost(API_ROUTES.supplier.create, optionMaker(supplierData, 'POST', token));
+  const response = await fetchPost(API_ROUTES.supplier.create, optionMaker(supplierData, 'PATCH', token));
   if (!response) throw new Error('Failed to create supplier');
   if (!response.status || response.status !== 'success') throw new Error('Failed to create supplier');
 
@@ -23,13 +23,25 @@ export const createSupplier = async (supplierData, token) => {
 };
 
 // Update a supplier
-export const updateSupplier = async (id, supplierData, token) => {
+export const updateSupplier = async(id, supplierData, token ) => {
+  const response = await fetchPost(API_ROUTES.supplier.update(id), optionMaker(supplierData, 'PATCH', token));
+  if (!response) throw new Error ('Failed to update supplier');  
+  if (!response.status || response.status !== 'success') throw new Error ('Failed to update supplier');
+  return response.data;
+};
+/*
+  if (!response || response.status !== "success") {
+    throw new Error("Failed to update supplier");
+  }
+  return response.data;
+*/
+
+/* [OLD incompatiable PUT method]
   const response = await fetchPost(API_ROUTES.supplier.update(id), optionMaker(supplierData, 'PUT', token));
   if (!response) throw new Error('Failed to update supplier');
   if (!response.status || response.status !== 'success') throw new Error('Failed to update supplier');
-
-  return response.data;
-};
+  return response.data;};
+  */
 
 // Delete a supplier
 export const deleteSupplier = async (id, token) => {

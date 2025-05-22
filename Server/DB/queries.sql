@@ -44,7 +44,7 @@ CREATE TABLE product (
     quantity int NOT NULL check(quantity >= 0),
     description VARCHAR(100),
     image VARCHAR(256) DEFAULT 'default_image',
-    supplier  DEFAULT -- maybe delete 
+    -- supplier  DEFAULT FORIEGN list of ocmpany -- maybe delete 
     available boolean DEFAULT true
 );
 

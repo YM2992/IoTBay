@@ -17,9 +17,9 @@ export const API_ROUTES = {
   supplier:{
     create: "supplier/",
     getAll: "supplier/",
-    getById: (id) => `supplier/${id}`, // Look up item id when delte from data base | Id = dynamic handelling 
-    update: (id) => `supplier/${id}`, 
-    delete: (id) => `supplier/${id}`    
+    getById: (id) => `supplier/${id}`, // Look up item id when delte from data base | Id = dynamic handelling (id) => `supplier/${id}`
+    update: (id) => `supplier/${id}`,  // 
+    delete: (id) => `supplier/${id}`,    
   },
   payment: {
     getPaymentCards: "payment/card/",
@@ -78,6 +78,24 @@ export const fetchPost = async (endpoint, options) => {
     throw new Error(resData.message);
   }
   return resData;
+};
+
+//new! ---> used for display
+export const fetchPatch = async (url, options = {}) => {
+  try {
+    const response = await fetch(url, {
+      method: 'PATCH',
+      ...options,
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to perform PATCH request');
+    }
+    return data;
+  } catch (error) {
+    console.error('Error in fetchPatch:', error);
+    throw error;
+  }
 };
 
 export const fetchGet = async (endpoint, options) => {

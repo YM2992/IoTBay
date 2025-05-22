@@ -1,18 +1,18 @@
 import { useContext, useState } from "react";
 import Input from "../components/Input";
 import { toast } from "react-hot-toast";
-import { strictEmailRegex, numberRegex } from "../utils/helper";
-import { fetchPost, checkEmail, optionMaker, API_ROUTES } from "../api";
+import { strictEmailRegex } from "../utils/helper";
+import { API_ROUTES, fetchPost, checkEmail, optionMaker} from "../api";
 import { AppContext } from "@/context/AppContext"; // Should provide token context - no more null roles!
 
 import "./Login.css";
 
-function CreateSupplier({ refetch }) {
-  const { token } = useContext(AppContext); // authenticate
+function CreateSupplier({ refetch }) { 
   const [agent, setAgent] = useState("");
   const [company, setCompany] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
+  const {token} = useContext(AppContext); // authenticate
 
   const inputMenu = [
     {
@@ -63,9 +63,9 @@ function CreateSupplier({ refetch }) {
       address,
     };
 
-    try {
+    try { // Triggers authentication since it's a admin only activity
       await fetchPost(API_ROUTES.supplier.create, optionMaker(data));
-                // "supplier/create", optionMaker(data))
+                // "supplier/create", optionMaker(data)) 
       toast.success("Successfully added new supplier!");
       clear();
       refetch();

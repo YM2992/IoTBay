@@ -88,8 +88,15 @@ const ViewSuppliers = () => {
     { title: 'Email', dataIndex: 'email', key: 'email' },
     { title: 'Address', dataIndex: 'address', key: 'address' },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: 'Status', key: 'status',
+      render: (_, record) => (
+        <span style={{ color: record.activate ? 'green' : 'red', fontWeight: 'bold' }}>
+          {record.activate ? 'Active' : 'Inactive'}
+        </span>
+      ),
+    },
+    {
+      title: 'Actions', key: 'actions',
       render: (_, record) => (
         <>
           <Button type="link" onClick={() => openModal(record)}>Edit</Button>

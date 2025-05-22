@@ -1,5 +1,4 @@
 import {getAll,getOne,createOne,updateOne,deleteOne} from "./centralController.js";
-
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
 
@@ -15,9 +14,9 @@ export const getAllSuppliers = catchAsync(async (req, res, next) => {
   });
 });
 
-// Get a single supplier by ID
+// Get a single supplier by ID  \\ previously const {id} = req.params;
 export const getSupplierById = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.params; 
   const supplier = getOne(SUPPLIER_TABLE, "supplierid", id);
 
   if (!supplier) {
@@ -76,16 +75,16 @@ export const updateSupplierById = async (req, res, next) => {
 // Delete a supplier by ID
 
 export const deleteSupplierById = async (req, res, next) => {
-  const { id } = req.params;
-
+  const { supplierid } = req.body; //previousreq.params // supplierid = whatever it's called'
+  console.log(req.body);
   try {
-    const result = deleteOne('supplier', id);
-    if (result.changes === 0) {
-      return res.status(404).json({ message: 'Supplier not found' });
+    const result = await deleteOne(SUPPLIER_TABLE, supplierid);
+    if (result.change === 0){
+        return next(new cusError("Supplier not found"),404);
     }
-    res.status(204).json({ message: 'Supplier deleted successfully' });
+    res.status(204).send();
   } catch (error) {
-    next(error);
+    return next (new cusError("Error deleting supplier",500));
   }
 };
 

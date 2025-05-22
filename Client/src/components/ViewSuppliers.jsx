@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { Table, Button, Space, Input, Spin, Alert, Modal, Form } from 'antd';
 import { getSuppliers, updateSupplier, deleteSupplier, toggleSupplierActivation } from '@/api/Supplier';
 import { AppContext } from "@/context/AppContext";
+import { fetchPost, optionMaker } from '@/api';
+import { toast } from "react-hot-toast";
 
 const ViewSuppliers = () => { 
   const [suppliers, setSuppliers] = useState([]); 
@@ -49,7 +51,15 @@ const ViewSuppliers = () => {
     } 
   };
 
-  const handleDelete = async (supplierid) => { 
+  const handleDeleteSupplier = async () => { 
+    const data = {supplierid};
+    try{
+      await fetchPost("Your-end-point", optionMaker(data, "DELETE", token));
+      toast.sucess("Sucessfully deleted");
+    } catch (error){
+      toast.error(error.message || "An error occurred");
+    }
+    /*
     try { 
       setLoading(true); 
       await deleteSupplier(supplierid, token); 
@@ -60,9 +70,13 @@ const ViewSuppliers = () => {
     } finally { 
       setLoading(false); 
     } 
+      */
   };
 
   const toggleActivation = async (supplier) => { 
+    /**
+      
+     */
     try { 
       setLoading(true); 
       await toggleSupplierActivation(supplier.supplierid, !supplier.activate, token); 
@@ -110,7 +124,7 @@ const ViewSuppliers = () => {
         ) : ( 
           <> 
             <Button type="link" onClick={() => openModal(record)}>Edit</Button> 
-            <Button type="link" danger onClick={() => handleDelete(record.supplierid)}>Delete</Button> 
+            <Button type="link" danger onClick={() => handleDeleteSupplier(record.supplierid)}>Delete</Button> 
           </> 
         ) 
       ), 

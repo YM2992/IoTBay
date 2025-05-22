@@ -14,12 +14,11 @@ const supplierRoute = express.Router();
 supplierRoute
   .route("/")
   .get(protect, restrictTo("admin", "manager", "owner"), getAllSuppliers) // delted staff
-  .post(protect, restrictTo("admin"), createSupplier); // maybe broken??? 
+  .post(protect, restrictTo("admin"), createSupplier) // maybe broken??? 
+  .delete(protect, restrictTo("admin"), deleteSupplierById) // previously in area below  
+  .patch(protect, restrictTo("admin"), updateSupplierById); // general commands above
 
 supplierRoute
   .route("/:id")
   .get(protect, getSupplierById)
-  .patch(protect, restrictTo("admin"), updateSupplierById)
-  .delete(protect, restrictTo("admin"), deleteSupplierById);
-
 export default supplierRoute;

@@ -9,10 +9,11 @@ import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '@/
 import { AppContext } from "@/context/AppContext";
 
 const ViewSuppliers = () => {
-    
+
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchCom, setSearchCom] = useState('');
   //const [isModalVisible, setIsModalVisible] = useState(false); // deprecated 
   const [isOpen, setIsOpen] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState(null);
@@ -28,6 +29,7 @@ const ViewSuppliers = () => {
       try {
         console.log("TOKEN:", token)
         const data = await getSuppliers(token);
+        console.log("Fetched Suppliers:", data); //This works
         setSuppliers(data);
       } catch (err) {
         setError(err.message);
@@ -35,7 +37,6 @@ const ViewSuppliers = () => {
         setLoading(false);
       }
     };
-
     fetchSuppliers();
   }, [token]);
 
@@ -47,10 +48,10 @@ const ViewSuppliers = () => {
         await updateSupplier(editingSupplier.supplierid, values, token); // This will now use PATCH
       } else {
         await createSupplier(values, token);
-      }
+      }      
       setIsIsOpen(false);
       form.resetFields();
-      const data = await getSuppliers(token);
+      const data = await getSuppliers(token); // refresh list
       setSuppliers(data);
     } catch (err) {
       setError(err.message);
@@ -76,7 +77,8 @@ const ViewSuppliers = () => {
   };
 
   // Open the modal for adding/editing a supplier
-  const openModal = (supplier = null) => {
+  const openModal = (supplier) => {    
+    //console.log(editingSupplier.supplierid); // Is id stored??
     setEditingSupplier(supplier);
     setIsOpen(true);
     if (supplier) {
@@ -94,6 +96,12 @@ const ViewSuppliers = () => {
   };
 
   const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'supplierid', // connects with database
+      key: 'ID',
+
+    },
     {
       title: 'Contact Name',
       dataIndex: 'contactName',
@@ -117,18 +125,21 @@ const ViewSuppliers = () => {
     {
       title: 'Actions',
       key: 'actions',
-      render: (_, record) => (
-        <>
-          <Button type="link" onClick={() => openModal(record)}>
-            Edit
-          </Button>
-          <Button type="link" danger onClick={() => handleDelete(record.supplierid)}>
-            Delete
-          </Button>
-        </>
-      ),
-    },
-  ];
+      render: (_, record) => {
+        console.log("Record for Edit:", record); // Log the record being passed
+         return (
+           <>
+             <Button type="link" onClick={() => openModal(record)}>
+               Edit
+             </Button>
+             <Button type="link" danger onClick={() => handleDelete(record.supplierid)}>
+               Delete
+             </Button>
+           </>
+         );
+       },
+     },
+   ];
 
   if (loading) {
     return <Spin tip="Loading suppliers..." />;
@@ -136,7 +147,7 @@ const ViewSuppliers = () => {
 
   if (error) {
     return <Alert message="Error" description={error} type="error" />;
-  }
+  }  
 
   return (
     <div>
@@ -144,6 +155,10 @@ const ViewSuppliers = () => {
       <Button type="primary" onClick={() => openModal()} style={{ marginBottom: 16 }}>
         Add Supplier
       </Button>
+      <Input placeholder='Search by Company' value={searchCom}
+      onChange= {(e) => setSearchTerm(e.target.value)}
+      style={{ marginBottom: 16, width: 300 }} 
+      />
       <Table
         dataSource={suppliers}
         columns={columns}

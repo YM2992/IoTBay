@@ -50,7 +50,7 @@ export const deleteSupplier = async (id, token) => {
       Authorization: `Bearer ${token}`, //plsplspls
     },
   });
-  if (!response) throw new Error('Failed to delete supplier');
+  // if (!response) throw new Error('Failed to delete supplier');  -- Kinda redunant??
   if (!response.status || response.status !== 'success') throw new Error('Failed to delete supplier');
 
   return response;

@@ -9,6 +9,7 @@ import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '@/
 import { AppContext } from "@/context/AppContext";
 
 const ViewSuppliers = () => {
+    
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

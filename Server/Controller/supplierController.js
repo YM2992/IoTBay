@@ -90,6 +90,7 @@ export const deleteSupplierById = async (req, res, next) => {
 };
 
 //Toggles activation
+
 export const toggleSupplierActivation = async (req, res, next) => {
   const { id } = req.params;
   const { activate } = req.body;

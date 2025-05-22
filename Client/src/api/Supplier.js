@@ -69,7 +69,7 @@ export const deleteSupplier = async (supplierid, token) => {
   return await response.json();
 };
 
-// Activation Toggling
+// Activation Toggling ** Actually I don't need this.. 
 export const toggleSupplierActivation = async (supplierid, activate, token) => {
   const response = await fetch(`${BASE_URL}/${supplierid}/activate`, {
     method: 'PATCH',

@@ -27,9 +27,7 @@ const tabStyle = {
 };
 
 const TabOptions = [
-  { icon: <FaBoxOpen />, label: "Listings" },
   { icon: <FaFileInvoice />, label: "Orders" },
-  { icon: <FaStar />, label: "Reviews" },
   {
     icon: <FaCreditCard />,
     label: "Payment",
@@ -56,7 +54,7 @@ function ProfileTabs() {
   };
 
   useEffect(() => {
-    if (tabIndex === 6) { // Access Log Tab
+    if (tabIndex === 4) { // Access Log Tab
       const fetchAccessLogs = async () => {
         setLoading(true);
         try {
@@ -87,26 +85,10 @@ function ProfileTabs() {
         ))}
       </TabList>
 
-      {/* Listings Tab */}
-      <TabPanel>
-        <div className="listing-controls">
-          <button className="create-listing-btn">+ START A NEW LISTING</button>
-          <select className="sort-dropdown">
-            <option>Sort by: Default</option>
-            <option>Newest</option>
-            <option>Oldest</option>
-          </select>
-        </div>
-        <p className="empty-msg">You don’t have any listings for sale.</p>
-      </TabPanel>
-
       {/* Orders Tab */}
       <TabPanel>
         <OrderHistory />
       </TabPanel>
-
-      {/* Reviews Tab */}
-      <TabPanel></TabPanel>
 
       <TabPanel>
         <PaymentCardsTab />

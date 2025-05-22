@@ -1,35 +1,23 @@
-/*
-import React, { useState, useContext } from "react";
-import { Table, Input, Space, Button } from "antd";
-import { fetchPost, optionMaker } from "@/api";
-*/ // This has failed me thus far.. 
 import { useContext, useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Input, Spin, Alert } from 'antd';
 import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '@/api/Supplier';
 import { AppContext } from "@/context/AppContext";
 
 const ViewSuppliers = () => {
-
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchCom, setSearchCom] = useState('');
-  //const [isModalVisible, setIsModalVisible] = useState(false); // deprecated 
+  const [searchCompany, setSearchCompany] = useState('');
+  const [searchContact, setSearchContact] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState(null);
   const [form] = Form.useForm();
-  const {token} = useContext(AppContext);
+  const { token } = useContext(AppContext);
 
-  console.log("Token:",token);
- // const token = localStorage.getItem('token'); // Assuming the token is stored in localStorage
-
-  // Fetch suppliers on component mount
   useEffect(() => {
     const fetchSuppliers = async () => {
       try {
-        console.log("TOKEN:", token)
         const data = await getSuppliers(token);
-        console.log("Fetched Suppliers:", data); //This works
         setSuppliers(data);
       } catch (err) {
         setError(err.message);
@@ -40,29 +28,24 @@ const ViewSuppliers = () => {
     fetchSuppliers();
   }, [token]);
 
-  // Handle form submission for creating/updating a supplier
   const handleSave = async (values) => {
-  try {
+    try {
       setLoading(true);
       if (editingSupplier) {
-        await updateSupplier(editingSupplier.supplierid, values, token); // This will now use PATCH
+        await updateSupplier(editingSupplier.supplierid, values, token);
       } else {
         await createSupplier(values, token);
-      }      
-      setIsIsOpen(false);
-      form.resetFields();
-      const data = await getSuppliers(token); // refresh list
+      }
+      const data = await getSuppliers(token);
       setSuppliers(data);
+      form.resetFields();
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  };  
-  
-  // Old PUT method found at old-Handle local
+  };
 
-  // Handle deleting a supplier
   const handleDelete = async (id) => {
     try {
       setLoading(true);
@@ -76,10 +59,7 @@ const ViewSuppliers = () => {
     }
   };
 
-  // Open the modal for adding/editing a supplier
-  const openModal = (supplier) => {    
-    //console.log(editingSupplier.supplierid); // Is id stored??
-    console.log(supplier);
+  const openModal = (supplier) => {
     setEditingSupplier(supplier);
     setIsOpen(true);
     if (supplier) {
@@ -89,79 +69,55 @@ const ViewSuppliers = () => {
     }
   };
 
-  // Close the modal
   const closeModal = () => {
     setIsOpen(false);
     setEditingSupplier(null);
     form.resetFields();
   };
 
-  const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'supplierid', // connects with database
-      key: 'ID',
+  // Filter suppliers based on both search terms
+  const filteredResults = suppliers.filter((supplier) =>
+    supplier.companyName.toLowerCase().includes(searchCompany.toLowerCase()) &&
+    supplier.contactName.toLowerCase().includes(searchContact.toLowerCase())
+  );
 
-    },
-    {
-      title: 'Contact Name',
-      dataIndex: 'contactName',
-      key: 'contactName',
-    },
-    {
-      title: 'Company Name',
-      dataIndex: 'companyName',
-      key: 'companyName',
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    },
+  const columns = [
+    { title: 'ID', dataIndex: 'supplierid', key: 'ID' },
+    { title: 'Contact Name', dataIndex: 'contactName', key: 'contactName' },
+    { title: 'Company Name', dataIndex: 'companyName', key: 'companyName' },
+    { title: 'Email', dataIndex: 'email', key: 'email' },
+    { title: 'Address', dataIndex: 'address', key: 'address' },
     {
       title: 'Actions',
       key: 'actions',
-      render: (_, record) => {
-        console.log("Record for Edit:", record); // Log the record being passed
-         return (
-           <>
-             <Button type="link" onClick={() => openModal(record)}>
-               Edit
-             </Button>
-             <Button type="link" danger onClick={() => handleDelete(record.supplierid)}>
-               Delete
-             </Button>
-           </>
-         );
-       },
-     },
-   ];
+      render: (_, record) => (
+        <>
+          <Button type="link" onClick={() => openModal(record)}>Edit</Button>
+          <Button type="link" danger onClick={() => handleDelete(record.supplierid)}>Delete</Button>
+        </>
+      ),
+    },
+  ];
 
-  if (loading) {
-    return <Spin tip="Loading suppliers..." />;
-  }
-
-  if (error) {
-    return <Alert message="Error" description={error} type="error" />;
-  }  
-
+  if (error) return <Alert message="Error" description={error} type="error" />;
   return (
     <div>
       <h1>Suppliers</h1>
-      <Button type="primary" onClick={() => openModal()} style={{ marginBottom: 16 }}>
-        Add Supplier
-      </Button>
-      <Input placeholder='Search by Company' value={searchCom}
-      onChange= {(e) => setSearchTerm(e.target.value)}
-      style={{ marginBottom: 16, width: 300 }} 
+      <Button type="primary" onClick={() => openModal()} style={{ marginBottom: 16 }}>Add Supplier</Button>      
+      <Input
+        placeholder="Search by Contact Name"
+        value={searchContact}
+        onChange={(e) => setSearchContact(e.target.value)}
+        style={{ marginBottom: 16, width: 300 }}
+      />
+      <Input
+        placeholder="Search by Company"
+        value={searchCompany}
+        onChange={(e) => setSearchCompany(e.target.value)}
+        style={{ marginBottom: 16, width: 300 }}
       />
       <Table
-        dataSource={suppliers}
+        dataSource={filteredResults}
         columns={columns}
         rowKey="supplierid"
         bordered
@@ -169,12 +125,12 @@ const ViewSuppliers = () => {
       />
       <Modal
         title={editingSupplier ? 'Edit Supplier' : 'Add Supplier'}
-        open={isOpen} //visible was  deprecated
+        open={isOpen}
         onCancel={closeModal}
-        onOk={() => form.submit()} // ERROR 
+        onOk={() => form.submit()}
       >
-        <Form form={form} layout="vertical" onFinish={handleSave}> 
-          <Form.Item  //maybe the issue is above. handle.Save
+        <Form form={form} layout="vertical" onFinish={handleSave}>
+          <Form.Item
             name="contactName"
             label="Contact Name"
             rules={[{ required: true, message: 'Please enter the contact name' }]}
@@ -209,4 +165,3 @@ const ViewSuppliers = () => {
 };
 
 export default ViewSuppliers;
-

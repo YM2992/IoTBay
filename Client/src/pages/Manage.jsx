@@ -84,7 +84,6 @@ function Manage() {
       label: "Edit Suppliers",
       children: (        
         <>
-          console.log("+ filters")
           {user.role === "admin" && users ? (
             <ViewSuppliers users={users} refetch={userRefetch} />
           ) : (
@@ -99,7 +98,6 @@ function Manage() {
       label: "Add Supplier",
       children: (        
         <>
-          console.log("contact,company,email,address")
           {user.role === "admin" ? (
             <CreateSupplier refetch={userRefetch} />
           ) : (

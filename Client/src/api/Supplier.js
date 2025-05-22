@@ -1,6 +1,18 @@
 import { API_ROUTES, fetchGet, fetchPost,fetchPatch, fetchDelete, optionMaker } from '@/api'; //fetchPatch
 
-// Get all suppliers
+// Routing wasn't working that well for me for hard code here we go!
+const BASE_URL = 'http://localhost:8000/api/supplier';
+
+// Does this authentical token sill pass? [Authorizatoin header]
+const createHeaders = (token) => ({
+  headers: {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json', // Optional: Set content type if sending JSON
+  },
+});
+
+
+// Get all suppliers *** NO CHANGES NEEDED
 export const getSuppliers = async (token) => { // API_ROUTES.supplier.getAll,
   const response = await fetchGet(API_ROUTES.supplier.getAll, {
     headers: {
@@ -13,7 +25,7 @@ export const getSuppliers = async (token) => { // API_ROUTES.supplier.getAll,
   return response.data; // Assuming the API returns { status: 'success', data: [...] }
 };
 
-// Create a new supplier
+// Create a new supplier ** No changes needed!!!
 export const createSupplier = async (supplierData, token) => {
   const response = await fetchPost(API_ROUTES.supplier.create, optionMaker(supplierData, 'POST', token));
   if (!response) throw new Error('Failed to create supplier');
@@ -23,12 +35,16 @@ export const createSupplier = async (supplierData, token) => {
 };
 
 // Update a supplier
-export const updateSupplier = async(id, supplierData, token ) => {
-  const response = await fetchPost(API_ROUTES.supplier.update(id), optionMaker(supplierData, 'PATCH', token));
-  if (!response) throw new Error ('Failed to update supplier');  
-  if (!response.status || response.status !== 'success') throw new Error ('Failed to update supplier');
-  return response.data;
+export const updateSupplier = async (supplierid, supplierData, token) => {
+  const response = await fetch(`${BASE_URL}/${supplierid}`, {
+    method: 'PATCH',
+    ...createHeaders(token),
+    body: JSON.stringify(supplierData),
+  });
+  if (!response.ok) throw new Error('Failed to update supplier');
+  return await response.json();
 };
+
 /*
   if (!response || response.status !== "success") {
     throw new Error("Failed to update supplier");
@@ -44,14 +60,22 @@ export const updateSupplier = async(id, supplierData, token ) => {
   */
 
 // Delete a supplier
-export const deleteSupplier = async (id, token) => {
-  const response = await fetchDelete(API_ROUTES.supplier.delete(id), {
-    headers: {
-      Authorization: `Bearer ${token}`, //plsplspls
-    },
+export const deleteSupplier = async (supplierid, token) => {
+  const response = await fetch(`${BASE_URL}/${supplierid}`, {
+    method: 'DELETE',
+    ...createHeaders(token),
   });
-  // if (!response) throw new Error('Failed to delete supplier');  -- Kinda redunant??
-  if (!response.status || response.status !== 'success') throw new Error('Failed to delete supplier');
+  if (!response.ok) throw new Error('Failed to delete supplier');
+  return await response.json();
+};
 
-  return response;
+// Activation Toggling
+export const toggleSupplierActivation = async (supplierid, activate, token) => {
+  const response = await fetch(`${BASE_URL}/${supplierid}/activate`, {
+    method: 'PATCH',
+    ...createHeaders(token),
+    body: JSON.stringify({ activate }),
+  });
+  if (!response.ok) throw new Error('Failed to toggle activation');
+  return await response.json();
 };

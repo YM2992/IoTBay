@@ -1,4 +1,5 @@
 import {getAll,getOne,createOne,updateOne,deleteOne} from "./centralController.js";
+
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
 
@@ -54,54 +55,55 @@ export const createSupplier = catchAsync(async (req, res, next) => {
 });
 
 // Update a supplier by ID
-export const updateSupplierById = catchAsync(async (req, res, next) => {
+export const updateSupplierById = async (req, res, next) => {
   const { id } = req.params;
-  const { contactName, companyName, email, address } = req.body;
-
-  if (!contactName && !companyName && !email && !address) {
-    return next(new cusError("At least one field is required to update", 400));
-  }
-
-  const data = { contactName, companyName, email, address };
-
-  // Remove undefined fields
-  Object.keys(data).forEach((key) => {
-    if (data[key] === undefined || !data[key]) {
-      delete data[key];
-    }
-  });
+  const updatedData = req.body;
 
   try {
-    console.log("Request body:", req.body);
-    console.log("Request params:", req.params);
-    const result = updateOne(SUPPLIER_TABLE, id, data);
-
+    const result = updateOne('supplier', id, updatedData);
     if (result.changes === 0) {
-      return next(new cusError("Supplier not found", 404));
+      return res.status(404).json({ message: 'Supplier not found' });
     }
-
-    res.status(200).json({
-      status: "success",
-      data: { id, ...data },
+    res.status(200).json({ 
+      message: 'Supplier updated successfully', 
+      data: updatedData 
     });
   } catch (error) {
-    return next(new cusError("Error updating supplier", 500));
+    next(error);
   }
-});
+};
 
 // Delete a supplier by ID
-export const deleteSupplierById = catchAsync(async (req, res, next) => {
+
+export const deleteSupplierById = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const result = deleteOne(SUPPLIER_TABLE, id);
-
+    const result = deleteOne('supplier', id);
     if (result.changes === 0) {
-      return next(new cusError("Supplier not found", 404));
+      return res.status(404).json({ message: 'Supplier not found' });
     }
-
-    res.status(204).send(); // No content
+    res.status(204).json({ message: 'Supplier deleted successfully' });
   } catch (error) {
-    return next(new cusError("Error deleting supplier", 500));
+    next(error);
   }
-});
+};
+
+//Toggles activation
+export const toggleSupplierActivation = async (req, res, next) => {
+  const { id } = req.params;
+  const { activate } = req.body;
+
+  try {
+    const result = updateOne('supplier', id, { activate });
+    if (result.changes === 0) {
+      return res.status(404).json({ message: 'Supplier not found' });
+    }
+    res.status(200).json({ 
+      message: 'Supplier activation status updated', 
+      data: { id, activate } 
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -1,8 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Input from "../components/Input";
 import { toast } from "react-hot-toast";
 import { strictEmailRegex } from "../utils/helper";
 import { API_ROUTES, fetchPost, checkEmail, optionMaker} from "../api";
+import { createSupplier } from "@/api/Supplier";
+// maybe use SuoolierController directly?
 import { AppContext } from "@/context/AppContext"; // Should provide token context - no more null roles!
 
 import "./Login.css";
@@ -13,6 +15,10 @@ function CreateSupplier({ refetch }) {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const {token} = useContext(AppContext); // authenticate
+
+  useEffect (() => {
+    console.log("TOKEN:", token); // authenticate use?
+    }, [token]);
 
   const inputMenu = [
     {
@@ -46,34 +52,33 @@ function CreateSupplier({ refetch }) {
   };
 
   const handleSubmit = async () => {
-    if (!agent.trim() || !company.trim() || !email.trim() || !address.trim()) {
-      return toast.error("All fields must be filled");
-    }
-    if (!strictEmailRegex.test(email)) return toast.error("Email is not valid");
-    // if address test?? 
-    // Check if email already exist
-    const result = await checkEmail(email);
-    if (!result || result.exist) return toast.error("Email already exist");
+  if (!agent.trim() || !company.trim() || !email.trim() || !address.trim()) {
+    return toast.error("All fields must be filled");
+  }
+  if (!strictEmailRegex.test(email)) return toast.error("Email is not valid");
 
-    const data = {
-        // I added the column name of queries.sql table, tell me what I am supposed to do
-      contactName : agent, // maps contactName
-      companyName : company, // maps company to database colum
-      email,
-      address,
-    };
+  // Check if email already exists
+  const result = await checkEmail(email);
+  if (!result || result.exist) return toast.error("Email already exists");
 
-    try { // Triggers authentication since it's a admin only activity
-      await fetchPost(API_ROUTES.supplier.create, optionMaker(data));
-                // "supplier/create", optionMaker(data)) 
-      toast.success("Successfully added new supplier!");
-      clear();
-      refetch();
-    } catch (error) {
-      console.log(error);
-      return toast.error("Failed to add supplier, try again later");
-    }
+  const data = {
+    contactName: agent, // Maps to contactName in the database
+    companyName: company, // Maps to companyName in the database
+    email,
+    address,
   };
+
+  try {
+    // Use the createSupplier function to make the API call
+    await createSupplier(data, token);
+    toast.success("Successfully added new supplier!");
+    clear(); // Clear the form fields
+    refetch(); // Refresh the supplier list
+  } catch (error) {
+    console.error("Error creating supplier:", error);
+    toast.error("Failed to add supplier, try again later");
+  }
+};
 
   return (
     <div className="login-container">

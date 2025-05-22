@@ -72,6 +72,8 @@ export const updateSupplierById = catchAsync(async (req, res, next) => {
   });
 
   try {
+    console.log("Request body:", req.body);
+    console.log("Request params:", req.params);
     const result = updateOne(SUPPLIER_TABLE, id, data);
 
     if (result.changes === 0) {

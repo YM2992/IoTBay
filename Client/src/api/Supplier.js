@@ -15,7 +15,7 @@ export const getSuppliers = async (token) => { // API_ROUTES.supplier.getAll,
 
 // Create a new supplier
 export const createSupplier = async (supplierData, token) => {
-  const response = await fetchPost(API_ROUTES.supplier.create, optionMaker(supplierData, 'PATCH', token));
+  const response = await fetchPost(API_ROUTES.supplier.create, optionMaker(supplierData, 'POST', token));
   if (!response) throw new Error('Failed to create supplier');
   if (!response.status || response.status !== 'success') throw new Error('Failed to create supplier');
 

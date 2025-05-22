@@ -3,7 +3,7 @@ import React, { useState, useContext } from "react";
 import { Table, Input, Space, Button } from "antd";
 import { fetchPost, optionMaker } from "@/api";
 */ // This has failed me thus far.. 
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Input, Spin, Alert } from 'antd';
 import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '@/api/Supplier';
 import { AppContext } from "@/context/AppContext";
@@ -79,6 +79,7 @@ const ViewSuppliers = () => {
   // Open the modal for adding/editing a supplier
   const openModal = (supplier) => {    
     //console.log(editingSupplier.supplierid); // Is id stored??
+    console.log(supplier);
     setEditingSupplier(supplier);
     setIsOpen(true);
     if (supplier) {
@@ -170,10 +171,10 @@ const ViewSuppliers = () => {
         title={editingSupplier ? 'Edit Supplier' : 'Add Supplier'}
         open={isOpen} //visible was  deprecated
         onCancel={closeModal}
-        onOk={() => form.submit()}
+        onOk={() => form.submit()} // ERROR 
       >
-        <Form form={form} layout="vertical" onFinish={handleSave}>
-          <Form.Item
+        <Form form={form} layout="vertical" onFinish={handleSave}> 
+          <Form.Item  //maybe the issue is above. handle.Save
             name="contactName"
             label="Contact Name"
             rules={[{ required: true, message: 'Please enter the contact name' }]}

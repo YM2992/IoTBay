@@ -45,11 +45,11 @@ export const urlMaker = (endpoint) => {
 export const optionMaker = (data, method = "POST", token = null) => {
   return {
     method: method,
-    body: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-    },
+    },    
+    body: JSON.stringify(data), 
   };
 };
 

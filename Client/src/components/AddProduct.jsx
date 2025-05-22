@@ -111,6 +111,7 @@ function AddProduct({ refetch }) {
         <Input
           placeholder={"default_image"}
           defaultValue={"default_image"}
+          value={product.image}
           onChange={handleChange("image")}
         />
       </Modal>

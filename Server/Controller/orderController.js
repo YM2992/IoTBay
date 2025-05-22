@@ -11,7 +11,7 @@ export const getOrderHistory = catchAsync(async (req, res, next) => {
       `
 SELECT DISTINCT *
 FROM orders o
-WHERE o.userid = ? AND o.status = 'paid'
+WHERE o.userid = ? AND o.status != 'pending'
 ORDER BY o.orderDate DESC;
 
 `

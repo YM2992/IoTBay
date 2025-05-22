@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Table, Button, Modal, Form, Input, Spin, Alert } from 'antd';
+import { Table, Button, Modal, Form, Space, Input, Spin, Alert } from 'antd';
 import { getSuppliers, createSupplier, updateSupplier, deleteSupplier } from '@/api/Supplier';
 import { AppContext } from "@/context/AppContext";
 
@@ -103,19 +103,24 @@ const ViewSuppliers = () => {
   return (
     <div>
       <h1>Suppliers</h1>
-      <Button type="primary" onClick={() => openModal()} style={{ marginBottom: 16 }}>Add Supplier</Button>      
-      <Input
-        placeholder="Search by Contact Name"
-        value={searchContact}
-        onChange={(e) => setSearchContact(e.target.value)}
-        style={{ marginBottom: 16, width: 300 }}
-      />
+      <Space size={20}>
+      <Button type="primary" onClick={() =>{}} style={{ marginBottom: 16 }}>Search Bar</Button>
       <Input
         placeholder="Search by Company"
         value={searchCompany}
         onChange={(e) => setSearchCompany(e.target.value)}
         style={{ marginBottom: 16, width: 300 }}
       />
+      <Input
+        placeholder="Search by Contact Name"
+        value={searchContact}
+        onChange={(e) => setSearchContact(e.target.value)}
+        style={{ marginBottom: 16, width: 300 }}
+      />
+      <Button type="primary" danger onClick={() => {}} style={{ marginBottom: 16 }}> Toggle Activation</Button>
+      </Space>
+
+
       <Table
         dataSource={filteredResults}
         columns={columns}

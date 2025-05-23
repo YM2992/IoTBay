@@ -1,4 +1,4 @@
-import {getAll,getOne,createOne,updateOne,deleteOne} from "./centralController.js";
+import {getAll,getOne,createOne,updateOne, updateOneWithFilter,deleteOneByFilter} from "./centralController.js";
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
 
@@ -29,7 +29,7 @@ export const getSupplierById = catchAsync(async (req, res, next) => {
   });
 });
 
-// Create a new supplier
+// Create a new supplier 
 export const createSupplier = catchAsync(async (req, res, next) => {
   const { contactName, companyName, email, address } = req.body;
 
@@ -53,19 +53,17 @@ export const createSupplier = catchAsync(async (req, res, next) => {
   }
 });
 
-// Update a supplier by ID
+// Update a supplier by ID **** HERE!!!!
 export const updateSupplierById = async (req, res, next) => {
-  const { id } = req.params;
-  const updatedData = req.body;
-
+  const { supplierid, update } = req.body;
   try {
-    const result = updateOne('supplier', id, updatedData);
+    const result = updateOneWithFilter('supplier', {supplierid}, update);
     if (result.changes === 0) {
       return res.status(404).json({ message: 'Supplier not found' });
     }
     res.status(200).json({ 
       message: 'Supplier updated successfully', 
-      data: updatedData 
+      data: update 
     });
   } catch (error) {
     next(error);
@@ -78,12 +76,16 @@ export const deleteSupplierById = async (req, res, next) => {
   const { supplierid } = req.body; //previousreq.params // supplierid = whatever it's called'
   console.log(req.body);
   try {
-    const result = await deleteOne(SUPPLIER_TABLE, supplierid);
-    if (result.change === 0){
-        return next(new cusError("Supplier not found"),404);
-    }
-    res.status(204).send();
+    const result = deleteOneByFilter("supplier", {supplierid});
+    
+    res.status(200).json( {
+        message: 'Supplier updated successfully',
+    })  // if (result.change === 0){
+    //     return next(new cusError("Supplier not found"),404);
+    // }  
+    
   } catch (error) {
+    console.log(error);
     return next (new cusError("Error deleting supplier",500));
   }
 };

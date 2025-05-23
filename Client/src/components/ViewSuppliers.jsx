@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Table, Button, Space, Input, Alert, Modal, Form } from 'antd';
 import { getSuppliers, updateSupplier, deleteSupplier, toggleSupplierActivation } from '@/api/Supplier';
-import { API_ROUTES, urlMaker } from '@/api/index'; // end point is found this way?
+import { API_ROUTES, urlMaker } from '@/api/index'; // end point is found this way.
 import { AppContext } from "@/context/AppContext";
 import { fetchPost, optionMaker } from '@/api';
 import { toast, Toaster  } from "react-hot-toast";
@@ -13,16 +13,11 @@ const ViewSuppliers = () => {
   const [searchCompany, setSearchCompany] = useState(''); 
   const [searchContact, setSearchContact] = useState(''); 
   const [toggleMode, setToggleMode] = useState(false); 
-  const [isModalOpen, setIsModalOpen] = useState(false);  // isModalvisible is outdated
+  const [isModalOpen, setIsModalOpen] = useState(false);  // isModalvisible is outdated , replaced with open
   const [editingSupplier, setEditingSupplier] = useState(null); 
   const { token } = useContext(AppContext); 
   const [form] = Form.useForm();
 
-  // Creating elements for passin  
-  const [agent, setAgent] = useState("");
-  const [company, setCompany] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
 
   const fetchSuppliers = async (values) => { 
     try { 
@@ -34,7 +29,7 @@ const ViewSuppliers = () => {
       setLoading(false); 
     } 
   }; 
-  //CRUD operations
+  //sets up page
   useEffect(() => { 
     fetchSuppliers(); 
   }, [token]);
@@ -117,7 +112,7 @@ const ViewSuppliers = () => {
     update : {activate: record.activate ? 0 : 1 ,}
       // activate
    }
-      
+
     try{ 
       const endpoint = API_ROUTES.supplier.update //update(data);
       await fetchPost("supplier/", optionMaker(data, "PATCH", token));

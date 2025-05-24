@@ -52,9 +52,6 @@ function PaymentCardsTab() {
       ) : (
         <h2>No saved payment methods</h2>
       )}
-      {paymentCards && paymentCards.length === 0 && (
-        <h2>No saved payment methods</h2>
-      )}
 
       {cardsToDisplay.length > 0 && (
         <div>

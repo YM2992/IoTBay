@@ -5,7 +5,7 @@ import OrderSummary from "@/components/OrderSummary";
 import PaymentCard from "@/components/Checkout/PaymentCard";
 import NewCardForm from "@/components/Checkout/NewCardForm"; // Import NewCardForm
 import "./Checkout.css";
-import { Radio, Button, Checkbox, Typography } from "antd"; // Input removed as it's now in NewCardForm
+import { Radio } from "antd"; // Input removed as it's now in NewCardForm
 import toast from "react-hot-toast";
 import { getPaymentCards } from "@/components/Payment";
 import { removeCartItem as removeCartItemAPI, updateCartQuantity } from "@/api/cartAPI";
@@ -17,12 +17,9 @@ import { useFetch } from "@/hook/useFetch";
 import AddressForm from "@/components/AddressFeatures/AddressForm";
 import { useNavigate } from "react-router-dom";
 
-const { Text } = Typography;
-
 function CheckoutPage() {
   const { cart, fetchCart, token } = useContext(AppContext);
   const navigate = useNavigate();
-  
   const [paymentCards, setPaymentCards] = useState([]);
   const [selectedPaymentOption, setSelectedPaymentOption] = useState(null);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -34,25 +31,25 @@ function CheckoutPage() {
     saveCard: false,
   });
   const newCardFormRef = useRef(null);
-
   const {
     data: addressData,
     error,
     refetch,
-  } = useFetch("address", {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+  } = useFetch(
+    "address",
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     },
-  });
-
-  useEffect(() => {
-    fetchCart();
-  }, []);
+    { enable: token ? true : false }
+  );
 
   useEffect(() => {
     if (token) {
       fetchPaymentCards();
+      fetchCart();
     } else {
       setSelectedPaymentOption("new_card");
       setPaymentCards([]);
@@ -155,6 +152,14 @@ function CheckoutPage() {
   const handlePaymentCallback = async () => {
     const paymentDetails = await getPaymentDetailsForOrder();
 
+    if (!paymentDetails) {
+      return;
+    }
+
+    if (!selectedAddress) {
+      return toast.error("You must select or input a shipping address.");
+    }
+
     let order_address;
 
     if (token) {
@@ -165,16 +170,6 @@ function CheckoutPage() {
       order_address = { phone, recipient, address };
     } else {
       order_address = selectedAddress;
-    }
-
-    console.log(order_address);
-
-    if (!paymentDetails) {
-      return;
-    }
-
-    if (!selectedAddress) {
-      return toast.error("You must select or input a shipping address.");
     }
 
     const orderDetails = {
@@ -198,10 +193,8 @@ function CheckoutPage() {
     }
 
     try {
-      const response = await fetchPost(
-        API_ROUTES.checkout.checkout,
-        optionMaker(orderDetails, "POST", token)
-      );
+      const url = token ? API_ROUTES.checkout.checkout : API_ROUTES.checkout.guest;
+      const response = await fetchPost(url, optionMaker(orderDetails, "POST", token));
       if (response && response.status === "success" && response.data) {
         toast.success("Checkout successful!");
 
@@ -215,9 +208,9 @@ function CheckoutPage() {
           state: {
             orderid: response.data.orderid,
             totalAmount: response.data.totalAmount,
-            products: response.data.products
-          }
-        })
+            products: response.data.products,
+          },
+        });
       } else {
         toast.error(response?.message || "Checkout failed. Please try again.");
       }
@@ -279,9 +272,6 @@ function CheckoutPage() {
               ref={newCardFormRef}
               initialDetails={newCardDetails}
               onFormChange={(_, allValues) => {
-                // Update newCardDetails state if you need to react to live changes
-                // or if other parts of CheckoutPage depend on this intermediate state.
-                // For now, primarily used for initial values and potentially resetting.
                 setNewCardDetails(allValues);
               }}
             />

@@ -11,6 +11,8 @@ export const addItemToCart = async (userid, productid, quantity) => {
     if (!user) throw new cusError("User not found", 404);
   }
 
+  console.log(userid);
+
   // 2. Check if the product exists and stock is enough
   const product = getOne("product", "productid", productid);
   if (!product) throw new cusError("Product not found", 404);
@@ -53,16 +55,20 @@ export const addItemToCart = async (userid, productid, quantity) => {
     .get(orderid, productid);
 
   if (existing) {
-    db.prepare(`
+    db.prepare(
+      `
       UPDATE order_product 
       SET quantity = quantity + ? 
       WHERE orderid = ? AND productid = ?
-    `).run(quantity, orderid, productid);
+    `
+    ).run(quantity, orderid, productid);
   } else {
-    db.prepare(`
+    db.prepare(
+      `
       INSERT INTO order_product (orderid, productid, quantity) 
       VALUES (?, ?, ?)
-    `).run(orderid, productid, quantity);
+    `
+    ).run(orderid, productid, quantity);
   }
 
   // 6. Recalculate total amount
@@ -71,36 +77,34 @@ export const addItemToCart = async (userid, productid, quantity) => {
   return orderid;
 };
 
-
-
-
 // Update item quantity
 export const updateItemQuantity = async (userid, productid, quantity, orderid = null) => {
   const parsedQty = parseInt(quantity, 10);
-  if (isNaN(parsedQty) || parsedQty < 0)
-    throw new cusError("Quantity must be 0 or more", 400);
+  if (isNaN(parsedQty) || parsedQty < 0) throw new cusError("Quantity must be 0 or more", 400);
 
   let order;
   if (userid) {
-    order = db.prepare(
-      `SELECT * FROM orders WHERE userid = ? AND status = 'pending' LIMIT 1`
-    ).get(userid);
+    order = db
+      .prepare(`SELECT * FROM orders WHERE userid = ? AND status = 'pending' LIMIT 1`)
+      .get(userid);
   } else {
-    order = db.prepare(
-      `SELECT * FROM orders WHERE orderid = ? AND userid IS NULL AND status = 'pending' LIMIT 1`
-    ).get(orderid);
+    order = db
+      .prepare(
+        `SELECT * FROM orders WHERE orderid = ? AND userid IS NULL AND status = 'pending' LIMIT 1`
+      )
+      .get(orderid);
   }
 
   if (!order) throw new cusError("Cart not found", 404);
 
-  db.prepare(`UPDATE order_product SET quantity = ? WHERE orderid = ? AND productid = ?`)
-    .run(parsedQty, order.orderid, productid);
+  db.prepare(`UPDATE order_product SET quantity = ? WHERE orderid = ? AND productid = ?`).run(
+    parsedQty,
+    order.orderid,
+    productid
+  );
 
   await updateOrderAmount(order.orderid);
 };
-
-
-
 
 // Remove item from cart
 export const removeItemFromCart = async (userid, productid, orderid = null) => {
@@ -109,13 +113,15 @@ export const removeItemFromCart = async (userid, productid, orderid = null) => {
 
   let cart;
   if (userid) {
-    cart = db.prepare(
-      `SELECT orderid FROM orders WHERE userid = ? AND status = 'pending' LIMIT 1`
-    ).get(userid);
+    cart = db
+      .prepare(`SELECT orderid FROM orders WHERE userid = ? AND status = 'pending' LIMIT 1`)
+      .get(userid);
   } else {
-    cart = db.prepare(
-      `SELECT orderid FROM orders WHERE orderid = ? AND userid IS NULL AND status = 'pending' LIMIT 1`
-    ).get(orderid);
+    cart = db
+      .prepare(
+        `SELECT orderid FROM orders WHERE orderid = ? AND userid IS NULL AND status = 'pending' LIMIT 1`
+      )
+      .get(orderid);
   }
 
   if (!cart) throw new cusError("No active cart found", 404);
@@ -137,10 +143,6 @@ export const removeItemFromCart = async (userid, productid, orderid = null) => {
 
   await updateOrderAmount(cart.orderid);
 };
-
-
-
-
 
 //  Fetch items in cart
 export const fetchUserCart = async (userid) => {
@@ -165,17 +167,18 @@ export const fetchGuestCart = async (orderid) => {
   return stmt.all(orderid);
 };
 
-
-
-
 //  Helper: Recalculate and update order total
 const updateOrderAmount = async (orderid) => {
-  const items = db.prepare(`
+  const items = db
+    .prepare(
+      `
     SELECT p.price, op.quantity
     FROM order_product op
     JOIN product p ON op.productid = p.productid
     WHERE op.orderid = ?
-  `).all(orderid);
+  `
+    )
+    .all(orderid);
 
   const newTotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   updateOne("orders", orderid, { amount: newTotal });

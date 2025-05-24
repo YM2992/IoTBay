@@ -4,6 +4,7 @@ import {
   deleteOneByFilter,
   updateOneWithFilter,
   getAllWithFilter,
+  getOne,
 } from "./centralController.js";
 import catchAsync from "../Utils/catchAsync.js";
 import cusError from "../Utils/cusError.js";
@@ -40,7 +41,7 @@ export const createAddress = catchAsync(async (req, res, next) => {
 
   const addressBook = getAllWithFilter("address_book", { userid });
   if (addressBook.length < 1) {
-    dataFilter.is_default = true;
+    dataFilter.is_default = 1;
   }
 
   try {
@@ -51,6 +52,7 @@ export const createAddress = catchAsync(async (req, res, next) => {
       data: dataFilter,
     });
   } catch (error) {
+    console.log(error);
     if (error.code.startsWith("SQLITE")) return next(new cusError(error, 500, "Database_Error"));
   }
 });
@@ -96,6 +98,44 @@ export const updateOneAddressBook = catchAsync(async (req, res, next) => {
   } catch (error) {
     if (error.code.startsWith("SQLITE")) return next(new cusError(error, 500, "Database_Error"));
 
+    console.error(error);
+    return next(new cusError("Something went wrong", 500));
+  }
+});
+
+export const updateOrderAddress = catchAsync(async (req, res, next) => {
+  const { shipment, orderid } = req.body;
+  const { userid } = req.user;
+
+  const curOrder = getAllWithFilter("orders", { orderid, userid });
+
+  if (curOrder.length < 1) return next(new cusError("Order not found", 404));
+  if (curOrder[0].status !== "paid")
+    return next(new cusError("You can only update paid orders", 401));
+
+  const allowedKeys = ["phone", "address", "recipient"];
+
+  const cleanShipment = Object.fromEntries(
+    Object.entries(shipment).filter(([key]) => allowedKeys.includes(key))
+  );
+
+  const emptyFields = Object.entries(cleanShipment).filter(
+    ([_, value]) =>
+      value === undefined || value === null || (typeof value === "string" && value.trim() === "")
+  );
+
+  if (emptyFields.length > 0) {
+    return next(new cusError("The filed cannot be empty", 401));
+  }
+
+  try {
+    updateOneWithFilter("orders", { orderid, userid }, { ...cleanShipment });
+
+    res.status(200).json({
+      status: "success",
+    });
+  } catch (error) {
+    if (error.code.startsWith("SQLITE")) return next(new cusError(error, 500, "Database_Error"));
     console.error(error);
     return next(new cusError("Something went wrong", 500));
   }

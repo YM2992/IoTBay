@@ -5,8 +5,6 @@ import { fetchPost, optionMaker } from "@/api";
 import { Button, Modal, Input } from "antd";
 import toast from "react-hot-toast";
 
-const { TextArea } = Input;
-
 const UpdateAddressModal = ({ addressItem, refetch, ButtonType = "outlined" }) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);

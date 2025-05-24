@@ -4,7 +4,6 @@ import { protect, restrictTo } from "../Controller/authController.js";
 import {
   getAllSuppliers,
   createSupplier,
-  getSupplierById,
   updateSupplierById,
   deleteSupplierById,
 } from "../Controller/supplierController.js";
@@ -20,5 +19,4 @@ supplierRoute
 
 supplierRoute
   .route("/:id")
-  .get(protect, getSupplierById)
 export default supplierRoute;

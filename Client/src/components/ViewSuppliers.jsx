@@ -18,7 +18,6 @@ const ViewSuppliers = () => {
   const { token } = useContext(AppContext); 
   const [form] = Form.useForm();
 
-
   const fetchSuppliers = async (values) => { 
     try { 
       const data = await getSuppliers(token); 
@@ -49,39 +48,18 @@ const ViewSuppliers = () => {
       companyName : formValues.companyName,
       email : formValues.email,
       address : formValues.address,}
-      // activate
    }   
     try{ 
       const endpoint = API_ROUTES.supplier.update //update(data);
       await fetchPost("supplier/", optionMaker(data, "PATCH", token));
-      //toast.sucess("Sucessfully updated");
+      toast.success("Sucessfully updated");
     } catch (error){
       //toast.error(error.message || "An error occurred");
     }
-    fetchSuppliers();    /*
-
-    try { 
-      setLoading(true); 
-      await updateSupplier(editingSupplier.supplierid, updatedValues, token); 
-      const data = await getSuppliers(token); 
-      setSuppliers(data); 
-      setIsModalOpen(false); 
-    } catch (err) { 
-      setError(err.message); 
-    } finally { 
-      setLoading(false); 
-    } 
-    fetchSuppliers();
-    */
+    fetchSuppliers();    
   };
 
   const handleDeleteSupplier = async (supplierid) => {
-    const data = {
-     supplierid : formValues.supplierid,
-    update : {
-      activate : formValues.contactName,}
-      // activate
-   }
     // PUT??
     try{ 
       const endpoint = API_ROUTES.supplier.delete //.delete(data);
@@ -91,60 +69,23 @@ const ViewSuppliers = () => {
     } catch (error){
       toast.error(error.message || "An error occurred");
     }
-    /*
-    try { 
-      setLoading(true); 
-      await deleteSupplier(supplierid, token); 
-      const data = await getSuppliers(token); 
-      setSuppliers(data); 
-    } catch (err) { 
-      setError(err.message); 
-    } finally { 
-      setLoading(false); 
-    } 
-      */
   };
 
   const toggleActivation = async (record) => {
     
     const data = {
      supplierid : record.supplierid,
-    update : {activate: record.activate ? 0 : 1 ,}
-      // activate
+    update : {activate: record.activate ? 0 : 1 ,}      
    }
 
     try{ 
       const endpoint = API_ROUTES.supplier.update //update(data);
       await fetchPost("supplier/", optionMaker(data, "PATCH", token));
-      //toast.sucess("Sucessfully updated");
+      //toast.sucess("Sucessfully updated");  ** colour change is obvious enough
     } catch (error){
       //toast.error(error.message || "An error occurred");
     }
-    fetchSuppliers();    /*
-    
-    /*
-    const statUpdated = { activate: !record.activate}; //negate/toggle
-    const data = {record}
-    const endpoint = API_ROUTES.supplier.update(data);
-    try{
-      await fetchPost(endpoint, optionMaker(data,"PATCH",token)); // How to I only make activate boolean change
-      toast.success("Sucessfully updated")
-    } catch (error){
-      toast.error(error.message || "an error occurred");
-    }
-      */
-    /*
-    try { 
-      setLoading(true); 
-      await toggleSupplierActivation(supplier.supplierid, !supplier.activate, token); 
-      const data = await getSuppliers(token); 
-      setSuppliers(data); 
-    } catch (err) { 
-      setError(err.message); 
-    } finally { 
-      setLoading(false); 
-    } 
-    */
+    fetchSuppliers();   
   };
 
   const filteredResults = suppliers.filter((supplier) => 
@@ -191,7 +132,6 @@ const ViewSuppliers = () => {
   if (error) return <Alert message="Error" description={error} type="error" />;
   return (
     <div>
-      <Toaster/>      
       <Space style={{ marginBottom: 16 }}>
         <Button type="primary" onClick={() =>{}}>Search Bar</Button>        
         <Input 

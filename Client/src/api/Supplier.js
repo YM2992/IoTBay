@@ -45,19 +45,7 @@ export const updateSupplier = async (supplierid, supplierData, token) => {
   return await response.json();
 };
 
-/*
-  if (!response || response.status !== "success") {
-    throw new Error("Failed to update supplier");
-  }
-  return response.data;
-*/
-
-/* [OLD incompatiable PUT method]
-  const response = await fetchPost(API_ROUTES.supplier.update(id), optionMaker(supplierData, 'PUT', token));
-  if (!response) throw new Error('Failed to update supplier');
-  if (!response.status || response.status !== 'success') throw new Error('Failed to update supplier');
-  return response.data;};
-  */
+ // [OLD incompatiable PUT method]
 
 // Delete a supplier
 export const deleteSupplier = async (supplierid, token) => {

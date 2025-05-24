@@ -8,6 +8,8 @@ import CreateUserPages from "./CreateUserPage";
 import ManageProduct from "@/components/ManageProduct";
 import { AppContext } from "@/context/AppContext";
 import EmptyCard from "@/components/EmptyCard";
+import CreateSupplier from "./CreateSupplier";
+import ContainerSupplier from "@/components/Checkout/ContainerSupplier";
 
 function Manage() {
   const [products, setProducts] = useState(null);
@@ -77,6 +79,33 @@ function Manage() {
         </>
       ),
     },
+    { // Manage Suppliers
+      key: "4",
+      label: "Edit Suppliers",
+      children: (        
+        <>
+          {user.role === "admin" && users ? (
+            <ContainerSupplier/>
+          ) : (
+            <EmptyCard description={"This tab is for admin only"} showBtn={false} />
+          )}
+        </>
+        
+      ),     
+    },
+    {
+      key:"5",
+      label: "Add Supplier",
+      children: (        
+        <>
+          {user.role === "admin" ? (
+            <CreateSupplier/>
+          ) : (
+            <EmptyCard description={"This tab is for admin only"} showBtn={false} />
+          )}
+        </>
+      ),
+    }
   ];
 
   return (

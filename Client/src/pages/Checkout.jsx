@@ -272,9 +272,6 @@ function CheckoutPage() {
               ref={newCardFormRef}
               initialDetails={newCardDetails}
               onFormChange={(_, allValues) => {
-                // Update newCardDetails state if you need to react to live changes
-                // or if other parts of CheckoutPage depend on this intermediate state.
-                // For now, primarily used for initial values and potentially resetting.
                 setNewCardDetails(allValues);
               }}
             />

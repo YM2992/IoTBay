@@ -154,6 +154,7 @@ export const logout = catchAsync(async (req, res, next) => {
   });
 });
 
+// OLD protect > New protect
 export const protect = catchAsync(async (req, res, next) => {
   let token = req.headers.authorization;
   if (!token || !token.startsWith("Bearer"))
@@ -174,7 +175,6 @@ export const protect = catchAsync(async (req, res, next) => {
   if (!currentUser.activate) {
     return next(new cusError("please find us to re-activate your account", 401));
   }
-
   if (!currentUser.activate) {
     return next(new cusError("Please find us to re-activate your account", 401));
   }
@@ -186,6 +186,14 @@ export const protect = catchAsync(async (req, res, next) => {
 
 export const restrictTo = (...roles) => {
   return (req, res, next) => {
+    /* sorry it was disruptting other stuff too  
+  if (token) {
+      console.log("Token:", token);
+    } else {
+      console.log("Token is null or undefined");
+    } // token testing delete above
+     */
+
     if (!roles.includes(req.user.role)) {
       return next(new cusError("You do not have permission to perform this action", 403));
     }

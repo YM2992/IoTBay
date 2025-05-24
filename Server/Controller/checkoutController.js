@@ -162,6 +162,7 @@ const transactCheckout = db.transaction((data) => {
         cardholderName: paymentDetailsResolved.cardholderName,
         cardNumber: cleanCardNumber,
         expiryDate: paymentDetailsResolved.expiryDate,
+        cvv: paymentDetailsResolved.cvv
       };
       createOne("payment_card", cardToSave);
     } else {

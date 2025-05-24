@@ -24,7 +24,7 @@ export const savePaymentCard = async (paymentCard, token) => {
     return response;
 };
 
-// Remove payment card function
+// Remove payment card function ** 
 export const removePaymentCard = async (cardid, cardNumber, token) => {
     const response = await fetchDelete(API_ROUTES.payment.removePaymentCard, {
         headers: {

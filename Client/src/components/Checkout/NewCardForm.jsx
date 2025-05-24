@@ -14,13 +14,8 @@ const NewCardForm = forwardRef(({ initialDetails, onFormChange }, ref) => {
     async validateAndGetNewCardDetails() {
       try {
         const values = await form.validateFields();
-        // Frontend validation for expiry date format and past date removed.
-        // This validation should now primarily be handled by the backend.
-
-        // The 'saveCard' value will be part of 'values' from form.validateFields()
         return { ...values, isNew: true, cardid: 'new_card_checkout' };
       } catch (info) {
-        // Antd form validation errors (e.g. for required fields) will be displayed on the form items
         toast.error("Please ensure all new card details are correct.");
         return null;
       }
@@ -40,31 +35,34 @@ const NewCardForm = forwardRef(({ initialDetails, onFormChange }, ref) => {
         initialValues={initialDetails}
         onValuesChange={onFormChange}
       >
+        <label htmlFor="newCard_cardholderName">Cardholder Name</label>
         <Form.Item
           name="cardholderName"
-          label="Cardholder Name"
         >
-          <Input placeholder="Cardholder Name" />
+          <Input placeholder="Cardholder Name" id="newCard_cardholderName" />
         </Form.Item>
+
+        <label htmlFor="newCard_cardNumber">Card Number</label>
         <Form.Item
           name="cardNumber"
-          label="Card Number"
         >
-          <Input placeholder="0000 0000 0000 0000" />
+          <Input placeholder="0000 0000 0000 0000" id="newCard_cardNumber" />
         </Form.Item>
+
+        <label htmlFor="newCard_expiryDate">Expiry Date (MM/YY)</label>
         <Form.Item
           name="expiryDate"
-          label="Expiry Date (MM/YY)"
           rules={[
           ]}
         >
-          <Input placeholder="MM/YY" />
+          <Input placeholder="MM/YY" id="newCard_expiryDate" />
         </Form.Item>
+
+        <label htmlFor="newCard_cvv">CVV</label>
         <Form.Item
           name="cvv"
-          label="CVV"
         >
-          <Input placeholder="123" />
+          <Input placeholder="123" id="newCard_cvv" />
         </Form.Item>
         {token && (
           <Form.Item name="saveCard" valuePropName="checked" className="save-card-checkbox">

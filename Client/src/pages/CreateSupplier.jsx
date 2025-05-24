@@ -71,9 +71,8 @@ function CreateSupplier({ refetch }) {
   try {
     // Use the createSupplier function to make the API call
     await createSupplier(data, token);
-    toast.success("Successfully added new supplier!");
     clear(); // Clear the form fields
-    refetch(); // Refresh the supplier list
+    toast.success("Successfully added new supplier! - refresh to see changes");        
   } catch (error) {
     console.error("Error creating supplier:", error);
     toast.error("Failed to add supplier, try again later");

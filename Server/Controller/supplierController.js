@@ -14,21 +14,6 @@ export const getAllSuppliers = catchAsync(async (req, res, next) => {
   });
 });
 
-// Get a single supplier by ID  \\ previously const {id} = req.params;
-export const getSupplierById = catchAsync(async (req, res, next) => {
-  const { id } = req.params; 
-  const supplier = getOne(SUPPLIER_TABLE, "supplierid", id);
-
-  if (!supplier) {
-    return next(new cusError("Supplier not found", 404));
-  }
-
-  res.status(200).json({
-    status: "success",
-    data: supplier,
-  });
-});
-
 // Create a new supplier 
 export const createSupplier = catchAsync(async (req, res, next) => {
   const { contactName, companyName, email, address } = req.body;

@@ -8,7 +8,6 @@ import CreateUserPages from "./CreateUserPage";
 import ManageProduct from "@/components/ManageProduct";
 import { AppContext } from "@/context/AppContext";
 import EmptyCard from "@/components/EmptyCard";
-import ViewSuppliers from "@/components/ViewSuppliers";
 import CreateSupplier from "./CreateSupplier";
 import ContainerSupplier from "@/components/Checkout/ContainerSupplier";
 
@@ -86,7 +85,7 @@ function Manage() {
       children: (        
         <>
           {user.role === "admin" && users ? (
-            <ContainerSupplier users={users} refetch={userRefetch} />
+            <ContainerSupplier/>
           ) : (
             <EmptyCard description={"This tab is for admin only"} showBtn={false} />
           )}
@@ -100,7 +99,7 @@ function Manage() {
       children: (        
         <>
           {user.role === "admin" ? (
-            <CreateSupplier refetch={userRefetch} />
+            <CreateSupplier/>
           ) : (
             <EmptyCard description={"This tab is for admin only"} showBtn={false} />
           )}

@@ -13,6 +13,14 @@ export const API_ROUTES = {
     getProducts: "product/getProducts",
     getProductById: "product/getProductById",
   },
+  // new supplier route
+  supplier:{
+    create: "supplier/",
+    getAll: "supplier/",
+    getById: (id) => `supplier/${id}`, // Look up item id when delte from data base | Id = dynamic handelling (id) => `supplier/${id}`
+    update: (id) => `supplier/${id}`,  // 
+    delete: (id) => `supplier/${id}`,    
+  },
   payment: {
     getPaymentCards: "payment/card/",
     updatePaymentCard: "payment/card/",
@@ -38,11 +46,11 @@ export const urlMaker = (endpoint) => {
 export const optionMaker = (data, method = "POST", token = null) => {
   return {
     method: method,
-    body: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-    },
+    },    
+    body: JSON.stringify(data), 
   };
 };
 
@@ -71,6 +79,24 @@ export const fetchPost = async (endpoint, options) => {
     throw new Error(resData.message);
   }
   return resData;
+};
+
+//new! ---> used for display
+export const fetchPatch = async (url, options = {}) => {
+  try {
+    const response = await fetch(url, {
+      method: 'PATCH',
+      ...options,
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to perform PATCH request');
+    }
+    return data;
+  } catch (error) {
+    console.error('Error in fetchPatch:', error);
+    throw error;
+  }
 };
 
 export const fetchGet = async (endpoint, options) => {

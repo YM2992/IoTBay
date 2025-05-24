@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_product;
 DROP TABLE IF EXISTS order_payment;
 DROP TABLE IF EXISTS address_book;
-
+DROP TABLE IF EXISTS supplier;
 
 CREATE TABLE user (
     userid INTEGER PRIMARY KEY,
@@ -17,7 +17,7 @@ CREATE TABLE user (
     address VARCHAR(100),
     activate boolean NOT NULL DEFAULT true,
     role varchar(8) NOT NULL Check (role in ('customer','admin' ,'manager', 'staff', 'owner')) DEFAULT 'customer'
-);
+); 
 
 CREATE TABLE payment_card (
     cardid INTEGER PRIMARY KEY,
@@ -44,7 +44,18 @@ CREATE TABLE product (
     quantity int NOT NULL check(quantity >= 0),
     description VARCHAR(100),
     image VARCHAR(256) DEFAULT 'default_image',
+    -- supplier  DEFAULT FORIEGN list of ocmpany -- maybe delete 
     available boolean DEFAULT true
+);
+
+-- new area ... maybe add feild for list of items they supply?
+CREATE TABLE supplier (
+    supplierid INTEGER PRIMARY KEY,
+    contactName VARCHAR(20) NOT NULL,
+    companyName VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    address VARCHAR(100) NOT NULL,
+    activate boolean NOT NULL DEFAULT true
 );
 
 CREATE TABLE orders(
@@ -94,8 +105,10 @@ CREATE TABLE address_book (
 );
 
 UPDATE user SET activate = 1; 
+
 INSERT INTO user (name, phone, email, password, role) VALUES
 ('Yasir Test', 0420555666, 'yasir@test.com', '$2b$12$AQDnbnawQkAeeQmKFhjNpe.eoDuoVLyDRhJEvRRwYF4j9wEzbk6wW', 'admin'),
+('AdminUser',420764361,'admin@test.com','$2b$12$442c4CjxhkckV3CBIuFEXOV/tWufO.bCcjNv/vF4Cen5pCPmOknLm','admin'),
 ('Jeff Test', 0420222333, 'jeff@test.com', '$2b$12$yTgqJX5rr9KafAU2aDDJQuTpuqW0RN.ubNNroElpXaOLYjf.y00Ze', 'manager'),
 ('Customer Test', 0420111222, 'random@test.com', '$2b$12$7we9rbwYFCwnHmI0as757Ol4bBam2lzA/ICKP4pYUgQs1I5A8oh9O', 'customer'),
 ('John Test', 0420111000, 'john@test.com', '$2b$12$v7q4jwss4Ory6pO/ILhnhOr4QfzzR/BDQQ12EUUq8I/3XJxv4a9.6', 'staff');
@@ -138,6 +151,11 @@ INSERT INTO orders (amount, status, orderDate, userid) VALUES
 
 INSERT INTO orders ( amount, status, orderDate, userid) VALUES
 ( 145.50, 'pending', '2025-03-15', (SELECT userid FROM user WHERE email = 'yasir@test.com'));
+
+-- New supplier table
+INSERT INTO supplier (contactName, companyName, email, address) VALUES
+('Kirby Pie', 'Raspberry Pi', 'raspberry@gmail.com', '255 Pitt St, Sydney NSW 2000, Australia'),
+('David Park', 'Arduino', 'David.Arduino@gmail.com', '201 Kent St, Sydney NSW 2000, Australia');
 
 INSERT INTO order_product (orderid, productid, quantity) VALUES
 (1, (SELECT productid FROM product WHERE name = 'Raspberry Pi 4 Model B'), 1),
@@ -184,12 +202,12 @@ SELECT * FROM product;
 SELECT * FROM orders;
 SELECT * FROM order_product;
 SELECT * FROM address_book;
+SELECT * FROM supplier;
 
 -- SELECT o.orderid,address,amount,status, op.quantity, p.productid, p.name FROM orders o
 -- JOIN order_product op ON op.orderid = o.orderid
 -- JOIN product p ON op.productid = p.productid
 -- WHERE o.orderid = 1;
-
 
 
 -- SELECT * FROM order_product op

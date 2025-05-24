@@ -85,7 +85,7 @@ function Manage() {
       children: (        
         <>
           {user.role === "admin" && users ? (
-            <ContainerSupplier users={users} refetch={userRefetch} />
+            <ContainerSupplier/>
           ) : (
             <EmptyCard description={"This tab is for admin only"} showBtn={false} />
           )}
@@ -99,7 +99,7 @@ function Manage() {
       children: (        
         <>
           {user.role === "admin" ? (
-            <CreateSupplier refetch={userRefetch} />
+            <CreateSupplier/>
           ) : (
             <EmptyCard description={"This tab is for admin only"} showBtn={false} />
           )}

@@ -1,4 +1,4 @@
-import { createOne } from "./centralController.js";
+import { createOne, getAllWithFilter } from "./centralController.js";
 import { hashPassword } from "./authController.js";
 import catchAsync from "../Utils/catchAsync.js";
 import { getOne, getAll, updateOne, deleteOne } from "./centralController.js";
@@ -200,12 +200,10 @@ export const accessLog = catchAsync(async (req, res, next) => {
   const userId = req.user.userid;
 
   try {
-    const logs = await getAll(
-      "access_logs",
-      "userid",
-      userId,
-      "login_time DESC"
-    );
+    const logs = await getAllWithFilter("access_logs", { userid: userId });
+    if (!logs || logs.length === 0) {
+      return next(new cusError("No access logs found for this user", 404));
+    }
 
     res.status(200).json({
       status: "success",
